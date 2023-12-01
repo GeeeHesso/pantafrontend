@@ -1,0 +1,246 @@
+<!--TODO: card code duplicate-->
+<div *ngIf="!this.editsService.mapService.selectedOptions.devMode" class="popupContainer">
+  <mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{ branchesFT[0].fromBus.name }} → {{ branchesFT[0].toBus.name }} ({{ branchesFT[0].fromBus.country }})
+      <button class="mat-icon-button" aria-label="Edit"
+              [hidden]="this.editsService.editMode || this.editsService.mapService.scenarioMode"
+              (click)="this.editsService.handleEditMode()">
+        <i class="material-icons">edit</i>
+      </button>
+    </mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngFor="let branch of branchesFT">
+      <hr>
+      <table>
+        <tr>
+          <th>Branch index</th>
+          <th>
+            {{ branch.index }}
+            <mat-slide-toggle class="toggle-title" [hidden]="!this.editsService.editMode"
+                              [checked]="branch.br_status==1" color="primary"
+                              (change)="this.editsService.toggleBranch(branch, $event.source.checked)">
+            </mat-slide-toggle>
+          </th>
+        </tr>
+        <tr>
+          <th>Load injected</th>
+          <td>{{ branch.loadInjected }} %</td>
+        </tr>
+        <tr>
+          <th>Total power</th>
+          <td>{{ branch.totalPowerMW }} / {{branch.thermalRatingMW}} MW </td>
+        </tr>
+        <tr>
+          <th>Losses</th>
+          <td>{{ branch.losses }} MW</td>
+        </tr>
+        <tr>
+          <th>From</th>
+          <td>{{ branch.fromBus.index }} ({{ branch.fromBus.base_kv }}kV)</td>
+        </tr>
+        <tr>
+          <th>To</th>
+          <td>{{ branch.toBus.index }} ({{ branch.toBus.base_kv }}kV)</td>
+        </tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+<mat-card *ngIf="branchesTF.length > 0">
+  <mat-card-header>
+    <mat-card-title>
+      {{ branchesTF[0].fromBus.name }} → {{ branchesTF[0].toBus.name }} ({{ branchesTF[0].fromBus.country }})
+    </mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngFor="let branch of branchesTF">
+      <hr>
+      <table>
+        <tr>
+          <th>Branch index</th>
+          <th>{{ branch.index }}
+            <mat-slide-toggle class="toggle-title" [hidden]="!this.editsService.editMode"
+                              [checked]="branch.br_status==1" color="primary"
+                              (change)="this.editsService.toggleBranch(branch, $event.source.checked)">
+            </mat-slide-toggle>
+          </th>
+        </tr>
+        <tr>
+          <th>Load injected</th>
+          <td>{{ branch.loadInjected }} %</td>
+        </tr>
+        <tr>
+          <th>Total power</th>
+          <td>{{ branch.totalPowerMW }} / {{branch.thermalRatingMW}} MW </td>
+        </tr>
+        <tr>
+          <th>Losses</th>
+          <td>{{ branch.losses }} MW</td>
+        </tr>
+        <tr>
+          <th>From</th>
+          <td>{{ branch.fromBus.index }} ({{ branch.fromBus.base_kv }}kV)</td>
+        </tr>
+        <tr>
+          <th>To</th>
+          <td>{{ branch.toBus.index }} ({{ branch.toBus.base_kv }}kV)</td>
+        </tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+</div>
+
+
+<mat-tab-group class="popupContainer"
+               mat-stretch-tabs="false" headerPosition="below"
+               *ngIf="this.editsService.mapService.selectedOptions.devMode">
+<mat-tab label="Summary" >
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          {{ branchesFT[0].fromBus.name }} → {{ branchesFT[0].toBus.name }} ({{ branchesFT[0].fromBus.country }})
+          <button class="mat-icon-button" aria-label="Edit"
+                  [hidden]="this.editsService.editMode || this.editsService.mapService.scenarioMode"
+                  (click)="this.editsService.handleEditMode()">
+            <i class="material-icons">edit</i>
+          </button>
+        </mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngFor="let branch of branchesFT">
+          <hr>
+          <table>
+            <tr>
+              <th>Branch index</th>
+              <th>
+                {{ branch.index }}
+                <mat-slide-toggle class="toggle-title" [hidden]="!this.editsService.editMode"
+                                  [checked]="branch.br_status==1" color="primary"
+                                  (change)="this.editsService.toggleBranch(branch, $event.source.checked)">
+                </mat-slide-toggle>
+              </th>
+            </tr>
+            <tr>
+              <th>Load injected</th>
+              <td>{{ branch.loadInjected }} %</td>
+            </tr>
+            <tr>
+              <th>Total power</th>
+              <td>{{ branch.totalPowerMW }} / {{branch.thermalRatingMW}} MW </td>
+            </tr>
+            <tr>
+              <th>Losses</th>
+              <td>{{ branch.losses }} MW</td>
+            </tr>
+            <tr>
+              <th>From</th>
+              <td>{{ branch.fromBus.index }} ({{ branch.fromBus.base_kv }}kV)</td>
+            </tr>
+            <tr>
+              <th>To</th>
+              <td>{{ branch.toBus.index }} ({{ branch.toBus.base_kv }}kV)</td>
+            </tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card *ngIf="branchesTF.length > 0">
+      <mat-card-header>
+        <mat-card-title>
+          {{ branchesTF[0].fromBus.name }} → {{ branchesTF[0].toBus.name }} ({{ branchesTF[0].fromBus.country }})
+        </mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngFor="let branch of branchesTF">
+          <hr>
+          <table>
+            <tr>
+              <th>Branch index</th>
+              <th>{{ branch.index }}
+                <mat-slide-toggle class="toggle-title" [hidden]="!this.editsService.editMode"
+                                  [checked]="branch.br_status==1" color="primary"
+                                  (change)="this.editsService.toggleBranch(branch, $event.source.checked)">
+                </mat-slide-toggle>
+              </th>
+            </tr>
+            <tr>
+              <th>Load injected</th>
+              <td>{{ branch.loadInjected }} %</td>
+            </tr>
+            <tr>
+              <th>Total power</th>
+              <td>{{ branch.totalPowerMW }} / {{branch.thermalRatingMW}} MW </td>
+            </tr>
+            <tr>
+              <th>Losses</th>
+              <td>{{ branch.losses }} MW</td>
+            </tr>
+            <tr>
+              <th>From</th>
+              <td>{{ branch.fromBus.index }} ({{ branch.fromBus.base_kv }}kV)</td>
+            </tr>
+            <tr>
+              <th>To</th>
+              <td>{{ branch.toBus.index }} ({{ branch.toBus.base_kv }}kV)</td>
+            </tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+
+  <div *ngFor="let branch of branchesFT">
+    <mat-tab *ngIf="branch" label="{{ branch.index }}">
+      <div><b>BRANCH {{ branch.index }}</b><br>
+        br_r: {{ branch.br_r }}<br>
+        rate_a: {{ branch.rate_a }}<br>
+        pt: {{ branch.pt }}<br>
+        br_x: {{ branch.br_x }}<br>
+        g_to: {{ branch.g_to }}<br>
+        g_fr: {{ branch.g_fr }}<br>
+        b_fr: {{ branch.b_fr }}<br>
+        f_bus: {{ branch.f_bus }}<br>
+        br_status: {{ branch.br_status }}<br>
+        t_bus: {{ branch.t_bus }}<br>
+        b_to: {{ branch.b_to }}<br>
+        qf: {{ branch.qf }}<br>
+        angmin: {{ branch.angmin }}<br>
+        angmax: {{ branch.angmax }}<br>
+        transformer: {{ branch.transformer }}<br>
+        qt: {{ branch.qt }}<br>
+        tap: {{ branch.tap }}<br>
+        pf: {{ branch.pf }}</div>
+    </mat-tab>
+  </div>
+  <div *ngFor="let branch of branchesTF">
+    <mat-tab *ngIf="branch" label="{{ branch.index }}">
+      <div><b>BRANCH {{ branch.index }}</b><br>
+        br_r: {{ branch.br_r }}<br>
+        rate_a: {{ branch.rate_a }}<br>
+        pt: {{ branch.pt }}<br>
+        br_x: {{ branch.br_x }}<br>
+        g_to: {{ branch.g_to }}<br>
+        g_fr: {{ branch.g_fr }}<br>
+        b_fr: {{ branch.b_fr }}<br>
+        f_bus: {{ branch.f_bus }}<br>
+        br_status: {{ branch.br_status }}<br>
+        t_bus: {{ branch.t_bus }}<br>
+        b_to: {{ branch.b_to }}<br>
+        qf: {{ branch.qf }}<br>
+        angmin: {{ branch.angmin }}<br>
+        angmax: {{ branch.angmax }}<br>
+        transformer: {{ branch.transformer }}<br>
+        qt: {{ branch.qt }}<br>
+        tap: {{ branch.tap }}<br>
+        pf: {{ branch.pf }}</div>
+    </mat-tab>
+  </div>
+</mat-tab-group>

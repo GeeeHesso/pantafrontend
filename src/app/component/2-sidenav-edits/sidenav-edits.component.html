@@ -1,0 +1,163 @@
+<div id="edits">
+  <!-- Fixed bar at fixed at the top-->
+  <mat-toolbar>
+      <mat-card>
+
+        <mat-card-header *ngIf="!this.editsService.editionMade">
+          <mat-card-title>
+            No change
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-header *ngIf="editedTotalCons !== editedTotalProd">
+          <mat-card-title>
+            <mat-icon>warning</mat-icon>
+            The balance is not respected !
+          </mat-card-title>
+          <mat-card-subtitle >
+            <b *ngIf="editedTotalCons > editedTotalProd">
+              Consumption is higher than production from {{this.editsService.mapService.dataService.editedProdMinusEditedCons$.getValue()}}MW</b>
+            <b *ngIf="editedTotalCons < editedTotalProd">
+              Production is higher than consumption from {{this.editsService.mapService.dataService.editedProdMinusEditedCons$.getValue()}}MW</b>
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <!-- Options and button to calculate the grid with edits-->
+        <mat-card-content>
+          <!--label id="radio-group-current">Current</label-->
+          <mat-radio-group   aria-labelledby="radio-group-current"
+                             aria-label="File type" [(ngModel)]="current">
+            <mat-radio-button value="dc">Direct current</mat-radio-button>
+            <mat-radio-button value="ac">Alternating current </mat-radio-button>
+          </mat-radio-group>
+          <br>
+          <!--label id="radio-group-pf">Power flow</label-->
+          <mat-radio-group   aria-labelledby="radio-group-pf"
+                             aria-label="File type" [(ngModel)]="flow">
+            <mat-radio-button value="pf">Simple power flow</mat-radio-button>
+            <mat-radio-button value="opf">Optimal power flow</mat-radio-button>
+          </mat-radio-group>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-raised-button aria-label="Cancel" (click)="this.editsService.cancelEdit()">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+          <button mat-raised-button
+                  color="primary"
+                  aria-label="Send"
+                  (click)="handleButtonCalculateGrid()"
+          >
+            <mat-icon>send</mat-icon>
+            Calculate
+          </button>
+        </mat-card-actions>
+      </mat-card>
+  </mat-toolbar>
+
+  <!-- Total consumption and production shown only in dev mode -->
+  <mat-card class="editList" *ngIf="this.editsService.mapService.selectedOptions.devMode">
+    <mat-card-header>
+      <mat-card-title>
+        Total value
+      </mat-card-title>
+      <mat-card-subtitle >
+        Shown only in dev and localhost
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      Consumption: {{this.editsService.mapService.dataService.TOTAL_CONS}} <br>
+      Production: {{this.editsService.mapService.dataService.TOTAL_PROD}} <br>
+      Edited consumption: {{this.editsService.mapService.dataService.editedTotalCons$.getValue()}} <br>
+      Edited production: {{this.editsService.mapService.dataService.editedTotalProd$.getValue()}} <br>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- All edited data -->
+  <span *ngFor="let busPoint of this.editedBusPoint">
+    <mat-card class="editList" >
+      <mat-card-header (click)="goToBus(busPoint.bus)">
+        <mat-card-title>
+          {{busPoint.bus.name}} {{busPoint.bus.country}} ({{busPoint.bus.index}})
+        </mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+          <span *ngFor="let load of busPoint.bus.loads" (click)="goToBus(busPoint.bus)">
+          <span *ngIf="load.newConsumeMW!==load.originalConsumeMW">
+            <p>
+              <mat-icon>blur_circular</mat-icon>
+              <b>{{ busPoint.bus.base_kv }} kV</b>
+              (load {{ load.index }})
+              <button  class="mat-icon-button" aria-label="Cancel"
+                       (click)="handleButtonCancelEditLoad(load, busPoint.bus)">
+                    <i class="material-icons">cancel</i>
+              </button>
+              <br>
+              Consumption modified from {{load.originalConsumeMW}} to {{load.newConsumeMW}} MW
+            </p>
+          </span>
+        </span>
+        <span *ngFor="let gen of busPoint.bus.gens" (click)="goToBus(busPoint.bus)">
+          <span *ngIf="gen.newProduceMW!==gen.originalProduceMW">
+            <p>
+              <mat-icon>check_box_outline_blank</mat-icon>
+              <b>{{gen.categoryText}} - {{ gen.type }}</b> (gen {{gen.index}})
+                            <button  class="mat-icon-button" aria-label="Cancel"
+                                     (click)="handleButtonCancelEditGen(gen, busPoint.bus)">
+                    <i class="material-icons">cancel</i>
+              </button>
+              <br>
+              Production modified from {{gen.originalProduceMW}} to {{gen.newProduceMW}} MW<br>
+            </p>
+          </span>
+        </span>
+        <span *ngFor="let trans of busPoint.transfo" (click)="goToBus(busPoint.bus)">
+          <span *ngIf="trans.originalStatus!==trans.br_status">
+            <p>
+                <svg height="24px" width="24px" viewBox="0 0 11 25" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="5.5" y="0" width="2" height="5" style="fill: #000000"></rect>
+                  <ellipse
+                    cx="6"
+                    cy="10"
+                    rx="5"
+                    ry="5"
+                    style="stroke: #000000; stroke-width: 2px; fill-opacity: 0"
+                  ></ellipse>
+                  <ellipse
+                    cx="6"
+                    cy="15"
+                    rx="5"
+                    ry="5"
+                    style="stroke: #000000; stroke-width: 2px; fill-opacity: 0"
+                  ></ellipse>
+                  <rect x="5.5" y="20" width="2" height="5" style="fill: #000000"></rect>
+                </svg>
+                <b>{{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)</b>
+                <button  class="mat-icon-button" aria-label="Cancel" (click)="handleButtonCancelEditBranch(trans)">
+                    <i class="material-icons">cancel</i>
+                </button>
+              <br>
+              Transformer {{ trans.index }} has been {{trans.originalStatus ? "disabled": "enabled"}}
+            </p>
+          </span>
+        </span>
+        <span *ngFor="let line of busPoint.lines">
+          <span *ngIf="line.originalStatus!==line.br_status" (click)="goToLine(line)">
+            <p>
+              <svg height="24px" width="24px">
+                <line stroke="#000" stroke-width="3px" y1="4" x1="4"  y2="20" x2="20"/>
+              </svg>
+              <b>{{ line.fromBus.index }} ({{ line.fromBus.base_kv }}kV) → {{ line.toBus.index }} ({{ line.toBus.base_kv }}kV)</b>
+              <button  class="mat-icon-button" aria-label="Cancel" (click)="handleButtonCancelEditBranch(line)">
+                <i class="material-icons">cancel</i>
+              </button>
+              <br>
+              Line {{ line.index }} has been {{line.originalStatus ? "disabled": "enabled"}}
+            </p>
+          </span>
+        </span>
+      </mat-card-content>
+    </mat-card>
+  </span>
+</div>

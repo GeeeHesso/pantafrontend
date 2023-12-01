@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Share</h1>
+<div mat-dialog-content>
+  <div *ngIf="this.link==''">
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput [formControl]="fileName" required>
+        <mat-error *ngIf="fileName.invalid">{{getErrorMessage()}}</mat-error>
+      </mat-form-field>
+      <div mat-dialog-actions align="end">
+        <button mat-button (click)="onCancelClick()">Close</button>
+        <button mat-button (click)="createLink()">Create link</button>
+      </div>
+  </div>
+
+  <div *ngIf="this.link!=''">
+    <a href="{{this.link}}" target="_blank">{{this.link}}</a>
+    <div mat-dialog-actions align="end">
+      <button mat-button (click)="onCancelClick()">Close</button>
+      <button mat-button (click)="copyToClipboard()">Copy link</button>
+    </div>
+  </div>
+
+</div>
+

@@ -1,0 +1,35 @@
+#options{
+  font-family: Roboto, Helvetica, sans-serif;
+}
+
+mat-toolbar{
+  z-index: 2;
+  position: sticky;
+}
+
+#toolbartop{
+  display: flex;
+  justify-content: space-between;
+  top: 0;
+}
+#toolbarbottom{
+  justify-content: center;
+  bottom:0;
+}
+
+legend{
+  font-weight: bold;
+}
+#optionsBlock{
+  padding: 10px;
+  width: 350px;
+}
+
+mat-slide-toggle{
+  display: block;
+}
+
+.transformer {
+  width: 10px;
+  padding-left: 10px;
+}

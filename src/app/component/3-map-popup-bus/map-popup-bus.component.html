@@ -1,0 +1,301 @@
+<!--TODO: card code duplicate-->
+<mat-card *ngIf="!this.editsService.mapService.selectedOptions.devMode" class="popupContainer">
+  <mat-card-header>
+    <mat-card-title>
+      {{ buses[0].name }} ({{ buses[0].country }})
+      <button
+        class="mat-icon-button"
+        aria-label="Edit"
+        [hidden]="this.editsService.editMode || this.editsService.mapService.scenarioMode"
+        (click)="this.editsService.handleEditMode()"
+      >
+        <i class="material-icons">edit</i>
+      </button>
+    </mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngFor="let bus of buses">
+      <hr />
+      <table>
+        <tr>
+          <th>
+            <mat-icon>blur_circular</mat-icon>
+          </th>
+          <td>
+            <b>{{ bus.base_kv }} kV </b>({{ bus.index }})
+            <br />
+            <div *ngFor="let load of bus.loads">
+              Consumption:
+              <div
+                loadContentCheck
+                [load]="load"
+                [bus]="bus"
+                class="tabInput"
+                [contentEditable]="this.editsService.editMode"
+              >
+                {{ load.consumeMW }}
+              </div>
+              MW ({{ load.index }})
+              <br />
+              Population: {{ load.pop }}
+            </div>
+          </td>
+        </tr>
+        <tr *ngFor="let gen of bus.gens">
+          <th>
+            <mat-icon>square</mat-icon>
+          </th>
+          <td>
+            {{ gen.categoryText }} - {{ gen.type }} ({{ gen.index }})
+            <br />
+            Production :
+            <div
+              genContentCheck
+              [gen]="gen"
+              [bus]="bus"
+              class="tabInput"
+              [contentEditable]="this.editsService.editMode"
+            >
+              {{ gen.produceMW }}
+            </div>
+            / {{ gen.maxMW }} MW
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div *ngFor="let trans of transformers">
+      <hr />
+      <table>
+        <tr>
+          <th>
+            <svg viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5.5" y="0" width="1" height="5" style="fill: #000000"></rect>
+              <ellipse
+                cx="6"
+                cy="10"
+                rx="5"
+                ry="5"
+                style="stroke: #000000; stroke-width: 1px; fill-opacity: 0"
+              ></ellipse>
+              <ellipse
+                cx="6"
+                cy="15"
+                rx="5"
+                ry="5"
+                style="stroke: #000000; stroke-width: 1px; fill-opacity: 0"
+              ></ellipse>
+              <rect x="5.5" y="20" width="1" height="5" style="fill: #000000"></rect>
+            </svg>
+          </th>
+          <td>
+            <b>{{ trans.index }}</b>
+            <mat-slide-toggle
+              class="toggle-title"
+              [hidden]="!this.editsService.editMode"
+              [checked]="trans.br_status == 1"
+              color="primary"
+              (change)="this.editsService.toggleBranch(trans, $event.source.checked)"
+            >
+            </mat-slide-toggle>
+            <br />
+            {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
+            <br />
+            Load injected: {{ trans.loadInjected }} %
+            <br />
+            Total power: {{ trans.totalPowerMW }} / {{ trans.thermalRatingMW }} MW
+            <br />
+            Losses: {{ trans.losses }} MW
+          </td>
+        </tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-tab-group class="popupContainer"
+               mat-stretch-tabs="false" headerPosition="below"
+               *ngIf="this.editsService.mapService.selectedOptions.devMode">
+  <mat-tab label="Summary">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          {{ buses[0].name }} ({{ buses[0].country }})
+          <button
+            class="mat-icon-button"
+            aria-label="Edit"
+            [hidden]="this.editsService.editMode || this.editsService.mapService.scenarioMode"
+            (click)="this.editsService.handleEditMode()"
+          >
+            <i class="material-icons">edit</i>
+          </button>
+        </mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngFor="let bus of buses">
+          <hr />
+          <table>
+            <tr>
+              <th>
+                <mat-icon>blur_circular</mat-icon>
+              </th>
+              <td>
+                <b>{{ bus.base_kv }} kV </b>({{ bus.index }})
+                <br />
+                <div *ngFor="let load of bus.loads">
+                  Consumption:
+                  <div
+                    loadContentCheck
+                    [load]="load"
+                    [bus]="bus"
+                    class="tabInput"
+                    [contentEditable]="this.editsService.editMode"
+                  >
+                    {{ load.consumeMW }}
+                  </div>
+                  MW ({{ load.index }})
+                  <br />
+                  Population: {{ load.pop }}
+                </div>
+              </td>
+            </tr>
+            <tr *ngFor="let gen of bus.gens">
+              <th>
+                <mat-icon>square</mat-icon>
+              </th>
+              <td>
+                {{ gen.categoryText }} - {{ gen.type }} ({{ gen.index }})
+                <br />
+                Production :
+                <div
+                  genContentCheck
+                  [gen]="gen"
+                  [bus]="bus"
+                  class="tabInput"
+                  [contentEditable]="this.editsService.editMode"
+                >
+                  {{ gen.produceMW }}
+                </div>
+                / {{ gen.maxMW }} MW
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div *ngFor="let trans of transformers">
+          <hr />
+          <table>
+            <tr>
+              <th>
+                <svg viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="5.5" y="0" width="1" height="5" style="fill: #000000"></rect>
+                  <ellipse
+                    cx="6"
+                    cy="10"
+                    rx="5"
+                    ry="5"
+                    style="stroke: #000000; stroke-width: 1px; fill-opacity: 0"
+                  ></ellipse>
+                  <ellipse
+                    cx="6"
+                    cy="15"
+                    rx="5"
+                    ry="5"
+                    style="stroke: #000000; stroke-width: 1px; fill-opacity: 0"
+                  ></ellipse>
+                  <rect x="5.5" y="20" width="1" height="5" style="fill: #000000"></rect>
+                </svg>
+              </th>
+              <td>
+                <b>{{ trans.index }}</b>
+                <mat-slide-toggle
+                  class="toggle-title"
+                  [hidden]="!this.editsService.editMode"
+                  [checked]="trans.br_status == 1"
+                  color="primary"
+                  (change)="this.editsService.toggleBranch(trans, $event.source.checked)"
+                >
+                </mat-slide-toggle>
+                <br />
+                {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
+                <br />
+                Load injected: {{ trans.loadInjected }} %
+                <br />
+                Total power: {{ trans.totalPowerMW }} / {{ trans.thermalRatingMW }} MW
+                <br />
+                Losses: {{ trans.losses }} MW
+              </td>
+            </tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+    <span *ngFor="let bus of buses">
+    <mat-tab label="B-{{ bus.index }}">
+      <b>BUS {{ bus.index }}</b
+      ><br />
+      name: {{ bus.name }}<br />
+      bus_type: {{ bus.bus_type }}<br />
+      status: {{ bus.status }}<br />
+      vmax: {{ bus.vmax }}<br />
+      country: {{ bus.country }}<br />
+      load_prop: {{ bus.load_prop }}<br />
+      vmin: {{ bus.vmin }}<br />
+      va: {{ bus.va }}<br />
+      population: {{ bus.population }}<br />
+      vm: {{ bus.vm }}<br />
+      base_kv: {{ bus.base_kv }}<br />
+      <div *ngFor="let load of bus.loads">
+        <b>LOAD {{ load.index }}</b
+        ><br />
+        status: {{ load.status }}<br />
+        qd: {{ load.qd }}<br />
+        pd: {{ load.pd }}<br />
+      </div>
+      <div *ngFor="let gen of bus.gens">
+        <b>GEN {{ gen.index }}</b
+        ><br />
+        pg: {{ gen.pg }}<br />
+        model: {{ gen.model }}<br />
+        qg: {{ gen.qg }}<br />
+        pmax: {{ gen.pmax }}<br />
+        mbase: {{ gen.mbase }}<br />
+        vg: {{ gen.vg }}<br />
+        category: {{ gen.category }}<br />
+        cost: {{ gen.cost }}<br />
+        gen_status: {{ gen.gen_status }}<br />
+        qmax: {{ gen.qmax }}<br />
+        qmin: {{ gen.qmin }}<br />
+        type: {{ gen.type }}<br />
+        pmin: {{ gen.pmin }}<br />
+        ncost: {{ gen.ncost }}<br />
+      </div>
+    </mat-tab>
+  </span>
+  <span *ngFor="let trans of transformers">
+      <mat-tab label="T-{{trans.index}}" >
+      <b>TRANSFORMER {{ trans.index }}</b
+      ><br />
+        br_r: {{ trans.br_r }}<br>
+        rate_a: {{ trans.rate_a }}<br>
+        pt: {{ trans.pt }}<br>
+        br_x: {{ trans.br_x }}<br>
+        g_to: {{ trans.g_to }}<br>
+        g_fr: {{ trans.g_fr }}<br>
+        b_fr: {{ trans.b_fr }}<br>
+        f_bus: {{ trans.f_bus }}<br>
+        br_status: {{ trans.br_status }}<br>
+        t_bus: {{ trans.t_bus }}<br>
+        b_to: {{ trans.b_to }}<br>
+        qf: {{ trans.qf }}<br>
+        angmin: {{ trans.angmin }}<br>
+        angmax: {{ trans.angmax }}<br>
+        transformer: {{ trans.transformer }}<br>
+        qt: {{ trans.qt }}<br>
+        tap: {{ trans.tap }}<br>
+        pf: {{ trans.pf }}
+  </mat-tab>
+  </span>
+</mat-tab-group>
+

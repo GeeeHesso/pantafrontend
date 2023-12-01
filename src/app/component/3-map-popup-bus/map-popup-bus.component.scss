@@ -1,0 +1,76 @@
+:host {
+  th {
+    width: 30px
+  }
+
+  .popupContainer {
+    overflow: auto;
+    max-height: 300px;
+    min-width: 280px;
+  }
+
+  mat-card {
+    padding: 0;
+    box-shadow: none !important;
+  }
+
+  mat-card-content, mat-card-header {
+  padding: 0;
+  }
+
+  mat-card-title {
+    font-size: medium;
+  }
+
+  // Bottom tabs zone
+  ::ng-deep .mat-mdc-tab.mdc-tab {
+    height: 30px !important;
+  }
+  // Arrow left right in bottom zone
+  ::ng-deep .mat-mdc-tab-header-pagination{
+    min-width: 20px !important;
+    padding-top: 4px !important;
+  }
+  ::ng-deep .mat-mdc-tab-header-pagination-before, .mat-mdc-tab-header-rtl .mat-mdc-tab-header-pagination-after{
+    padding-left: 0 !important;
+  }
+  // Each button tab
+  ::ng-deep .mdc-tab {
+    min-width: 50px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    padding-top: 4px !important;
+  }
+
+  // div to edit load and gen
+  .tabInput{
+    display: inline-block;
+    font-size: 12px;
+  }
+  .tabInput[contenteditable='true']{
+    border: solid 1px;
+    padding: 0 5px;
+    background: WhiteSmoke;
+  }
+
+  //Icon for edition
+  .mat-icon-button > .material-icons{
+    font-size: 15px;
+  }
+  .mat-icon-button{
+    border-radius: 50%;
+    border:none;
+    padding: 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+  }
+  .mat-icon-button:hover{
+    background: lightgrey;
+  }
+  [hidden]{
+    display:none;
+  }
+}
+

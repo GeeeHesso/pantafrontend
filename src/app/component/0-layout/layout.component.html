@@ -1,0 +1,134 @@
+<mat-toolbar [color]="!this.mapService.selectedOptions.devMode ? 'primary' : 'accent'">
+  <span>PanTaGruEl App
+    <span *ngIf="this.mapService.selectedOptions.devMode"> - DEV MODE</span>
+  </span>
+
+  <span class="spacer"></span>
+
+  <!-- In scenario mode -->
+  <span [hidden]="!this.mapService.scenarioMode">
+    Scenario {{this.title}}
+  </span>
+  <button mat-icon-button [hidden]="!this.mapService.scenarioMode" class="icon" aria-label="Cancel" title="Close this scenario"
+           (click)="this.handleButtonCancelScenarioMode()">
+    <mat-icon>cancel</mat-icon>
+  </button>
+
+  <!-- In normal mode -->
+  <div [hidden]="this.mapService.scenarioMode || this.editsService.editMode">
+    <mat-form-field subscriptSizing="dynamic">
+      <input
+        id="date"
+        matInput
+        [min]="this.mapService.minDate"
+        [max]="this.mapService.maxDate"
+        [matDatepicker]="$any(picker)"
+        [formControl]="defaultDate"
+        (dateInput)="dateChange($event)"
+        (dateChange)="dateChange($event)"
+      />
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-select [(value)]="timeInput">
+        <mat-option [value]="0">00:00</mat-option>
+        <mat-option [value]="1">01:00</mat-option>
+        <mat-option [value]="2">02:00</mat-option>
+        <mat-option [value]="3">03:00</mat-option>
+        <mat-option [value]="4">04:00</mat-option>
+        <mat-option [value]="5">05:00</mat-option>
+        <mat-option [value]="6">06:00</mat-option>
+        <mat-option [value]="7">07:00</mat-option>
+        <mat-option [value]="8">08:00</mat-option>
+        <mat-option [value]="9">09:00</mat-option>
+        <mat-option [value]="10">10:00</mat-option>
+        <mat-option [value]="11">11:00</mat-option>
+        <mat-option [value]="12">12:00</mat-option>
+        <mat-option [value]="13">13:00</mat-option>
+        <mat-option [value]="14">14:00</mat-option>
+        <mat-option [value]="15">15:00</mat-option>
+        <mat-option [value]="16">16:00</mat-option>
+        <mat-option [value]="17">17:00</mat-option>
+        <mat-option [value]="18">18:00</mat-option>
+        <mat-option [value]="19">19:00</mat-option>
+        <mat-option [value]="20">20:00</mat-option>
+        <mat-option [value]="21">21:00</mat-option>
+        <mat-option [value]="22">22:00</mat-option>
+        <mat-option [value]="23">23:00</mat-option>
+      </mat-select>
+      <mat-icon class="grey-icon" matSuffix>access_time</mat-icon>
+    </mat-form-field>
+  </div>
+  <div [hidden]="this.editsService.editMode || this.mapService.scenarioMode">
+    <button
+      mat-icon-button
+      class="icon"
+      aria-label="Send"
+      (click)="handleButtonSendDateTime()"
+      title="Request consumption data by date and time"
+    >
+      <mat-icon>schedule_send</mat-icon>
+    </button>
+  <button
+    mat-icon-button
+    class="icon"
+    aria-label="Send"
+    (click)="handleButtonConsumptionByCountry()"
+    title="Change consumption data by country"
+  >
+    <mat-icon>view_list</mat-icon>
+  </button>
+  </div>
+
+
+  <!-- In edits mode -->
+  <span class="spacer"></span>
+  <button
+    [hidden]="!this.editsService.editMode"
+    id="btnEditsSidenav"
+    mat-icon-button
+    class="icon"
+    aria-label="Edit"
+    (click)="handleButtonEdits()"
+  >
+    <mat-icon>edit_location</mat-icon>
+  </button>
+
+  <!-- In normal and edits mode if edition made -->
+  <button mat-icon-button class="icon" aria-label="Share" title="Create a shareable link"
+          [hidden]="this.mapService.scenarioMode ||
+          this.mapService.dataService.editedBus$.getValue().length!==0"
+          (click)="handleButtonShareScenario()">
+    <mat-icon>share</mat-icon>
+  </button>
+  <button mat-icon-button class="icon" aria-label="Download" title="Download image"
+          [hidden]="this.mapService.scenarioMode ||
+          this.mapService.dataService.editedBus$.getValue().length!==0"
+          (click)="handleButtonExportImage()">
+    <mat-icon>download</mat-icon>
+  </button>
+
+  <!-- In all mode (normal, edits, scenario) -->
+  <button mat-icon-button class="icon" aria-label="Settings" title="Display settings"
+          (click)="handleButtonOptions()">
+    <mat-icon>settings</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container>
+
+  <mat-sidenav #sidenav class="sidenav" mode="side" position="end">
+    <app-sidenav-options *ngIf="this.editsService.sidenavOpened == 'options'"></app-sidenav-options>
+    <app-sidenav-edits *ngIf="this.editsService.sidenavOpened == 'edits' || this.editsService.sidenavOpened == 'editionmade'"></app-sidenav-edits>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div *ngIf="mapService.isDataLoading$ | async">
+      <mat-spinner></mat-spinner>
+      <div class="overlay-container"></div>
+    </div>
+    <app-map></app-map>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

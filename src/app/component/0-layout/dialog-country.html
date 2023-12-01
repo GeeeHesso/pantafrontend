@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Provide consumption by country</h1>
+<mat-dialog-content>
+  <table matSort (matSortChange)="sortCountry($event)" matSortActive="alpha" matSortDirection="asc">
+    <tr>
+      <th mat-sort-header="alpha">Alpha-2</th>
+      <th mat-sort-header="name">Country</th>
+      <th mat-sort-header="pd">Active power consumption</th>
+      <th mat-sort-header="qd" [hidden]="countryList[1].qd==0">Reactive power consumption</th>
+    </tr>
+
+    <tr *ngFor="let c of countryList">
+      <td>{{c.alpha}}</td>
+      <td>{{c.countryName}}</td>
+      <td><input [(ngModel)]="c.pd" type="number" min="0" max="100000" step="100" /> MW</td>
+      <!--td [hidden]="countryList[1].qd==0"><input [(ngModel)]="c.qd" type="number" min="0" max="100000" step="100"/>MW</td-->
+    </tr>
+  </table>
+
+</mat-dialog-content>
+
+<div mat-dialog-actions align="center">
+  <button mat-raised-button mat-dialog-close="true">Cancel</button>
+  <button mat-raised-button  color="primary" aria-label="Send"
+          (click)="sendCountry('AC')">Ask AC dispatch</button>
+  <button mat-raised-button  color="primary" aria-label="Send"
+          (click)="sendCountry('DC')">Ask DC dispatch</button>
+</div>
+

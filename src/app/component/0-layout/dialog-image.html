@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Download</h1>
+<div mat-dialog-content>
+  <div>
+    <mat-radio-group aria-label="File type" [(ngModel)]="fileType">
+      <mat-radio-button value="JPG">JPG</mat-radio-button>
+      <mat-radio-button value="PNG">PNG</mat-radio-button>
+      <mat-radio-button value="SVG">SVG</mat-radio-button>
+    </mat-radio-group>
+    <div *ngIf="this.isImageLoading$ | async">
+      <mat-spinner ></mat-spinner>
+      <div class="overlay-container"></div>
+    </div>
+    <div mat-dialog-actions align="end">
+      <button mat-button (click)="onCancelClick()">Close</button>
+      <button mat-button (click)="createImage()">Save</button>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,390 @@
+<div id="options">
+  <mat-toolbar id="toolbartop">
+    <button mat-raised-button aria-label="Undo" title="Show default map"
+            (click)="resetOptions()">
+      <mat-icon>undo</mat-icon>
+      Default
+    </button>
+    <button *ngIf="this.mapService.userOptions" aria-label="Refresh" title="Reload your display preference"
+            mat-mini-fab color="primary" (click)="reloadOptions()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button aria-label="Save" title="Save and apply the selected options as your preference"
+      mat-mini-fab color="primary" (click)="saveOptions()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button aria-label="Check" title="Apply the selected display options"
+      mat-raised-button color="primary" (click)="applyOptions(mapService.selectedOptions)">
+      <mat-icon>check</mat-icon>
+      Apply
+    </button>
+  </mat-toolbar>
+
+  <div id="optionsBlock">
+    <mat-slide-toggle class="toggle-title"
+                      [checked]="mapService.selectedOptions.showGen" color="primary"
+                      (change)="mapService.selectedOptions.showGen = $event.source.checked">
+      <h2>Generators</h2></mat-slide-toggle>
+    <div *ngIf="mapService.selectedOptions.showGen">
+      <fieldset>
+        <legend>
+          <mat-slide-toggle [checked]="
+        mapService.selectedOptions.showGenIcon"
+                            (change)="
+                          mapService.selectedOptions.showGenIcon = $event.source.checked">
+            <b>Ratio of production</b></mat-slide-toggle>
+        </legend>
+        <svg width="10px" height="10px">
+          <rect width="10px" height="10px" fill="#000000"></rect>
+        </svg>
+        : More than 94 %
+        <br>
+        <svg width="10px" height="10px">
+          <rect width="10px" height="10px"
+                style="fill:#ffffff;stroke:#000000;stroke-width:3;fill-opacity:0;stroke-opacity:1"></rect>
+          <path d="M 0 10 L 10 0 L 10 10" fill="#000000"></path>
+        </svg>
+        : Between 6 and 94 %
+        <br>
+        <svg width="10px" height="10px">
+          <rect width="10px" height="10px"
+                style="fill:#ffffff;stroke:#000000;stroke-width:3;fill-opacity:0;stroke-opacity:1"></rect>
+        </svg>
+        : Less than 6 %
+        <br>
+        <svg width="10px" height="10px">
+          <rect width="10px" height="10px"
+                style="fill:#ffffff;stroke:#000000;stroke-width:3;fill-opacity:0;"></rect>
+          <path d="M 0 10 L 10 0 L 10 10" style="stroke:#000000;stroke-width:1;fill-opacity:0;"></path>
+          <path d="M 0 0 L 10 10 L 10 0" style="stroke:#000000;stroke-width:1;fill-opacity:0;"></path>
+        </svg>
+        : Inactive
+      </fieldset>
+      <fieldset>
+        <legend>
+          <mat-slide-toggle [checked]="
+        mapService.selectedOptions.showGenSize"
+                            (change)="
+                          mapService.selectedOptions.showGenSize = $event.source.checked">
+            <b>Maximum of production</b></mat-slide-toggle>
+        </legend>
+          From {{this.mapService.dataService.GEN_MIN_MAX_PROD}} MW
+          to {{this.mapService.dataService.GEN_MAX_MAX_PROD}} MW
+          <svg style="padding-right: 10px" width="4px" height="4px">
+            <rect width="4px" height="4px" fill="#000000"></rect>
+          </svg>
+          <svg style="padding-right: 10px" width="7px" height="7px">
+            <rect width="7px" height="7px" fill="#000000"></rect>
+          </svg>
+          <svg style="padding-right: 10px" width="10px" height="10px">
+            <rect width="10px" height="10px" fill="#000000"></rect>
+          </svg>
+          <svg style="padding-right: 10px" width="13px" height="13px">
+            <rect width="13px" height="13px" fill="#000000"></rect>
+          </svg>
+          <svg style="padding-top: 5px" width="16px" height="16px">
+            <rect width="16px" height="16px" fill="#000000"></rect>
+          </svg>
+      </fieldset>
+      <fieldset>
+        <legend>
+          <mat-slide-toggle [checked]="
+        mapService.selectedOptions.showGenColor"
+                            (change)="
+                          mapService.selectedOptions.showGenColor = $event.source.checked">
+            <b>Category</b></mat-slide-toggle>
+        </legend>
+        <table style="width:100%">
+          <tr>
+            <td>
+              <svg width="10px" height="10px">
+                <rect width="10px" height="10px" fill="#ac4022"></rect>
+              </svg>
+              : Coal <br>
+              <svg width="10px" height="10px">
+                <rect width="10px" height="10px" fill="#afafaf"></rect>
+              </svg>
+              : Fossil oil <br>
+              <svg width="10px" height="10px">
+                <rect width="10px" height="10px" fill="#ff9f36"></rect>
+              </svg>
+              : Gas <br>
+              <svg width="10px" height="10px">
+                <rect width="10px" height="10px" fill="#008cff"></rect>
+              </svg>
+              : Hydro <br></td>
+            <td>
+              <svg width="10px" height="10px">
+                <rect width="10px" height="10px" fill="#ff0000"></rect>
+              </svg>
+              : Nuclear <br>
+              <svg width="10px" height="10px">
+                <rect width="10px" height="10px" fill="#a233ff"></rect>
+              </svg>
+              : Other <br>
+              <svg width="10px" height="10px">
+                <rect width="10px" height="10px" fill="#6aff43"></rect>
+              </svg>
+              : Renewables <br>
+              <svg width="10px" height="10px">
+                <rect width="10px" height="10px" fill="#000000"></rect>
+              </svg>
+              : Unknown
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
+
+    <mat-slide-toggle [checked]="
+  mapService.selectedOptions.showBranch" color="primary"
+                      (change)="
+                    mapService.selectedOptions.showBranch = $event.source.checked">
+      <h2>Lines</h2></mat-slide-toggle>
+    <div *ngIf="mapService.selectedOptions.showBranch">
+      <fieldset>
+        <legend>
+          <mat-slide-toggle [checked]="
+        mapService.selectedOptions.showBranchColor"
+                            (change)="
+                          mapService.selectedOptions.showBranchColor = $event.source.checked">
+            <b>Load</b> (power/thermal rating)</mat-slide-toggle>
+        </legend>
+        Inactive :
+        <svg width="10px" height="10px">
+          <rect width="10px" height="10px" fill="#ffffff" stroke="#000000"></rect>
+        </svg>
+        <br>
+        From 0 to 100 %
+        <svg width="150px" height="10px">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:rgb(0,0,255);stop-opacity:1"/>
+              <stop offset="25%" style="stop-color:rgb(0,255,255);stop-opacity:1"/>
+              <stop offset="50%" style="stop-color:rgb(0,255,0);stop-opacity:1"/>
+              <stop offset="75%" style="stop-color:rgb(255,255,0);stop-opacity:1"/>
+              <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1"/>
+            </linearGradient>
+          </defs>
+          <rect width="150px" height="10px" fill="url(#grad1)"></rect>
+        </svg>
+        <br>
+        More than 100 %
+        <svg width="150px" height="10px">
+          <line x1="0" y1="3" x2="150" y2="3" stroke="black" stroke-width="10" stroke-dasharray="10" />
+        </svg>
+      </fieldset>
+      <fieldset>
+        <legend>
+          <mat-slide-toggle [checked]="
+        mapService.selectedOptions.showBranchWidth"
+                            (change)="
+                          mapService.selectedOptions.showBranchWidth = $event.source.checked">
+            <b>Thermal rating</b></mat-slide-toggle>
+        </legend>
+        From {{this.mapService.dataService.BRANCH_MIN_P_MW}} MW
+        to {{this.mapService.dataService.BRANCH_MAX_P_MW}} MW
+        <svg style="padding-right: 5px" width="20px" height="2px">
+          <rect width="20px" height="2px" fill="#000000"></rect>
+        </svg>
+        <svg style="padding-right: 5px" width="20px" height="4px">
+          <rect width="20px" height="4px" fill="#000000"></rect>
+        </svg>
+        <svg style="padding-right: 5px" width="20px" height="6px">
+          <rect width="20px" height="6px" fill="#000000"></rect>
+        </svg>
+        <svg style="padding-right: 5px" width="20px" height="8px">
+          <rect width="20px" height="8px" fill="#000000"></rect>
+        </svg>
+        <svg width="20px" height="10px">
+          <rect width="20px" height="10px" fill="#000000"></rect>
+        </svg>
+      </fieldset>
+      <fieldset>
+        <legend>
+          <mat-slide-toggle [checked]="
+        mapService.selectedOptions.showBranchArrow"
+                            (change)="
+                          mapService.selectedOptions.showBranchArrow = $event.source.checked">
+            <b>Direction</b> </mat-slide-toggle>
+        </legend>
+        <svg width="50" height="20">
+          <defs>
+            <marker id="arrow" viewBox="0 -5 10 10" refX="5" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+              <path d="M0,-5L10,0L0,5" ></path>
+            </marker>
+          </defs>
+          <line x1="0" y1="10" x2="25" y2="10" stroke="black" stroke-width="4" marker-end="url(#arrow)"></line>
+          <line x1="25" y1="10" x2="50" y2="10" stroke="black" stroke-width="4" ></line>
+        </svg>
+        only appears at high zoom
+      </fieldset>
+    </div>
+
+    <mat-slide-toggle [checked]="
+  mapService.selectedOptions.showTransformer" color="primary"
+                      (change)="
+                    mapService.selectedOptions.showTransformer = $event.source.checked">
+      <h2>Transformers</h2></mat-slide-toggle>
+    <div *ngIf="
+  mapService.selectedOptions.showTransformer">
+      <fieldset>
+        <legend>
+          <mat-slide-toggle [checked]="mapService.selectedOptions.showTransColor"
+                            (change)="mapService.selectedOptions.showTransColor = $event.source.checked">
+            <b>Load</b> (power/thermal rating)</mat-slide-toggle>
+        </legend>
+        Inactive :
+        <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="0" width="2" height="10" style="fill:  #000000;"></rect>
+          <ellipse cx="11" cy="20" rx="10" ry="10"
+                   style="stroke: #000000; stroke-width: 2px; fill: white; fill-opacity: 0.5"></ellipse>
+          <ellipse cx="11" cy="30" rx="10" ry="10"
+                   style="stroke:  #000000; stroke-width: 2px; fill: white; fill-opacity: 0.5"></ellipse>
+          <rect x="10" y="40" width="2" height="10" style="fill:  #000000;"></rect>
+        </svg>
+        <br>
+        From 0 to 100%
+        <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="0" width="2" height="10" style="fill:  #000000;"></rect>
+          <ellipse cx="11" cy="20" rx="10" ry="10"
+                   style="stroke: #000000; stroke-width: 2px; fill: rgb(0,0,255); fill-opacity: 0.5"></ellipse>
+          <ellipse cx="11" cy="30" rx="10" ry="10"
+                   style="stroke:  #000000; stroke-width: 2px; fill: rgb(0,0,255); fill-opacity: 0.5"></ellipse>
+          <rect x="10" y="40" width="2" height="10" style="fill:  #000000;"></rect>
+        </svg>
+        <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="0" width="2" height="10" style="fill:  #000000;"></rect>
+          <ellipse cx="11" cy="20" rx="10" ry="10"
+                   style="stroke: #000000; stroke-width: 2px; fill: rgb(0,255,255); fill-opacity: 0.5"></ellipse>
+          <ellipse cx="11" cy="30" rx="10" ry="10"
+                   style="stroke:  #000000; stroke-width: 2px; fill: rgb(0,255,255); fill-opacity: 0.5"></ellipse>
+          <rect x="10" y="40" width="2" height="10" style="fill:  #000000;"></rect>
+        </svg>
+        <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="0" width="2" height="10" style="fill:  #000000;"></rect>
+          <ellipse cx="11" cy="20" rx="10" ry="10"
+                   style="stroke: #000000; stroke-width: 2px; fill: rgb(0,255,0); fill-opacity: 0.5"></ellipse>
+          <ellipse cx="11" cy="30" rx="10" ry="10"
+                   style="stroke:  #000000; stroke-width: 2px; fill: rgb(0,255,0); fill-opacity: 0.5"></ellipse>
+          <rect x="10" y="40" width="2" height="10" style="fill:  #000000;"></rect>
+        </svg>
+        <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="0" width="2" height="10" style="fill:  #000000;"></rect>
+          <ellipse cx="11" cy="20" rx="10" ry="10"
+                   style="stroke: #000000; stroke-width: 2px; fill: rgb(255,255,0); fill-opacity: 0.5"></ellipse>
+          <ellipse cx="11" cy="30" rx="10" ry="10"
+                   style="stroke:  #000000; stroke-width: 2px; fill: rgb(254,255,0); fill-opacity: 0.5"></ellipse>
+          <rect x="10" y="40" width="2" height="10" style="fill:  #000000;"></rect>
+        </svg>
+        <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="0" width="2" height="10" style="fill:  #000000;"></rect>
+          <ellipse cx="11" cy="20" rx="10" ry="10"
+                   style="stroke: #000000; stroke-width: 2px; fill: rgb(255,0,0); fill-opacity: 0.5"></ellipse>
+          <ellipse cx="11" cy="30" rx="10" ry="10"
+                   style="stroke:  #000000; stroke-width: 2px; fill: rgb(255,0,0); fill-opacity: 0.5"></ellipse>
+          <rect x="10" y="40" width="2" height="10" style="fill:  #000000;"></rect>
+        </svg>
+        <br>
+        More than 100%
+        <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="0" width="2" height="10" style="fill: rgb(255,0,0);"></rect>
+          <ellipse cx="11" cy="20" rx="10" ry="10"
+                   style="stroke: rgb(255,0,0); stroke-width: 2px; fill: rgb(255,0,0); fill-opacity: 0.5"></ellipse>
+          <ellipse cx="11" cy="30" rx="10" ry="10"
+                   style="stroke:  rgb(255,0,0); stroke-width: 2px; fill: rgb(255,0,0); fill-opacity: 0.5"></ellipse>
+          <rect x="10" y="40" width="2" height="10" style="fill: rgb(255,0,0);"></rect>
+        </svg>
+      </fieldset>
+    </div>
+
+    <mat-slide-toggle [checked]="
+  mapService.selectedOptions.showLoad" color="primary"
+                      (change)="
+                    mapService.selectedOptions.showLoad = $event.source.checked">
+      <h2>Loads</h2></mat-slide-toggle>
+    <div *ngIf="mapService.selectedOptions.showLoad">
+      <fieldset>
+        <legend>Activity</legend>
+        Active load
+        <svg width="20px" height="20px">
+          <rect width="100%" height="100%" fill="palegreen"/>
+          <circle cx="10px" cy="10px" r="8px"
+                  stroke="black" stroke-width="0.5"
+                  fill="grey" fill-opacity="0.1"/>
+        </svg>
+        <br>
+        Inactive load
+        <svg width="20px" height="20px">
+          <rect width="100%" height="100%" fill="palegreen"/>
+          <circle cx="10px" cy="10px" r="8px"
+                  stroke="white" stroke-width="0.5"
+                  fill="white" fill-opacity="0.3"/>
+        </svg>
+      </fieldset>
+      <fieldset>
+        <legend>
+          <mat-slide-toggle [checked]="mapService.selectedOptions.showLoadSize"
+                            (change)="mapService.selectedOptions.showLoadSize = $event.source.checked">
+            <b>Population</b></mat-slide-toggle>
+        </legend>
+        From {{this.mapService.dataService.BUS_MIN_POP}}
+        to {{this.mapService.dataService.BUS_MAX_POP}}
+        <svg style="padding-right: 3px" width="14px" height="14px">
+          <circle cx="7px" cy="7px" r="6px"
+                  stroke="black" stroke-width="0.5"
+                  fill="grey" fill-opacity="0.1"/>
+        </svg>
+        <svg style="padding-right: 3px" width="16px" height="16px">
+          <circle cx="8px" cy="8px" r="7px"
+                  stroke="black" stroke-width="0.5"
+                  fill="grey" fill-opacity="0.1"/>
+        </svg>
+        <svg style="padding-right: 3px" width="18px" height="18px">
+          <circle cx="9px" cy="9px" r="8px"
+                  stroke="black" stroke-width="0.5"
+                  fill="grey" fill-opacity="0.1"/>
+        </svg>
+        <svg style="padding-right: 3px" width="22px" height="22px">
+          <circle cx="11px" cy="11px" r="10px"
+                  stroke="black" stroke-width="0.5"
+                  fill="grey" fill-opacity="0.1"/>
+        </svg>
+        <svg  width="26px" height="26px">
+          <circle cx="13px" cy="13px" r="12px"
+                  stroke="black" stroke-width="0.5"
+                  fill="grey" fill-opacity="0.1"/>
+        </svg>
+      </fieldset>
+    </div>
+
+    <h2>Buses</h2>
+    <fieldset>
+      <legend>Activity</legend>
+      Active bus
+      <svg width="10px" height="10px">
+        <rect width="100%" height="100%" fill="palegreen"/>
+        <circle cx="5px" cy="5px" r="3px"
+                fill="#757575"/>
+      </svg>
+      <br>
+      Inactive bus
+      <svg width="10px" height="10px">
+        <rect width="100%" height="100%" fill="palegreen"/>
+        <circle cx="5px" cy="5px" r="3px"
+                fill="white"/>
+      </svg>
+
+    </fieldset>
+    <br>
+  </div>
+
+  <mat-toolbar id="toolbarbottom">
+    <mat-slide-toggle [checked]="mapService.selectedOptions.devMode"
+                      [color]="!this.mapService.selectedOptions.devMode ? 'primary' : 'accent'"
+                      (change)="this.changeDevMode($event.source.checked)">
+      Dev mode</mat-slide-toggle>
+  </mat-toolbar>
+</div>
+
+

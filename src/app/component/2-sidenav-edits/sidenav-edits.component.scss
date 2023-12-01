@@ -1,0 +1,60 @@
+
+:host{
+
+  mat-toolbar{
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 0;
+    height: auto;
+
+    mat-card{
+      width: 100%;
+    }
+
+    button{
+      margin-left: 10px;
+    }
+
+  }
+
+  mat-toolbar-row{
+    height: auto;
+    padding: 0
+  }
+
+  mat-icon, svg{
+    vertical-align: middle;
+    padding-right: 8px;
+  }
+
+  .editList{
+    margin: 10px;
+    font-family: Roboto, Helvetica, sans-serif;
+    p{
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+    p:hover{
+      color: #673ab7;
+      //background-color: whitesmoke;
+      cursor: pointer;
+    }
+    .mat-icon-button > .material-icons{
+      font-size: 15px;
+    }
+    .mat-icon-button{
+      border:none;
+      background: white;
+      vertical-align: middle;
+    }
+    .mat-icon-button:hover{
+      color: red;
+    }
+  }
+
+
+}
+
+
+
