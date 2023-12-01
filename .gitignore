@@ -42,4 +42,4 @@ testem.log
 Thumbs.db
 
 .env.local
-src/assets/data/Neuchatel.json
+Neuchatel.json

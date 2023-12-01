@@ -1,0 +1,95 @@
+{
+  "bus": {
+    "4304": {
+      "coord": [
+        11.843262,
+        47.331377
+      ],
+      "name": "Zell/Ziller",
+      "bus_type": 2,
+      "status": 1,
+      "vmax": 1.1,
+      "country": "AT",
+      "load_prop": 0.004863573976232626,
+      "vmin": 0.9,
+      "index": 4304,
+      "va": 1.2066810108420394,
+      "population": 40179.745231437126,
+      "vm": 1,
+      "base_kv": 220
+    },
+    ...
+  },
+  "name": "pantagruel",
+  "dcline": {
+  },
+  "gen": {
+    "1": {
+      "pg": 1.14,
+      "model": 2,
+      "qg": 0,
+      "gen_bus": 81,
+      "pmax": 1.14,
+      "mbase": 100,
+      "vg": 1,
+      "category": "H",
+      "index": 1,
+      "cost": [
+        6000,
+        0
+      ],
+      "gen_status": 1,
+      "qmax": 0.57,
+      "qmin": -0.57,
+      "type": "Hydro",
+      "pmin": 0,
+      "ncost": 2
+    },
+    ...
+  },
+  "branch": {
+    "4304": {
+      "br_r": 0.0037079246060702483,
+      "rate_a": 4.9,
+      "shift": 0,
+      "pt": 1.011079941130288,
+      "br_x": 0.021188140606115704,
+      "g_to": 0,
+      "g_fr": 0,
+      "b_fr": 0,
+      "f_bus": 4442,
+      "br_status": 1,
+      "t_bus": 4443,
+      "b_to": 0,
+      "index": 4304,
+      "qf": 0,
+      "angmin": -1.0471975511965976,
+      "angmax": 1.0471975511965976,
+      "transformer": false,
+      "qt": 0,
+      "tap": 1,
+      "pf": -1.011079941130288
+    },
+    ...
+  },
+  "storage": {
+  },
+  "switch": {
+  },
+  "multinetwork": false,
+  "baseMVA": 100,
+  "per_unit": true,
+  "shunt": {
+  },
+  "multiinfrastructure": false,
+  "load": {
+    "3935": {
+      "status": 1,
+      "load_bus": 7815,
+      "qd": 0,
+      "index": 4032,
+      "pd": 1.6112900585540577
+    },
+    ...
+  }
+}
