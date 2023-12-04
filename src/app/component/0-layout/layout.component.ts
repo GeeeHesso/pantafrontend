@@ -33,10 +33,17 @@ import { MatSortModule, Sort } from "@angular/material/sort";
 import domToImageMore from 'dom-to-image-more';
 
 
-/**
- * Main layout contains toolbar
- * calls side panels, map, dialog window
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Main layout contains toolbar,
+ * *                     calls side panels, map, dialog window
+ * *
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 21/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
