@@ -14,9 +14,17 @@ import { BranchService } from './branch.service'
 import { BusService } from './bus.service'
 import { DataService } from './data.service'
 
-/**
- * Initialise the display option, the map and load data
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Initialise the display option, the map and load data
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 21/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * * 08/08/2023		Gwenaëlle Gustin		Limit date fixed dynamically
+ * * 03/09/2023		Gwenaëlle Gustin		New feature: can call local API
+ ******************************************************************/
+
 @Injectable({
   providedIn: 'root',
 })

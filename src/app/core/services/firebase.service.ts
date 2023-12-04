@@ -3,9 +3,14 @@ import {getStorage} from "firebase/storage";
 import {getDatabase} from "firebase/database";
 import {Injectable} from "@angular/core";
 
-/**
- * Manage Firebase initialization
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Manage Firebase initialization
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 07/07/2023		Gwenaëlle Gustin		Manage Firebase initialization
+ ******************************************************************/
 @Injectable({
   providedIn: 'root',
 })

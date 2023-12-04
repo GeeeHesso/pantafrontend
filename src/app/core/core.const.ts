@@ -4,6 +4,15 @@ import { Pantagruel } from './models/pantagruel'
 import {MapOptions} from "./models/options.model";
 import {LatLng} from "leaflet";
 
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       :
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 13/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 export const URL_LOCAL_GRID = '/assets/data/pantagruelDate.json'
 
 export const INACTIVE_COLOR = '#ffffff'

@@ -8,9 +8,15 @@ import { Branch } from '../models/branch.model'
 import { Pantagruel } from '../models/pantagruel'
 import {LatLng, Polyline} from "leaflet";
 
-/**
- * Draw branches and transformers
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Draw branches and transformers
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 27/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 @Injectable({
   providedIn: 'root',
 })

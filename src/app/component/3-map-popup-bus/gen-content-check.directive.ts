@@ -3,11 +3,16 @@ import { Gen } from '../../core/models/gen.model'
 import { ContentCheckBase } from './content-check.base.directive'
 import {Bus} from "../../core/models/bus.model";
 
-/**
- * Check produceMW value of a gen according to its maximum,
- * calculate pg
- * and save values
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Check produceMW value of a gen according to its maximum,
+ *                       calculate pg and save values
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 27/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 @Directive({
   standalone: true,
   selector: '[genContentCheck]',

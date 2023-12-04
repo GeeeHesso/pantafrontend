@@ -8,9 +8,14 @@ import {Pantagruel} from "../models/pantagruel";
 import {Bus} from "../models/bus.model";
 import {Gen} from "../models/gen.model";
 
-/**
- * Manage the edits sidenav and the edition of branches/transformateur
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Manage the edits sidenav and the edition of branches/transformers
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 27/07/2023		Gwenaëlle Gustin		Manage the edits sidenav and the edition of branches/transformateur
+ ******************************************************************/
 @Injectable({ providedIn: 'root' })
 export class EditsService {
   public editMode: boolean = false

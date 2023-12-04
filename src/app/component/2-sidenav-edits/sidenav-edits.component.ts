@@ -18,9 +18,18 @@ import { Branch } from "../../core/models/branch.model";
 import {Load} from "../../core/models/load.model";
 import {Gen} from "../../core/models/gen.model";
 
-/**
- * Side panel contents element for edition mode
- */
+
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Side panel contents element for edition mode
+ * *
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 21/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * * 07/11/2023		Gwenaëlle Gustin		bug fixed: list of edits after recalculate
+ * *
+ ******************************************************************/
 @Component({
   selector: 'app-sidenav-edits',
   templateUrl: './sidenav-edits.component.html',
@@ -56,11 +65,11 @@ export class SidenavEditsComponent implements OnInit{
 
     // Init data at first edition
     let data = this._pantagruelData.getValue()
-    
+
     // Add all lines at a bus coord at each modification of editedBus
     // Shown in html only if value is not the same as original
     this.editsService.mapService.dataService.editedBus$.subscribe((buses: Bus[]) => {
-      
+
       // if dataService.editedBus$ has been reset "No change" is shown and reload actual data (edited after Calculate button)
       if (buses.length==0){
         this.editsService.editionMade = false
