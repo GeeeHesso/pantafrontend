@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Upload</h1>
+<div mat-dialog-content>
+
+  <input type="file" class="file-upload" onchange="fileLoaded(event.target)">
+
+  <div mat-dialog-actions align="end">
+        <button mat-button (click)="onCancelClick()">Close</button>
+        <button mat-button (click)="onUploadClick()">Upload</button>
+      </div>
+</div>
+

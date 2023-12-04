@@ -159,6 +159,13 @@ export class LayoutComponent implements OnInit {
   }
 
   /**
+   * Handle button to provide consumption by country
+   */
+  public handleButtonUpload(): void {
+    this._dialog.open(DialogUpload)
+  }
+
+  /**
    * Update date value each time the hour input is edited
    * @param event
    */
@@ -359,6 +366,35 @@ export class DialogImage {
   }
 }
 
+
+@Component({
+  selector: 'dialog-upload',
+  templateUrl: 'dialog-upload.html',
+  standalone: true,
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, NgIf, ReactiveFormsModule],
+})
+export class DialogUpload {
+  public file: any
+  constructor(
+    public dialogRef: MatDialogRef<DialogLink>,
+    @Inject(PANTAGRUEL_DATA) private _pantagruelData: BehaviorSubject<Pantagruel>,
+    @Inject(Window) private _window: Window,
+    public mapService: MapService,
+  ) {}
+
+  public onCancelClick(): void {
+    this.dialogRef.close();
+  }
+
+  public fileLoaded(event:any):void {
+    console.log(event.files)
+    this.file = event.files
+  }
+
+  public onUploadClick(): void {
+    this.mapService.getData(this.file)
+  }
+}
 
 @Component({
   selector: 'dialog-link',
