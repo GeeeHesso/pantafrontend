@@ -1,6 +1,6 @@
-<mat-toolbar [color]="!this.mapService.selectedOptions.devMode ? 'primary' : 'accent'">
+<mat-toolbar [color]="!this.mapService.selectedOptions.localhostMode ? 'primary' : 'accent'">
   <span>PanTaGruEl App
-    <span *ngIf="this.mapService.selectedOptions.devMode"> - DEV MODE</span>
+    <span *ngIf="this.mapService.selectedOptions.localhostMode"> - LOCALHOST MODE</span>
   </span>
 
   <span class="spacer"></span>

@@ -102,7 +102,7 @@ export class MapService {
   }
 
   public updateUrl():void {
-    if (this.selectedOptions.devMode){
+    if (this.selectedOptions.localhostMode){
       this.URL_API_BASE = 'http://127.0.0.1:8080/'
     }else {
       this.URL_API_BASE = 'https://pantagruelapi.p645.hevs.ch/'

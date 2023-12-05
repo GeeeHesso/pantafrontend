@@ -380,10 +380,10 @@
   </div>
 
   <mat-toolbar id="toolbarbottom">
-    <mat-slide-toggle [checked]="mapService.selectedOptions.devMode"
-                      [color]="!this.mapService.selectedOptions.devMode ? 'primary' : 'accent'"
+    <mat-slide-toggle [checked]="mapService.selectedOptions.localhostMode"
+                      [color]="!this.mapService.selectedOptions.localhostMode ? 'primary' : 'accent'"
                       (change)="this.changeDevMode($event.source.checked)">
-      Dev mode</mat-slide-toggle>
+      Localhost mode</mat-slide-toggle>
   </mat-toolbar>
 </div>
 

@@ -1,5 +1,5 @@
 <!--TODO: card code duplicate-->
-<div *ngIf="!this.editsService.mapService.selectedOptions.devMode" class="popupContainer">
+<div *ngIf="!this.editsService.mapService.selectedOptions.localhostMode" class="popupContainer">
   <mat-card>
   <mat-card-header>
     <mat-card-title>
@@ -99,7 +99,7 @@
 
 <mat-tab-group class="popupContainer"
                mat-stretch-tabs="false" headerPosition="below"
-               *ngIf="this.editsService.mapService.selectedOptions.devMode">
+               *ngIf="this.editsService.mapService.selectedOptions.localhostMode">
 <mat-tab label="Summary" >
     <mat-card>
       <mat-card-header>

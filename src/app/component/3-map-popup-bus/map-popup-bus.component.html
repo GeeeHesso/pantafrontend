@@ -1,5 +1,5 @@
 <!--TODO: card code duplicate-->
-<mat-card *ngIf="!this.editsService.mapService.selectedOptions.devMode" class="popupContainer">
+<mat-card *ngIf="!this.editsService.mapService.selectedOptions.localhostMode" class="popupContainer">
   <mat-card-header>
     <mat-card-title>
       {{ buses[0].name }} ({{ buses[0].country }})
@@ -115,7 +115,7 @@
 
 <mat-tab-group class="popupContainer"
                mat-stretch-tabs="false" headerPosition="below"
-               *ngIf="this.editsService.mapService.selectedOptions.devMode">
+               *ngIf="this.editsService.mapService.selectedOptions.localhostMode">
   <mat-tab label="Summary">
     <mat-card>
       <mat-card-header>
