@@ -359,7 +359,6 @@ export class DialogImage {
   }
 }
 
-
 @Component({
   selector: 'dialog-link',
   templateUrl: 'dialog-link.html',
