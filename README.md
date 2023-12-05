@@ -10,7 +10,7 @@ The application displays data from the [API NetworkServer.jl](https://github.com
 
 The application is deployed on 3 websites:
 - Dev branch is linked to https://pantagruel-frontend-dev.netlify.app/
-- Main branch is linked to https://pantagruel-frontend.netlify.app/
+- Main branch is linked to https://etranselec.ch/pantafrontend/
 - The version finished at the end of the bachelor period on https://etranselec.ch/pantafrontend/
 
 You can find example of a generate scenario at https://etranselec.ch/pantafrontend/?scenario=2023-07-13-11-19-32Change-Kriegers-Flak.json
