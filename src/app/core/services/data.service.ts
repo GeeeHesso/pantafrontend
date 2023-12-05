@@ -50,8 +50,6 @@ export class DataService {
    * @param data Pantagruel received file
    */
   public setConstOfDataSet(data: Pantagruel): void {
-    let dateTime = new Date(data.date.year, data.date.month - 1, data.date.day, data.date.hour)
-    this.currentDateTime$.next(dateTime)
     this.BUS_MAX_POP = this._setBusMaxPopulation(data.bus)
     this.BUS_MIN_POP = this._setBusMinPopulation(data.bus)
     this.GEN_MAX_MAX_PROD = this._setGenMaxOfMaxProduction(data.gen)
@@ -61,6 +59,15 @@ export class DataService {
     this.BASE_MVA = data.baseMVA
     this._setCountries(data)
     this.setTotalProdCons(data)
+  }
+
+  /**
+   * Change date time base on data set receive
+   * @param data Pantagruel received file
+   */
+  public setDateOfDataSet(data: Pantagruel): void {
+      let dateTime = new Date(data.date.year, data.date.month - 1, data.date.day, data.date.hour)
+      this.currentDateTime$.next(dateTime)
   }
 
 

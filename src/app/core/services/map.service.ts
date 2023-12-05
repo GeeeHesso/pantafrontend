@@ -23,6 +23,7 @@ import { DataService } from './data.service'
  * * 21/07/2023		Gwenaëlle Gustin		Last edition for TB release.
  * * 08/08/2023		Gwenaëlle Gustin		Limit date fixed dynamically
  * * 03/09/2023		Gwenaëlle Gustin		New feature: can call local API
+ * * 05/12/2023		Gwenaëlle Gustin		New feature: can upload json file
  ******************************************************************/
 
 @Injectable({
@@ -49,14 +50,20 @@ export class MapService {
   public maxDate: Date = new Date(2023, 1, 28)
   private _originalData!: Pantagruel
   private _lastResultData!: Pantagruel
+  private _localPantagruelData! :Pantagruel
   constructor(
     public dataService: DataService,
     public busService: BusService,
     public branchService: BranchService,
     private _snackBar: MatSnackBar,
     private _http: HttpClient,
+
     @Inject(PANTAGRUEL_DATA) private _pantagruelData: BehaviorSubject<Pantagruel>,
   ) {
+    this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
+      const formattedPantagruelData = this._getFormattedPantagruelData(data)
+      this._localPantagruelData = structuredClone(formattedPantagruelData)
+    })
   }
 
   /**
@@ -177,13 +184,30 @@ export class MapService {
   }
 
   /**
+   * Retrieve json data from file passed
+   * and display on the map
+   * @param file
+   */
+  public getDatafromFile(file: any): void {
+      const formattedPantagruelData = this._getFormattedPantagruelData(file)
+      this._pantagruelData.next(formattedPantagruelData)
+
+      this._originalData = structuredClone(formattedPantagruelData)
+      this._lastResultData = structuredClone(formattedPantagruelData)
+
+      this.drawOnMap()
+      this.isDataLoading$.next(false)
+
+  }
+
+  /**
    * GET HTTP method
    * Retrieve json data from url passed
    * (usually Firebase url in layout component)
    * of by default ask the API for default data
    * @param url where retrieve json file
    */
-  public getData(url: string = this.URL_API_DEFAULT_GRID): void {
+  public getDataFromURL(url: string = this.URL_API_DEFAULT_GRID): void {
     this.isDataLoading$.next(true)
 
     this._http.get<Pantagruel>(url).subscribe({
@@ -228,27 +252,26 @@ export class MapService {
    * @param date after selection
    */
   public askDataDateTime(date: any): void {
-    console.log(this.URL_API_BASE)
     this.showSnackbar('Requesting API (with date)...')
 
-    const data = this._pantagruelData.getValue()
+    const data = this._localPantagruelData
     data.date = date // Change the only value that is important for the API
 
-    this._http.post<Pantagruel>(this.URL_API_DC_OPF_ENTSOE, data).subscribe({
-      next: (resultData: Pantagruel) => {
-        const formattedPantagruelData = this._getFormattedPantagruelData(resultData)
-        this._pantagruelData.next(formattedPantagruelData)
+      this._http.post<Pantagruel>(this.URL_API_DC_OPF_ENTSOE, data).subscribe({
+        next: (resultData: Pantagruel) => {
+          const formattedPantagruelData = this._getFormattedPantagruelData(resultData)
+          this._pantagruelData.next(formattedPantagruelData)
 
-        this.drawOnMap()
-        this.isDataLoading$.next(false)
+          this.drawOnMap()
+          this.isDataLoading$.next(false)
 
-        // To handle cancel after edit
-        this._originalData = structuredClone(formattedPantagruelData)
-        // To handle if edited data cannot be resolved by the API
-        this._lastResultData = structuredClone(formattedPantagruelData)
+          // To handle cancel after edit
+          this._originalData = structuredClone(formattedPantagruelData)
+          // To handle if edited data cannot be resolved by the API
+          this._lastResultData = structuredClone(formattedPantagruelData)
 
-        this.showSnackbar(
-          'SUCCESS with API : data from ' +
+          this.showSnackbar(
+            'SUCCESS with API : data from ' +
             data.date.day +
             '/' +
             data.date.month +
@@ -357,23 +380,19 @@ export class MapService {
       // Error 0 is when the API cannot be accessed
     } else if (error.status == 0) {
       // if no data at all is stored, read the local default value
+
       if (this._pantagruelData.getValue() == null) {
         this.showSnackbar(
           'Error ' +
             error.status +
             ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
-
-        this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
-          const formattedPantagruelData = this._getFormattedPantagruelData(data)
-          this._pantagruelData.next(formattedPantagruelData)
-
-          this._originalData = structuredClone(formattedPantagruelData)
-          this._lastResultData = structuredClone(formattedPantagruelData)
+          this._pantagruelData.next(this._localPantagruelData)
+          this._originalData = structuredClone(this._localPantagruelData)
+          this._lastResultData = structuredClone(this._localPantagruelData)
 
           this.drawOnMap()
           this.isDataLoading$.next(false)
-        })
 
         return
       } else {
@@ -535,6 +554,9 @@ export class MapService {
       }
     })
     this.dataService.setConstOfDataSet(pantagruelData)
+    if (pantagruelData.date){
+      this.dataService.setDateOfDataSet(pantagruelData)
+    }
 
     return pantagruelData
   }

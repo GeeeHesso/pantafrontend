@@ -32,7 +32,6 @@ import { MatSortModule, Sort } from "@angular/material/sort";
 // @ts-ignore
 import domToImageMore from 'dom-to-image-more';
 
-
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
  * * Description       : Main layout contains toolbar,
@@ -106,7 +105,7 @@ export class LayoutComponent implements OnInit {
         // In case of normal app (not scenario url)
         if (!routerData.url.includes("?scenario=")) {
           this.mapService.initMap()
-          this.mapService.getData()
+          this.mapService.getDataFromURL()
 
         } else { // In case of scenario url
           this._jsonFileName = routerData.url.substring(11)
@@ -118,7 +117,7 @@ export class LayoutComponent implements OnInit {
 
           getDownloadURL(dataRef)
             .then((FirebaseUrl) => {
-              this.mapService.getData(FirebaseUrl)
+              this.mapService.getDataFromURL(FirebaseUrl)
 
               // Define options with the options of saved scenario
               const path = "ScenarioOptions/"+fileName
@@ -139,7 +138,7 @@ export class LayoutComponent implements OnInit {
               console.error(error)
               this._router.navigate(['']).then(()=> {
                 this.mapService.initMap()
-                this.mapService.getData()
+                this.mapService.getDataFromURL()
               })
             });
         }
@@ -156,6 +155,13 @@ export class LayoutComponent implements OnInit {
       this._dateInput = date
       this.timeInput = date.getHours()
     })
+  }
+
+  /**
+   * Handle button to provide consumption by country
+   */
+  public handleButtonUpload(): void {
+    this._dialog.open(DialogUpload)
   }
 
   /**
@@ -360,6 +366,40 @@ export class DialogImage {
 }
 
 @Component({
+  selector: 'dialog-upload',
+  templateUrl: 'dialog-upload.html',
+  standalone: true,
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, NgIf, ReactiveFormsModule],
+})
+export class DialogUpload {
+  public file: any
+  public fileString: any
+  constructor(
+    public dialogRef: MatDialogRef<DialogLink>,
+    public mapService: MapService,
+  ) {}
+
+  public onCancelClick(): void {
+    this.dialogRef.close();
+  }
+
+  public onFileSelected(event:any):void {
+    this.file = event.target.files[0];
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      this.fileString = fileReader.result;
+    }
+    fileReader.readAsText(this.file);
+  }
+
+  public onUploadClick(): void {
+    const jsonData = JSON.parse(this.fileString)
+    this.mapService.getDatafromFile(jsonData)
+    this.dialogRef.close();
+  }
+}
+
+@Component({
   selector: 'dialog-link',
   templateUrl: 'dialog-link.html',
   standalone: true,
@@ -438,7 +478,7 @@ export class DialogLink {
   selector: 'dialog-country',
   templateUrl: 'dialog-country.html',
   standalone: true,
-  imports: [MatDialogModule, MatTableModule, MatButtonModule, FormsModule, MatSortModule, NgForOf],
+  imports: [MatDialogModule, MatTableModule, MatButtonModule, FormsModule, MatSortModule, NgForOf, NgIf],
 })
 export class DialogCountry {
   public countryList: Country[] = []
