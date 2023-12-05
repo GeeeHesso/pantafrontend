@@ -4,11 +4,18 @@ import { PANTAGRUEL_DATA } from '../../core/core.const'
 import { Pantagruel } from '../../core/models/pantagruel'
 import { EditsService } from "../../core/services/edits.service";
 
-/**
- * Parent directive of GenContentCheckDirective and LoadContentCheckDirective
- * Use to authorise only number format with decimal
- * and some other key (delete, arrow,...)
- */
+
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Parent directive of GenContentCheckDirective and LoadContentCheckDirective
+ *                       Use to authorise only number format with decimal
+ *                       and some other key (delete, arrow,...)
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 27/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 @Directive()
 export class ContentCheckBase {
   protected _maxValue!: number

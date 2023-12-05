@@ -15,6 +15,15 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {routingModule} from "./core/routing.module";
 import {DatePipe} from "@angular/common";
 
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       :
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 07/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 @NgModule({
   declarations: [AppComponent],
   imports: [

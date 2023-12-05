@@ -3,11 +3,16 @@ import { Bus } from '../../core/models/bus.model'
 import { Load } from '../../core/models/load.model'
 import { ContentCheckBase } from './content-check.base.directive'
 
-/**
- * Check consumeMW value of a gen (max 1000 for now),
- * calculate pd,
- * and save values
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Check consumeMW value of a gen (max 1000 for now),
+ *                       calculate pd, and save values
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 27/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 @Directive({
   standalone: true,
   selector: '[loadContentCheck]',

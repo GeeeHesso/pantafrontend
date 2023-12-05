@@ -9,11 +9,18 @@ import {Load} from "../models/load.model";
 import {Country} from "../models/country.model";
 import {ALPHA_COUNTRY} from "../../../assets/data/ISO_3166-1_alpha-2";
 
-/**
- * Data Service is called by map Service
- * to calculate min and max of the current data set
- * and construct a date with value of current data set
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Data Service is called by map Service
+ *                       to calculate min and max of the current data set
+ *                       and construct a date with value of current data set
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 08/08/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * * 07/11/2023		Gwenaëlle Gustin		bug fixed: list of edits after recalculate
+ *
+ ******************************************************************/
 @Injectable({
   providedIn: 'root',
 })

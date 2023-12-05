@@ -1,6 +1,15 @@
 import {Load} from "./load.model";
 import {Gen} from "./gen.model";
 
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       :
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 01/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 export class Bus {
 
   constructor(public coord: number[],

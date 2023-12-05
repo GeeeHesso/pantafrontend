@@ -15,9 +15,15 @@ import { Gen } from '../models/gen.model'
 import { Pantagruel } from '../models/pantagruel'
 import { DataService } from './data.service'
 
-/**
- * Draw buses, laods and gens
- */
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Draw buses, loads and gens
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 27/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * *
+ ******************************************************************/
 @Injectable({
   providedIn: 'root',
 })

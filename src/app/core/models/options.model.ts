@@ -1,5 +1,15 @@
 import { LatLng } from 'leaflet'
 
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       :
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 15/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * * 03/09/2023		Gwenaëlle Gustin		New feature: can call local API
+ * *
+ ******************************************************************/
 export class MapOptions {
   constructor(
     public showGen: boolean,

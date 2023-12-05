@@ -8,9 +8,18 @@ import { MapOptions } from '../../core/models/options.model'
 import { MapService } from '../../core/services/map.service'
 import {DEFAULT_OPTIONS} from "../../core/core.const";
 
-/**
- * Side panel contents legend and display options
- */
+
+/*******************************************************************
+ * * Copyright         : 2023 Gwenaëlle Gustin
+ * * Description       : Side panel contents legend and display options
+ * *
+ * * Revision History  :
+ * * Date				  Author    		      Comments
+ * * ---------------------------------------------------------------------------
+ * * 15/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * * 03/09/2023		Gwenaëlle Gustin		New feature: can call local API
+ * *
+ ******************************************************************/
 @Component({
   selector: 'app-sidenav-options',
   templateUrl: './sidenav-options.component.html',
