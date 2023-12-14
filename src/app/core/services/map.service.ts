@@ -105,7 +105,7 @@ export class MapService {
     if (this.selectedOptions.localhostMode){
       this.URL_API_BASE = 'http://127.0.0.1:8080/'
     }else {
-      this.URL_API_BASE = 'https://pantagruelapi.p645.hevs.ch/'
+      this.URL_API_BASE = 'https://pantagruelapi.iigweb.hevs.ch/'
     }
     console.log("URL of the API is now: "+this.URL_API_BASE)
     this.URL_API_DEFAULT_GRID = this.URL_API_BASE + 'networks/pantagruel'
