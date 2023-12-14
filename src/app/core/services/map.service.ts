@@ -439,6 +439,14 @@ export class MapService {
       pantagruelData.gen[g].maxMW =
         Math.round((pantagruelData.gen[g].pmax * pantagruelData.baseMVA + Number.EPSILON) * 100) /
         100
+
+      // Switzerland case
+      if (pantagruelData.gen[g].category == undefined) {
+        if (pantagruelData.gen[g].type.includes("hydro")){
+          pantagruelData.gen[g].category = 'H'
+        }
+      }
+
       switch (pantagruelData.gen[g].category) {
         case 'C': {
           pantagruelData.gen[g].categoryText = 'Coal'
