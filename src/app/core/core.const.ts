@@ -42,5 +42,6 @@ export const DEFAULT_OPTIONS: MapOptions = new MapOptions(
   false,
   6,
   new LatLng(48, 10),
+  false,
   false
 )

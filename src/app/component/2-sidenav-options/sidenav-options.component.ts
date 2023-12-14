@@ -79,8 +79,12 @@ export class SidenavOptionsComponent {
     this.mapService.updateUrl()
   }
 
-  changeDevMode(checked: boolean): void {
+  changeLocalhostMode(checked: boolean): void {
     this.mapService.selectedOptions.localhostMode = checked
     this.mapService.updateUrl()
+  }
+
+  changeDevMode(checked: boolean): void {
+    this.mapService.selectedOptions.devMode = checked
   }
 }

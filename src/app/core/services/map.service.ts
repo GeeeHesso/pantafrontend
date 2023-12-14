@@ -31,6 +31,7 @@ import { DataService } from './data.service'
 })
 export class MapService {
   public map!: L.Map
+  public devMode: boolean = false
   public scenarioMode: boolean = false
 
   public URL_API_BASE ! : string

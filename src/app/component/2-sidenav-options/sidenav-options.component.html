@@ -382,8 +382,12 @@
   <mat-toolbar id="toolbarbottom">
     <mat-slide-toggle [checked]="mapService.selectedOptions.localhostMode"
                       [color]="!this.mapService.selectedOptions.localhostMode ? 'primary' : 'accent'"
-                      (change)="this.changeDevMode($event.source.checked)">
+                      (change)="this.changeLocalhostMode($event.source.checked)">
       Localhost mode</mat-slide-toggle>
+    <span class="spacer"></span>
+    <mat-slide-toggle [checked]="mapService.selectedOptions.devMode"
+                      (change)="this.changeDevMode($event.source.checked)">
+      Advance mode</mat-slide-toggle>
   </mat-toolbar>
 </div>
 

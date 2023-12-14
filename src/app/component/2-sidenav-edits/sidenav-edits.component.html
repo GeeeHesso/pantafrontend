@@ -56,7 +56,7 @@
   </mat-toolbar>
 
   <!-- Total consumption and production shown only in dev mode -->
-  <mat-card class="editList" *ngIf="this.editsService.mapService.selectedOptions.localhostMode">
+  <mat-card class="editList" *ngIf="this.editsService.mapService.selectedOptions.devMode">
     <mat-card-header>
       <mat-card-title>
         Total value

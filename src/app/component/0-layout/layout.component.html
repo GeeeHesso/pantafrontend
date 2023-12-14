@@ -92,6 +92,13 @@
 
 
   <!-- In edits/upload mode -->
+  <button mat-icon-button [hidden]="!this.editsService.editMode" class="icon" aria-label="Cancel" title="Back to default"
+          (click)="this.handleButtonCancelScenarioMode()">
+    <mat-icon>cancel</mat-icon>
+  </button>
+  <span [hidden]="!this.editsService.editMode">
+    Cancel edit
+  </span>
   <span class="spacer"></span>
   <button
     [hidden]="!this.editsService.editMode"

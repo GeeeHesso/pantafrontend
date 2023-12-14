@@ -282,6 +282,11 @@ export class BranchService {
    * @private
    */
   private _getColorOfBranch(branch: Branch): string {
+    // Without power
+    if (isNaN(branch.loadInjected)){
+      console.warn('Branch without power: ' + branch.index)
+      return DEFAULT_COLOR_BRANCH
+    }
     // Inactive branches
     if (branch.br_status == 0) {
       console.warn('Inactive branch: ' + branch.index)

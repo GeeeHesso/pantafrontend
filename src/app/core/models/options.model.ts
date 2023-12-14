@@ -27,5 +27,6 @@ export class MapOptions {
     public zoom: number,
     public center: LatLng,
     public localhostMode: boolean,
+    public devMode: boolean,
   ) {}
 }
