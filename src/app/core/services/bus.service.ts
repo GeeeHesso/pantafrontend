@@ -4,8 +4,7 @@ import * as L from 'leaflet'
 import {CircleMarker, LatLng, LatLngExpression} from 'leaflet'
 import { MapPopupBusComponent } from '../../component/3-map-popup-bus/map-popup-bus.component'
 import {
-  DEFAULT_COLOR_BUS,
-  DEFAULT_COLOR_GEN,
+  DEFAULT_COLOR, DEFAULT_COLOR_BLACK,
   DEFAULT_SIZE_GEN,
   DEFAULT_SIZE_LOAD,
   INACTIVE_COLOR,
@@ -29,7 +28,7 @@ import { DataService } from './data.service'
 })
 export class BusService {
   private _sizeGen = DEFAULT_SIZE_GEN
-  private _colorGen = DEFAULT_COLOR_GEN
+  private _colorGen = DEFAULT_COLOR
   private _zoomFactor = 0.6 // Factor multiplying zoom value for relative size of gen and load
   public busMarkers : CircleMarker[] = []
 
@@ -46,7 +45,7 @@ export class BusService {
       const latLng: LatLngExpression = [data.bus[b].coord[1], data.bus[b].coord[0]]
 
       // Color
-      const color = data.bus[b].status == 1 ? DEFAULT_COLOR_BUS : INACTIVE_COLOR
+      const color = data.bus[b].status == 1 ? DEFAULT_COLOR : INACTIVE_COLOR
 
       // Define icon
       const busIcon = L.circleMarker(latLng, {
@@ -95,8 +94,7 @@ export class BusService {
       })
 
       // Style
-      if (data.bus[data.load[l].load_bus].status == 0) {
-        console.warn('Inactive load: ' + data.load[l].index)
+      if (data.load[l].status == 0) {
         loadIcon.setStyle({
           fillColor: INACTIVE_COLOR,
           color: INACTIVE_COLOR,
@@ -136,16 +134,18 @@ export class BusService {
       }
 
       // Color and type of icon (with cross inactive, full >94, half 6<X<94, empty <6)
-      if (showColor) {
-        this._colorGen = this._getColorOfGen(data.gen[g])
+      if (!showColor || data.gen[g].pg == undefined) {
+        this._colorGen = DEFAULT_COLOR_BLACK
       } else {
-        this._colorGen = DEFAULT_COLOR_GEN
+        this._colorGen = this._getColorOfGen(data.gen[g])
       }
 
       let svgHtml: string = this._constructFullSquareSVG(data.gen[g])
       if (showIcon) {
-        if (data.gen[g].gen_status == 0) {
-          console.warn('Inactive gen: ' + data.gen[g].index)
+
+        if (data.gen[g].pg == undefined) {
+          svgHtml = this._constructFullSquareSVG(data.gen[g])
+        } else if (data.gen[g].gen_status == 0) {
           svgHtml = this._constructCrossSquareSVG(data.gen[g])
         } else if ((data.gen[g].pg / data.gen[g].pmax) * 100 > 94) {
           svgHtml = this._constructFullSquareSVG(data.gen[g])

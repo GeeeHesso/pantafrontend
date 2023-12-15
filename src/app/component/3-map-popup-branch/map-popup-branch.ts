@@ -28,4 +28,5 @@ export class MapPopupBranch {
   constructor(public editsService: EditsService) {}
   @Input() branchesFT!: Branch[]
   @Input() branchesTF!: Branch[]
+  protected readonly isNaN = isNaN
 }

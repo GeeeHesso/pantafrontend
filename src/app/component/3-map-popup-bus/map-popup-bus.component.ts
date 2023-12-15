@@ -46,4 +46,5 @@ export class MapPopupBusComponent {
   //ToDo: can be change with BusPoint model
   @Input() buses!: Bus[]
   @Input() transformers!: Branch[]
+  protected readonly isNaN = isNaN
 }

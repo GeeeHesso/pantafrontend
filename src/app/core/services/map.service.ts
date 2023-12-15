@@ -190,14 +190,14 @@ export class MapService {
    * @param file
    */
   public getDatafromFile(file: any): void {
-      const formattedPantagruelData = this._getFormattedPantagruelData(file)
-      this._pantagruelData.next(formattedPantagruelData)
+    const formattedPantagruelData = this._getFormattedPantagruelData(file)
+    this._pantagruelData.next(formattedPantagruelData)
 
-      this._originalData = structuredClone(formattedPantagruelData)
-      this._lastResultData = structuredClone(formattedPantagruelData)
+    this._originalData = structuredClone(formattedPantagruelData)
+    this._lastResultData = structuredClone(formattedPantagruelData)
 
-      this.drawOnMap()
-      this.isDataLoading$.next(false)
+    this.drawOnMap()
+    this.isDataLoading$.next(false)
 
   }
 
@@ -258,29 +258,29 @@ export class MapService {
     const data = this._localPantagruelData
     data.date = date // Change the only value that is important for the API
 
-      this._http.post<Pantagruel>(this.URL_API_DC_OPF_ENTSOE, data).subscribe({
-        next: (resultData: Pantagruel) => {
-          const formattedPantagruelData = this._getFormattedPantagruelData(resultData)
-          this._pantagruelData.next(formattedPantagruelData)
+    this._http.post<Pantagruel>(this.URL_API_DC_OPF_ENTSOE, data).subscribe({
+      next: (resultData: Pantagruel) => {
+        const formattedPantagruelData = this._getFormattedPantagruelData(resultData)
+        this._pantagruelData.next(formattedPantagruelData)
 
-          this.drawOnMap()
-          this.isDataLoading$.next(false)
+        this.drawOnMap()
+        this.isDataLoading$.next(false)
 
-          // To handle cancel after edit
-          this._originalData = structuredClone(formattedPantagruelData)
-          // To handle if edited data cannot be resolved by the API
-          this._lastResultData = structuredClone(formattedPantagruelData)
+        // To handle cancel after edit
+        this._originalData = structuredClone(formattedPantagruelData)
+        // To handle if edited data cannot be resolved by the API
+        this._lastResultData = structuredClone(formattedPantagruelData)
 
-          this.showSnackbar(
-            'SUCCESS with API : data from ' +
-            data.date.day +
-            '/' +
-            data.date.month +
-            '/' +
-            data.date.year +
-            ' (DD/MM/YYYY) ' +
-            data.date.hour +
-            ':00',
+        this.showSnackbar(
+          'SUCCESS with API : data from ' +
+          data.date.day +
+          '/' +
+          data.date.month +
+          '/' +
+          data.date.year +
+          ' (DD/MM/YYYY) ' +
+          data.date.hour +
+          ':00',
         )
       },
       error: (error) => {
@@ -374,9 +374,9 @@ export class MapService {
       this.dataService.editedBus$.next([])
 
     } else if (error.status == 500) {
-        this.showSnackbar(
-          'Error : ' + error.error
-        )
+      this.showSnackbar(
+        'Error : ' + error.error
+      )
 
       // Error 0 is when the API cannot be accessed
     } else if (error.status == 0) {
@@ -385,25 +385,25 @@ export class MapService {
       if (this._pantagruelData.getValue() == null) {
         this.showSnackbar(
           'Error ' +
-            error.status +
-            ' :  the API could not be accessed. The LOCAL data are displayed.',
+          error.status +
+          ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
-          this._pantagruelData.next(this._localPantagruelData)
-          this._originalData = structuredClone(this._localPantagruelData)
-          this._lastResultData = structuredClone(this._localPantagruelData)
+        this._pantagruelData.next(this._localPantagruelData)
+        this._originalData = structuredClone(this._localPantagruelData)
+        this._lastResultData = structuredClone(this._localPantagruelData)
 
-          this.drawOnMap()
-          this.isDataLoading$.next(false)
+        this.drawOnMap()
+        this.isDataLoading$.next(false)
 
         return
       } else {
         //If there is some data stored, reset to the last result data set
-          this.showSnackbar(
-            'Error ' +
-            error.status +
-            ' :  the API could not be accessed. LAST LOADED data are displayed.',
-          )
-          this._pantagruelData.next(this._lastResultData)
+        this.showSnackbar(
+          'Error ' +
+          error.status +
+          ' :  the API could not be accessed. LAST LOADED data are displayed.',
+        )
+        this._pantagruelData.next(this._lastResultData)
       }
     } else {
       //ToDo: simulated this case
@@ -485,6 +485,12 @@ export class MapService {
           break
         }
       }
+
+      if (pantagruelData.gen[g].pg == undefined) {
+        console.warn('Gen without power: ' + pantagruelData.gen[g].index)
+      } else if (pantagruelData.gen[g].gen_status == 0) {
+        console.warn('Inactive gen: ' + pantagruelData.gen[g].index)
+      }
     })
 
     Object.keys(pantagruelData.load).forEach((l) => {
@@ -502,6 +508,10 @@ export class MapService {
         Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
       pantagruelData.load[l].originalConsumeMW =
         Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
+
+      if (pantagruelData.load[l].status == 0) {
+        console.warn('Inactive load: ' + pantagruelData.load[l].index)
+      }
     })
 
     Object.keys(pantagruelData.bus).forEach((b) => {
@@ -517,6 +527,10 @@ export class MapService {
           pantagruelData.bus[b].gens.push(pantagruelData.gen[g])
         }
       })
+
+      if (pantagruelData.bus[b].status == 0) {
+        console.warn('Inactive bus: ' + pantagruelData.bus[b].index)
+      }
     })
 
     Object.keys(pantagruelData.branch).forEach((br) => {
@@ -524,12 +538,12 @@ export class MapService {
       pantagruelData.branch[br].loadInjected = Math.round(
         (Math.abs(pantagruelData.branch[br].pf) / pantagruelData.branch[br].rate_a +
           Number.EPSILON) *
-          100,
+        100,
       )
       pantagruelData.branch[br].oldLoadInjected = Math.round(
         (Math.abs(pantagruelData.branch[br].pf) / pantagruelData.branch[br].rate_a +
           Number.EPSILON) *
-          100,
+        100,
       )
       pantagruelData.branch[br].totalPowerMW =
         Math.round(
@@ -542,14 +556,14 @@ export class MapService {
       pantagruelData.branch[br].thermalRatingMW =
         Math.round(
           (Math.abs(pantagruelData.branch[br].rate_a) * pantagruelData.baseMVA + Number.EPSILON) *
-            100,
+          100,
         ) / 100
       pantagruelData.branch[br].losses =
         Math.round(
           Math.abs(
             (Math.abs(pantagruelData.branch[br].pf) - Math.abs(pantagruelData.branch[br].pt)) *
-              pantagruelData.baseMVA +
-              Number.EPSILON,
+            pantagruelData.baseMVA +
+            Number.EPSILON,
           ) * 100,
         ) / 100
 
@@ -561,7 +575,36 @@ export class MapService {
         pantagruelData.branch[br].fromBus = pantagruelData.bus[pantagruelData.branch[br].t_bus]
         pantagruelData.branch[br].toBus = pantagruelData.bus[pantagruelData.branch[br].f_bus]
       }
+
+      if (pantagruelData.branch[br].transformer) {
+        if (pantagruelData.branch[br].br_status == 0)
+          console.warn('Inactive transformer: ' + pantagruelData.branch[br].index)
+        if (pantagruelData.branch[br].pf == undefined)
+          console.warn('Transformer without power: ' + (pantagruelData.branch[br].index))
+        if (
+          pantagruelData.branch[br].fromBus.coord[0] != pantagruelData.branch[br].toBus.coord[0] ||
+          pantagruelData.branch[br].fromBus.coord[1] != pantagruelData.branch[br].toBus.coord[1]
+        )
+          console.warn(
+            'Transformer' + pantagruelData.branch[br].index + ' has 2 coordinates different',
+          )
+      } else {
+        if (pantagruelData.branch[br].br_status == 0)
+          console.warn('Inactive line: ' + pantagruelData.branch[br].index)
+        if (pantagruelData.branch[br].pf == undefined)
+          console.warn('Line without power: ' + (pantagruelData.branch[br].index))
+        if (
+          pantagruelData.branch[br].fromBus.coord[0] == pantagruelData.branch[br].toBus.coord[0] &&
+          pantagruelData.branch[br].fromBus.coord[1] == pantagruelData.branch[br].toBus.coord[1]
+        )
+          console.warn(
+            'The branch ' +
+            pantagruelData.branch[br].index +
+            ' cannot be display. The FROM coordinates are the same as the TO coordinates',
+          )
+      }
     })
+
     this.dataService.setConstOfDataSet(pantagruelData)
     if (pantagruelData.date){
       this.dataService.setDateOfDataSet(pantagruelData)

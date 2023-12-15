@@ -15,13 +15,12 @@ import {LatLng} from "leaflet";
  ******************************************************************/
 export const URL_LOCAL_GRID = '/assets/data/pantagruelDate.json'
 
+export const DEFAULT_COLOR = '#757575'
+export const DEFAULT_COLOR_BLACK = '#000000'
 export const INACTIVE_COLOR = '#ffffff'
 export const DEFAULT_SIZE_GEN = 5
-export const DEFAULT_COLOR_GEN = '#000000'
 export const DEFAULT_SIZE_LOAD = 2.5
 export const DEFAULT_WIDTH_BRANCH = 1
-export const DEFAULT_COLOR_BRANCH = '#B5B5B5'
-export const DEFAULT_COLOR_BUS = '#757575'
 
 export const PANTAGRUEL_DATA = new InjectionToken<BehaviorSubject<Pantagruel>>(
   'pantagruel.data.token',

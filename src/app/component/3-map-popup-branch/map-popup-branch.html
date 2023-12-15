@@ -28,15 +28,15 @@
         </tr>
         <tr>
           <th>Load injected</th>
-          <td>{{ branch.loadInjected }} %</td>
+          <td>{{ isNaN(branch.loadInjected) ? "-" : branch.loadInjected}} %</td>
         </tr>
         <tr>
           <th>Total power</th>
-          <td>{{ branch.totalPowerMW }} / {{branch.thermalRatingMW}} MW </td>
+          <td>{{ isNaN(branch.totalPowerMW) ? "-" : branch.totalPowerMW}} / {{branch.thermalRatingMW}} MW </td>
         </tr>
         <tr>
           <th>Losses</th>
-          <td>{{ branch.losses }} MW</td>
+          <td>{{ isNaN(branch.losses) ? "-" : branch.totalPowerMW}} MW</td>
         </tr>
         <tr>
           <th>From</th>
@@ -72,15 +72,15 @@
         </tr>
         <tr>
           <th>Load injected</th>
-          <td>{{ branch.loadInjected }} %</td>
+          <td>{{ isNaN(branch.loadInjected) ? "-" : branch.loadInjected}} %</td>
         </tr>
         <tr>
           <th>Total power</th>
-          <td>{{ branch.totalPowerMW }} / {{branch.thermalRatingMW}} MW </td>
+          <td>{{ isNaN(branch.totalPowerMW) ? "-" : branch.totalPowerMW}} / {{branch.thermalRatingMW}} MW </td>
         </tr>
         <tr>
           <th>Losses</th>
-          <td>{{ branch.losses }} MW</td>
+          <td>{{ isNaN(branch.losses) ? "-" : branch.totalPowerMW}} MW</td>
         </tr>
         <tr>
           <th>From</th>
@@ -129,15 +129,15 @@
             </tr>
             <tr>
               <th>Load injected</th>
-              <td>{{ branch.loadInjected }} %</td>
+              <td>{{ isNaN(branch.loadInjected) ? "-" : branch.loadInjected}} %</td>
             </tr>
             <tr>
               <th>Total power</th>
-              <td>{{ branch.totalPowerMW }} / {{branch.thermalRatingMW}} MW </td>
+              <td>{{ isNaN(branch.totalPowerMW) ? "-" : branch.totalPowerMW}} / {{branch.thermalRatingMW}} MW </td>
             </tr>
             <tr>
               <th>Losses</th>
-              <td>{{ branch.losses }} MW</td>
+              <td>{{ isNaN(branch.losses) ? "-" : branch.totalPowerMW}} MW</td>
             </tr>
             <tr>
               <th>From</th>
@@ -173,15 +173,15 @@
             </tr>
             <tr>
               <th>Load injected</th>
-              <td>{{ branch.loadInjected }} %</td>
+              <td>{{ isNaN(branch.loadInjected) ? "-" : branch.loadInjected}} %</td>
             </tr>
             <tr>
               <th>Total power</th>
-              <td>{{ branch.totalPowerMW }} / {{branch.thermalRatingMW}} MW </td>
+              <td>{{ isNaN(branch.totalPowerMW) ? "-" : branch.totalPowerMW}} / {{branch.thermalRatingMW}} MW </td>
             </tr>
             <tr>
               <th>Losses</th>
-              <td>{{ branch.losses }} MW</td>
+              <td>{{ isNaN(branch.losses) ? "-" : branch.totalPowerMW}} MW</td>
             </tr>
             <tr>
               <th>From</th>
