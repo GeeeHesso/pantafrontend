@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Download</h1>
+<div mat-dialog-content>
+  <div>
+    <p [hidden]="this.mapService.dataService.editedBus$.getValue().length==0">
+    WARNING: grid not resolved. Some changes have been made</p>
+    <mat-radio-group aria-label="File type" [(ngModel)]="fileType">
+      <mat-radio-button value="json">json</mat-radio-button>
+      <mat-radio-button value="jpg">JPG</mat-radio-button>
+      <mat-radio-button value="png">PNG</mat-radio-button>
+      <mat-radio-button value="svg">SVG</mat-radio-button>
+    </mat-radio-group>
+    <div *ngIf="this.isExportLoading$ | async">
+      <mat-spinner ></mat-spinner>
+      <div class="overlay-container"></div>
+    </div>
+    <div mat-dialog-actions align="end">
+      <button mat-button (click)="onCancelClick()">Close</button>
+      <button mat-button (click)="onDownloadClick()">Ok</button>
+    </div>
+  </div>
+</div>
+

@@ -41,7 +41,8 @@ import domToImageMore from 'dom-to-image-more';
  * * Date				  Author    		      Comments
  * * ---------------------------------------------------------------------------
  * * 21/07/2023		Gwenaëlle Gustin		Last edition for TB release.
- * *
+ * * 17/12/2023		Gwenaëlle Gustin		New feature: JSON download + file exported with timestamp name
+ * * 
  ******************************************************************/
 @Component({
   selector: 'app-layout',
@@ -264,9 +265,9 @@ export class LayoutComponent implements OnInit {
   /**
    * Handle button to export image button
    */
-  public handleButtonExportImage() : void {
-    this._dialog.open(DialogImage, {
-      data: {fileType: 'JPG'},
+  public handleButtonExport() : void {
+    this._dialog.open(DialogDownload, {
+      data: {fileType: 'json'},
     });
   }
 
@@ -298,70 +299,85 @@ export class LayoutComponent implements OnInit {
 }
 
 @Component({
-  selector: 'dialog-image',
-  templateUrl: 'dialog-image.html',
+  selector: 'dialog-download',
+  templateUrl: 'dialog-download.html',
   styles: ['mat-spinner { margin: auto; }'],
   standalone: true,
   imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, NgIf, MatRadioModule, MatProgressSpinnerModule, AsyncPipe],
 })
-export class DialogImage {
-  public isImageLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false)
+export class DialogDownload {
+  public isExportLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false)
   public fileType: string
+  private _link: HTMLAnchorElement
 
   constructor(
-    public dialogRef: MatDialogRef<DialogImage>
+    public dialogRef: MatDialogRef<DialogDownload>,
+    @Inject(PANTAGRUEL_DATA) private _pantagruelData: BehaviorSubject<Pantagruel>,
+    public mapService: MapService
   ) {
-    this.fileType = "JPG"
+    this.fileType = "json"
+    this._link = document.createElement("a")
   }
 
   public onCancelClick(): void {
     this.dialogRef.close();
   }
 
-  public async createImage(): Promise<void> {
-    this.isImageLoading$.next(true)
+  /**
+   * Prepare data to be downloaded
+   */
+  public async onDownloadClick(): Promise<void> {
+    this.isExportLoading$.next(true)
+
     // without timeout, loading spinner not working
     await new Promise(f => setTimeout(f, 100));
 
+    const { DateTime } = require("luxon");
+    this._link.download = DateTime.now().toFormat('yyyy-LL-dd-HH-mm')+"-PanTaGruEl-Export."+this.fileType
 
-    const leafletMapPane = document.getElementsByClassName('leaflet-map-pane') as HTMLCollectionOf<Element>
-    const map = leafletMapPane[0]
-    const mapforSize = document.getElementById('map') as HTMLElement
+    if (this.fileType == "json"){
+      const PANTAGRUEL_DATA = this._pantagruelData.getValue()
+      var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(PANTAGRUEL_DATA));
+      this.download("data:" + data)
 
-    const width = mapforSize.clientWidth;
-    const height = mapforSize.clientHeight;
-
-    if (this.fileType == "SVG") {
-      domToImageMore.toSvg(map, {width, height})
-        .then((dataUrl: string) => {
-          var link = document.createElement('a');
-          link.download = 'map.svg';
-          link.href = dataUrl;
-          link.click();
-          this.isImageLoading$.next(false)
-          this.dialogRef.close()
-        });
-    } else if (this.fileType == "PNG") {
-      domToImageMore.toPng(map, {width, height})
-        .then((dataUrl: string) => {
-          var link = document.createElement('a');
-          link.download = 'map.png';
-          link.href = dataUrl;
-          link.click();
-          this.isImageLoading$.next(false)
-          this.dialogRef.close()
-        });
     } else {
-      domToImageMore.toJpeg(map, {width, height})
+      const leafletMapPane = document.getElementsByClassName('leaflet-map-pane') as HTMLCollectionOf<Element>
+      const map = leafletMapPane[0]
+      const mapforSize = document.getElementById('map') as HTMLElement
+      const width = mapforSize.clientWidth
+      const height = mapforSize.clientHeight
+      
+      if (this.fileType == "jpg")
+      {
+        domToImageMore.toJpeg(map, {width, height})
         .then((dataUrl: string) => {
-          var link = document.createElement('a');
-          link.download = 'map.jpg';
-          link.href = dataUrl;
-          link.click();
-          this.isImageLoading$.next(false)
-          this.dialogRef.close()
-        });
+          this.download(dataUrl)
+        })
+      } else if (this.fileType == "png") {
+        domToImageMore.toPng(map, {width, height})
+        .then((dataUrl: string) => {
+          this.download(dataUrl)
+        })
+      } else if (this.fileType == "svg") {
+        domToImageMore.toSvg(map, {width, height})
+        .then((dataUrl: string) => {
+          this.download(dataUrl)
+        })
+      }
+
     }
+  }
+
+  /**
+   * Download data to default downlaod folder on computer
+   * @param dataUrl downloaded
+   */
+  public download(dataUrl: string){
+    this._link.href = dataUrl
+    this._link.click()
+    this.isExportLoading$.next(false)
+    this.dialogRef.close()
+    this._link.remove()
   }
 }
 

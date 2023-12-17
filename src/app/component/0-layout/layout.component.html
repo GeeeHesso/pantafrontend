@@ -118,14 +118,13 @@
           (click)="handleButtonShareScenario()">
     <mat-icon>share</mat-icon>
   </button>
-  <button mat-icon-button class="icon" aria-label="Download" title="Download image"
-          [hidden]="this.mapService.scenarioMode ||
-          this.mapService.dataService.editedBus$.getValue().length!==0"
-          (click)="handleButtonExportImage()">
-    <mat-icon>download</mat-icon>
-  </button>
+
 
   <!-- In all mode (normal, edits, scenario) -->
+  <button mat-icon-button class="icon" aria-label="Download" title="Download data or image"
+  (click)="handleButtonExport()">
+<mat-icon>download</mat-icon>
+</button>
   <button mat-icon-button class="icon" aria-label="Settings" title="Display settings"
           (click)="handleButtonOptions()">
     <mat-icon>settings</mat-icon>
