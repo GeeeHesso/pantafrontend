@@ -1,8 +1,8 @@
 import { InjectionToken } from '@angular/core'
+import { LatLng } from 'leaflet'
 import { BehaviorSubject } from 'rxjs'
+import { MapOptions } from './models/options.model'
 import { Pantagruel } from './models/pantagruel'
-import {MapOptions} from "./models/options.model";
-import {LatLng} from "leaflet";
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
@@ -13,7 +13,7 @@ import {LatLng} from "leaflet";
  * * 13/07/2023		Gwenaëlle Gustin		Last edition for TB release.
  * *
  ******************************************************************/
-export const URL_LOCAL_GRID = '/assets/data/pantagruelDate.json'
+export const URL_LOCAL_GRID = './assets/pantagruelLocal.json'
 
 export const DEFAULT_COLOR = '#757575'
 export const DEFAULT_COLOR_BLACK = '#000000'
@@ -42,5 +42,5 @@ export const DEFAULT_OPTIONS: MapOptions = new MapOptions(
   6,
   new LatLng(48, 10),
   false,
-  false
+  false,
 )

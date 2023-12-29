@@ -3,11 +3,8 @@ import { Inject, Injectable } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import * as L from 'leaflet'
 import { BehaviorSubject } from 'rxjs'
-import {
-  DEFAULT_OPTIONS,
-  PANTAGRUEL_DATA,
-  URL_LOCAL_GRID,
-} from '../core.const'
+import { environment } from 'src/environments/environment'
+import { DEFAULT_OPTIONS, PANTAGRUEL_DATA, URL_LOCAL_GRID } from '../core.const'
 import { MapOptions } from '../models/options.model'
 import { Pantagruel } from '../models/pantagruel'
 import { BranchService } from './branch.service'
@@ -34,12 +31,12 @@ export class MapService {
   public devMode: boolean = false
   public scenarioMode: boolean = false
 
-  public URL_API_BASE ! : string
-  public URL_API_DEFAULT_GRID ! : string
-  public URL_API_AVAILABLE_DATES ! : string
-  public URL_API_DC_OPF_COUNTRY! : string
-  public URL_API_AC_OPF_COUNTRY! : string
-  public URL_API_DC_OPF_ENTSOE! : string
+  public URL_API_BASE!: string
+  public URL_API_DEFAULT_GRID!: string
+  public URL_API_AVAILABLE_DATES!: string
+  public URL_API_DC_OPF_COUNTRY!: string
+  public URL_API_AC_OPF_COUNTRY!: string
+  public URL_API_DC_OPF_ENTSOE!: string
 
   public isDataLoading$: BehaviorSubject<boolean> = new BehaviorSubject(true)
 
@@ -51,7 +48,7 @@ export class MapService {
   public maxDate: Date = new Date(2023, 1, 28)
   private _originalData!: Pantagruel
   private _lastResultData!: Pantagruel
-  private _localPantagruelData! :Pantagruel
+  private _localPantagruelData!: Pantagruel
   constructor(
     public dataService: DataService,
     public busService: BusService,
@@ -93,7 +90,7 @@ export class MapService {
     })
     this.map.on('zoomend', () => {
       this.drawOnMap()
-    });
+    })
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     })
@@ -102,13 +99,13 @@ export class MapService {
     this._getAvailableDate()
   }
 
-  public updateUrl():void {
-    if (this.selectedOptions.localhostMode){
+  public updateUrl(): void {
+    if (this.selectedOptions.localhostMode) {
       this.URL_API_BASE = 'http://127.0.0.1:8080/'
-    }else {
-      this.URL_API_BASE = 'https://pantagruelapi.iigweb.hevs.ch/'
+    } else {
+      this.URL_API_BASE = environment.apiUrl
     }
-    console.log("URL of the API is now: "+this.URL_API_BASE)
+    console.log('URL of the API is now: ' + this.URL_API_BASE)
     this.URL_API_DEFAULT_GRID = this.URL_API_BASE + 'networks/pantagruel'
     this.URL_API_AVAILABLE_DATES = this.URL_API_BASE + 'entsoe/available_dates'
     this.URL_API_DC_OPF_COUNTRY = this.URL_API_BASE + 'opf/dc_opf_country'
@@ -129,7 +126,7 @@ export class MapService {
         PANTAGRUEL_DATA,
         option.showBranchColor,
         option.showBranchWidth,
-        option.showBranchArrow
+        option.showBranchArrow,
       )
     if (option.showTransformer)
       this.branchService.drawTransformer(this.map, PANTAGRUEL_DATA, option.showTransColor)
@@ -153,8 +150,9 @@ export class MapService {
       layer.remove()
     })
     const TILES = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-        '| Bachelor\'s thesis 2023 by <a href="https://www.linkedin.com/in/gwena%C3%ABlle-gustin-09a228194/">Gwenaëlle Gustin</a> with <a href="https://www.hevs.ch/en/applied-research/research-institute-informatics/easilab-13431">Professor David Wannier</a> for <a href="https://etranselec.ch/">Professor Philippe Jacquod</a> '+
+      attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+        '| Bachelor\'s thesis 2023 by <a href="https://www.linkedin.com/in/gwena%C3%ABlle-gustin-09a228194/">Gwenaëlle Gustin</a> with <a href="https://www.hevs.ch/en/applied-research/research-institute-informatics/easilab-13431">Professor David Wannier</a> for <a href="https://etranselec.ch/">Professor Philippe Jacquod</a> ' +
         '| Load data from  <a href="https://transparency.entsoe.eu/">entose Transparency Platform</a>',
     })
     TILES.addTo(this.map)
@@ -176,7 +174,7 @@ export class MapService {
       next: (data) => {
         this.entsoeAvailableDate = data
         this.minDate = new Date(data[0])
-        this.maxDate = new Date(data[data.length-1])
+        this.maxDate = new Date(data[data.length - 1])
       },
       error: (error) => {
         console.warn('There was an error when request available date.', error)
@@ -198,7 +196,6 @@ export class MapService {
 
     this.drawOnMap()
     this.isDataLoading$.next(false)
-
   }
 
   /**
@@ -220,17 +217,28 @@ export class MapService {
         this.isDataLoading$.next(false)
 
         // SCENARIO mode is true whe url is not /
-        if (this.scenarioMode){
+        if (this.scenarioMode) {
           //If URL does not correspond to a file in Firebase, it redirects to /
           // and ask again getData
-          if (this.scenarioMode && url === this.URL_API_DEFAULT_GRID){
+          if (this.scenarioMode && url === this.URL_API_DEFAULT_GRID) {
             this.showSnackbar("This scenario doesn't exist")
             this.scenarioMode = false
           } else {
-            this.showSnackbar("Work with data from scenario")
+            this.showSnackbar('Work with data from scenario')
           }
-        }else{// NORMAL mode ask API data
-          this.showSnackbar("Work with API data (GET) from " + data.date.day + '/' + data.date.month + '/' + data.date.year + ' (DD/MM/YYYY) ' + data.date.hour + ':00')
+        } else {
+          // NORMAL mode ask API data
+          this.showSnackbar(
+            'Work with API data (GET) from ' +
+              data.date.day +
+              '/' +
+              data.date.month +
+              '/' +
+              data.date.year +
+              ' (DD/MM/YYYY) ' +
+              data.date.hour +
+              ':00',
+          )
 
           // To handle cancel after edit
           this._originalData = structuredClone(formattedPantagruelData)
@@ -273,14 +281,14 @@ export class MapService {
 
         this.showSnackbar(
           'SUCCESS with API : data from ' +
-          data.date.day +
-          '/' +
-          data.date.month +
-          '/' +
-          data.date.year +
-          ' (DD/MM/YYYY) ' +
-          data.date.hour +
-          ':00',
+            data.date.day +
+            '/' +
+            data.date.month +
+            '/' +
+            data.date.year +
+            ' (DD/MM/YYYY) ' +
+            data.date.hour +
+            ':00',
         )
       },
       error: (error) => {
@@ -305,9 +313,7 @@ export class MapService {
         // To handle if edited data cannot be resolved by the API
         this._lastResultData = structuredClone(formattedPantagruelData)
 
-        this.showSnackbar(
-          'SUCCESS with API : EDITED country values'
-        )
+        this.showSnackbar('SUCCESS with API : EDITED country values')
       },
       error: (error) => {
         this._handleError(error)
@@ -320,17 +326,15 @@ export class MapService {
    * Pass the edited data to the API url in parameter
    * and read returned data
    */
-  public askData(url:string): void {
-
+  public askData(url: string): void {
     this.isDataLoading$.next(true)
-    this.showSnackbar('Requesting API '+ url)
+    this.showSnackbar('Requesting API ' + url)
 
     const data = this._pantagruelData.getValue()
 
-    this._http.post<Pantagruel>(this.URL_API_BASE+url, data).subscribe({
-      next: (resultData) => {        this.showSnackbar(
-        'SUCCESS with API : EDITED data.'
-      )
+    this._http.post<Pantagruel>(this.URL_API_BASE + url, data).subscribe({
+      next: (resultData) => {
+        this.showSnackbar('SUCCESS with API : EDITED data.')
 
         const formattedPantagrualData = this._getFormattedPantagruelData(resultData)
         this._pantagruelData.next(formattedPantagrualData)
@@ -372,11 +376,8 @@ export class MapService {
       this.resetData()
       // Reset value in side panel Edits
       this.dataService.editedBus$.next([])
-
     } else if (error.status == 500) {
-      this.showSnackbar(
-        'Error : ' + error.error
-      )
+      this.showSnackbar('Error : ' + error.error)
 
       // Error 0 is when the API cannot be accessed
     } else if (error.status == 0) {
@@ -385,8 +386,8 @@ export class MapService {
       if (this._pantagruelData.getValue() == null) {
         this.showSnackbar(
           'Error ' +
-          error.status +
-          ' :  the API could not be accessed. The LOCAL data are displayed.',
+            error.status +
+            ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
         this._pantagruelData.next(this._localPantagruelData)
         this._originalData = structuredClone(this._localPantagruelData)
@@ -400,8 +401,8 @@ export class MapService {
         //If there is some data stored, reset to the last result data set
         this.showSnackbar(
           'Error ' +
-          error.status +
-          ' :  the API could not be accessed. LAST LOADED data are displayed.',
+            error.status +
+            ' :  the API could not be accessed. LAST LOADED data are displayed.',
         )
         this._pantagruelData.next(this._lastResultData)
       }
@@ -442,7 +443,7 @@ export class MapService {
 
       // Switzerland case
       if (pantagruelData.gen[g].category == undefined) {
-        if (pantagruelData.gen[g].type.includes("hydro")){
+        if (pantagruelData.gen[g].type.includes('hydro')) {
           pantagruelData.gen[g].category = 'H'
         }
       }
@@ -503,11 +504,14 @@ export class MapService {
         pantagruelData.bus[pantagruelData.load[l].load_bus].population,
       )
       pantagruelData.load[l].consumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
+        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+        100
       pantagruelData.load[l].newConsumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
+        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+        100
       pantagruelData.load[l].originalConsumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
+        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+        100
 
       if (pantagruelData.load[l].status == 0) {
         console.warn('Inactive load: ' + pantagruelData.load[l].index)
@@ -538,12 +542,12 @@ export class MapService {
       pantagruelData.branch[br].loadInjected = Math.round(
         (Math.abs(pantagruelData.branch[br].pf) / pantagruelData.branch[br].rate_a +
           Number.EPSILON) *
-        100,
+          100,
       )
       pantagruelData.branch[br].oldLoadInjected = Math.round(
         (Math.abs(pantagruelData.branch[br].pf) / pantagruelData.branch[br].rate_a +
           Number.EPSILON) *
-        100,
+          100,
       )
       pantagruelData.branch[br].totalPowerMW =
         Math.round(
@@ -556,19 +560,19 @@ export class MapService {
       pantagruelData.branch[br].thermalRatingMW =
         Math.round(
           (Math.abs(pantagruelData.branch[br].rate_a) * pantagruelData.baseMVA + Number.EPSILON) *
-          100,
+            100,
         ) / 100
       pantagruelData.branch[br].losses =
         Math.round(
           Math.abs(
             (Math.abs(pantagruelData.branch[br].pf) - Math.abs(pantagruelData.branch[br].pt)) *
-            pantagruelData.baseMVA +
-            Number.EPSILON,
+              pantagruelData.baseMVA +
+              Number.EPSILON,
           ) * 100,
         ) / 100
 
       // Define the direction of the branch depends on the value of pf (negative go other way)
-      if (pantagruelData.branch[br].pf>=0){
+      if (pantagruelData.branch[br].pf >= 0) {
         pantagruelData.branch[br].fromBus = pantagruelData.bus[pantagruelData.branch[br].f_bus]
         pantagruelData.branch[br].toBus = pantagruelData.bus[pantagruelData.branch[br].t_bus]
       } else {
@@ -580,7 +584,7 @@ export class MapService {
         if (pantagruelData.branch[br].br_status == 0)
           console.warn('Inactive transformer: ' + pantagruelData.branch[br].index)
         if (pantagruelData.branch[br].pf == undefined)
-          console.warn('Transformer without power: ' + (pantagruelData.branch[br].index))
+          console.warn('Transformer without power: ' + pantagruelData.branch[br].index)
         if (
           pantagruelData.branch[br].fromBus.coord[0] != pantagruelData.branch[br].toBus.coord[0] ||
           pantagruelData.branch[br].fromBus.coord[1] != pantagruelData.branch[br].toBus.coord[1]
@@ -592,21 +596,21 @@ export class MapService {
         if (pantagruelData.branch[br].br_status == 0)
           console.warn('Inactive line: ' + pantagruelData.branch[br].index)
         if (pantagruelData.branch[br].pf == undefined)
-          console.warn('Line without power: ' + (pantagruelData.branch[br].index))
+          console.warn('Line without power: ' + pantagruelData.branch[br].index)
         if (
           pantagruelData.branch[br].fromBus.coord[0] == pantagruelData.branch[br].toBus.coord[0] &&
           pantagruelData.branch[br].fromBus.coord[1] == pantagruelData.branch[br].toBus.coord[1]
         )
           console.warn(
             'The branch ' +
-            pantagruelData.branch[br].index +
-            ' cannot be display. The FROM coordinates are the same as the TO coordinates',
+              pantagruelData.branch[br].index +
+              ' cannot be display. The FROM coordinates are the same as the TO coordinates',
           )
       }
     })
 
     this.dataService.setConstOfDataSet(pantagruelData)
-    if (pantagruelData.date){
+    if (pantagruelData.date) {
       this.dataService.setDateOfDataSet(pantagruelData)
     }
 
