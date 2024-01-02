@@ -57,12 +57,7 @@ export class MapService {
     private _http: HttpClient,
 
     @Inject(PANTAGRUEL_DATA) private _pantagruelData: BehaviorSubject<Pantagruel>,
-  ) {
-    this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
-      const formattedPantagruelData = this._getFormattedPantagruelData(data)
-      this._localPantagruelData = structuredClone(formattedPantagruelData)
-    })
-  }
+  ) {}
 
   /**
    * Initialise preferred option from local storage
@@ -187,7 +182,7 @@ export class MapService {
    * and display on the map
    * @param file
    */
-  public getDatafromFile(file: any): void {
+  public getDataFromFile(file: any): void {
     const formattedPantagruelData = this._getFormattedPantagruelData(file)
     this._pantagruelData.next(formattedPantagruelData)
 
@@ -263,7 +258,7 @@ export class MapService {
   public askDataDateTime(date: any): void {
     this.showSnackbar('Requesting API (with date)...')
 
-    const data = this._localPantagruelData
+    const data = this._originalData
     data.date = date // Change the only value that is important for the API
 
     this._http.post<Pantagruel>(this.URL_API_DC_OPF_ENTSOE, data).subscribe({
@@ -389,12 +384,16 @@ export class MapService {
             error.status +
             ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
-        this._pantagruelData.next(this._localPantagruelData)
-        this._originalData = structuredClone(this._localPantagruelData)
-        this._lastResultData = structuredClone(this._localPantagruelData)
+        this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
+          const formattedPantagruelData = this._getFormattedPantagruelData(data)
+          this._pantagruelData.next(formattedPantagruelData)
 
-        this.drawOnMap()
-        this.isDataLoading$.next(false)
+          this._originalData = structuredClone(formattedPantagruelData)
+          this._lastResultData = structuredClone(formattedPantagruelData)
+
+          this.drawOnMap()
+          this.isDataLoading$.next(false)
+        })
 
         return
       } else {
