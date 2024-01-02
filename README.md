@@ -13,10 +13,9 @@ PanTaGruEl is a dynamical grid model designed to investigate the propagation of 
 The application displays data from the [API NetworkServer.jl](https://github.com/julianfritzsch/NetworkServer.jl) written in Julia by Julian Fritzsch (member of the GEEE), which itself uses the Pantagruel Julia project [PanTaGruEl.jl](https://github.com/laurentpagnier/pantagruel.jl).
 
 
-**The running application can be tested here https://etranselec.ch/pantafrontend/.**
-The version under development is linked to https://pantagruel-frontend-dev.netlify.app/
-
-You can find example of a generate scenario at https://etranselec.ch/pantafrontend/?scenario=2023-07-13-11-19-32Change-Kriegers-Flak.json
+- **The running application can be tested here https://etranselec.ch/pantafrontend/.**
+- The version under development is linked to https://pantagruel-frontend-dev.netlify.app/
+- You can find example of a generate scenario at https://etranselec.ch/pantafrontend/?scenario=2023-07-13-11-19-32Change-Kriegers-Flak.json
 
 ## Usage
 
@@ -34,3 +33,19 @@ Run `ng build --configuration production --base-href=\"https://etranselec.ch/pan
 The code on the dev branch is automatically deployed on https://pantagruel-frontend-dev.netlify.app/
 After pull request acceptance, 
 
+## Release note
+### 1.0.2 (12.2023)
+**New features:**
+- A JSON file can be uploaded to replace default grid
+- JSON file with grid data can be downloaded
+
+### 1.0.1 (08-11.2023)
+**New features:**
+- Application call local api (http://127.0.0.1:8080/) in local host mode
+  
+**Bug fix:**
+- Limit date fixed dynamically
+- List of edits after recalculate
+
+### 1.0.0 (07-2023)
+- Version at the end of Bachelor. Everything is described [here](https://sonar.rero.ch/hesso/documents/326901) from page 76 to 79.

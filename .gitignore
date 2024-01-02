@@ -41,6 +41,11 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Project filesw
-.env.local
+# Local build
+dist
+
+# Project files
+# environment.dev.ts
+# environment.prod.ts
+# environment.ts
 Neuchatel.json
