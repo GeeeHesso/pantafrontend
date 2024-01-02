@@ -283,7 +283,7 @@ export class LayoutComponent implements OnInit {
   }
 
   /**
-   * Handle click on options buttons
+   * Handle click on options button
    */
   public handleButtonOptions(): void {
     // If side panel already open with the option --> close the option panel

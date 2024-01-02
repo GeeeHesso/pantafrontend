@@ -45,7 +45,4 @@ Thumbs.db
 dist
 
 # Project files
-environment.dev.ts
-environment.prod.ts
-environment.ts
 Neuchatel.json
