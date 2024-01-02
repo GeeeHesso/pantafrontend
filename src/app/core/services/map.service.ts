@@ -3,11 +3,8 @@ import { Inject, Injectable } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import * as L from 'leaflet'
 import { BehaviorSubject } from 'rxjs'
-import {
-  DEFAULT_OPTIONS,
-  PANTAGRUEL_DATA,
-  URL_LOCAL_GRID,
-} from '../core.const'
+import { environment } from 'src/environments/environment'
+import { DEFAULT_OPTIONS, PANTAGRUEL_DATA, URL_LOCAL_GRID } from '../core.const'
 import { MapOptions } from '../models/options.model'
 import { Pantagruel } from '../models/pantagruel'
 import { BranchService } from './branch.service'
@@ -23,6 +20,7 @@ import { DataService } from './data.service'
  * * 21/07/2023		Gwenaëlle Gustin		Last edition for TB release.
  * * 08/08/2023		Gwenaëlle Gustin		Limit date fixed dynamically
  * * 03/09/2023		Gwenaëlle Gustin		New feature: can call local API
+ * * 05/12/2023		Gwenaëlle Gustin		New feature: can upload json file
  ******************************************************************/
 
 @Injectable({
@@ -30,14 +28,15 @@ import { DataService } from './data.service'
 })
 export class MapService {
   public map!: L.Map
+  public devMode: boolean = false
   public scenarioMode: boolean = false
 
-  public URL_API_BASE ! : string
-  public URL_API_DEFAULT_GRID ! : string
-  public URL_API_AVAILABLE_DATES ! : string
-  public URL_API_DC_OPF_COUNTRY! : string
-  public URL_API_AC_OPF_COUNTRY! : string
-  public URL_API_DC_OPF_ENTSOE! : string
+  public URL_API_BASE!: string
+  public URL_API_DEFAULT_GRID!: string
+  public URL_API_AVAILABLE_DATES!: string
+  public URL_API_DC_OPF_COUNTRY!: string
+  public URL_API_AC_OPF_COUNTRY!: string
+  public URL_API_DC_OPF_ENTSOE!: string
 
   public isDataLoading$: BehaviorSubject<boolean> = new BehaviorSubject(true)
 
@@ -49,14 +48,20 @@ export class MapService {
   public maxDate: Date = new Date(2023, 1, 28)
   private _originalData!: Pantagruel
   private _lastResultData!: Pantagruel
+  private _localPantagruelData!: Pantagruel
   constructor(
     public dataService: DataService,
     public busService: BusService,
     public branchService: BranchService,
     private _snackBar: MatSnackBar,
     private _http: HttpClient,
+
     @Inject(PANTAGRUEL_DATA) private _pantagruelData: BehaviorSubject<Pantagruel>,
   ) {
+    this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
+      const formattedPantagruelData = this._getFormattedPantagruelData(data)
+      this._localPantagruelData = structuredClone(formattedPantagruelData)
+    })
   }
 
   /**
@@ -85,7 +90,7 @@ export class MapService {
     })
     this.map.on('zoomend', () => {
       this.drawOnMap()
-    });
+    })
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     })
@@ -94,13 +99,13 @@ export class MapService {
     this._getAvailableDate()
   }
 
-  public updateUrl():void {
-    if (this.selectedOptions.devMode){
+  public updateUrl(): void {
+    if (this.selectedOptions.localhostMode) {
       this.URL_API_BASE = 'http://127.0.0.1:8080/'
-    }else {
-      this.URL_API_BASE = 'https://pantagruelapi.p645.hevs.ch/'
+    } else {
+      this.URL_API_BASE = environment.apiUrl
     }
-    console.log("URL of the API is now: "+this.URL_API_BASE)
+    console.log('URL of the API is now: ' + this.URL_API_BASE)
     this.URL_API_DEFAULT_GRID = this.URL_API_BASE + 'networks/pantagruel'
     this.URL_API_AVAILABLE_DATES = this.URL_API_BASE + 'entsoe/available_dates'
     this.URL_API_DC_OPF_COUNTRY = this.URL_API_BASE + 'opf/dc_opf_country'
@@ -121,7 +126,7 @@ export class MapService {
         PANTAGRUEL_DATA,
         option.showBranchColor,
         option.showBranchWidth,
-        option.showBranchArrow
+        option.showBranchArrow,
       )
     if (option.showTransformer)
       this.branchService.drawTransformer(this.map, PANTAGRUEL_DATA, option.showTransColor)
@@ -145,8 +150,9 @@ export class MapService {
       layer.remove()
     })
     const TILES = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-        '| Bachelor\'s thesis 2023 by <a href="https://www.linkedin.com/in/gwena%C3%ABlle-gustin-09a228194/">Gwenaëlle Gustin</a> with <a href="https://www.hevs.ch/en/applied-research/research-institute-informatics/easilab-13431">Professor David Wannier</a> for <a href="https://etranselec.ch/">Professor Philippe Jacquod</a> '+
+      attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+        '| Bachelor\'s thesis 2023 by <a href="https://www.linkedin.com/in/gwena%C3%ABlle-gustin-09a228194/">Gwenaëlle Gustin</a> with <a href="https://www.hevs.ch/en/applied-research/research-institute-informatics/easilab-13431">Professor David Wannier</a> for <a href="https://etranselec.ch/">Professor Philippe Jacquod</a> ' +
         '| Load data from  <a href="https://transparency.entsoe.eu/">entose Transparency Platform</a>',
     })
     TILES.addTo(this.map)
@@ -168,12 +174,28 @@ export class MapService {
       next: (data) => {
         this.entsoeAvailableDate = data
         this.minDate = new Date(data[0])
-        this.maxDate = new Date(data[data.length-1])
+        this.maxDate = new Date(data[data.length - 1])
       },
       error: (error) => {
         console.warn('There was an error when request available date.', error)
       },
     })
+  }
+
+  /**
+   * Retrieve json data from file passed
+   * and display on the map
+   * @param file
+   */
+  public getDatafromFile(file: any): void {
+    const formattedPantagruelData = this._getFormattedPantagruelData(file)
+    this._pantagruelData.next(formattedPantagruelData)
+
+    this._originalData = structuredClone(formattedPantagruelData)
+    this._lastResultData = structuredClone(formattedPantagruelData)
+
+    this.drawOnMap()
+    this.isDataLoading$.next(false)
   }
 
   /**
@@ -183,7 +205,7 @@ export class MapService {
    * of by default ask the API for default data
    * @param url where retrieve json file
    */
-  public getData(url: string = this.URL_API_DEFAULT_GRID): void {
+  public getDataFromURL(url: string = this.URL_API_DEFAULT_GRID): void {
     this.isDataLoading$.next(true)
 
     this._http.get<Pantagruel>(url).subscribe({
@@ -195,17 +217,28 @@ export class MapService {
         this.isDataLoading$.next(false)
 
         // SCENARIO mode is true whe url is not /
-        if (this.scenarioMode){
+        if (this.scenarioMode) {
           //If URL does not correspond to a file in Firebase, it redirects to /
           // and ask again getData
-          if (this.scenarioMode && url === this.URL_API_DEFAULT_GRID){
+          if (this.scenarioMode && url === this.URL_API_DEFAULT_GRID) {
             this.showSnackbar("This scenario doesn't exist")
             this.scenarioMode = false
           } else {
-            this.showSnackbar("Work with data from scenario")
+            this.showSnackbar('Work with data from scenario')
           }
-        }else{// NORMAL mode ask API data
-          this.showSnackbar("Work with API data (GET) from " + data.date.day + '/' + data.date.month + '/' + data.date.year + ' (DD/MM/YYYY) ' + data.date.hour + ':00')
+        } else {
+          // NORMAL mode ask API data
+          this.showSnackbar(
+            'Work with API data (GET) from ' +
+              data.date.day +
+              '/' +
+              data.date.month +
+              '/' +
+              data.date.year +
+              ' (DD/MM/YYYY) ' +
+              data.date.hour +
+              ':00',
+          )
 
           // To handle cancel after edit
           this._originalData = structuredClone(formattedPantagruelData)
@@ -228,10 +261,9 @@ export class MapService {
    * @param date after selection
    */
   public askDataDateTime(date: any): void {
-    console.log(this.URL_API_BASE)
     this.showSnackbar('Requesting API (with date)...')
 
-    const data = this._pantagruelData.getValue()
+    const data = this._localPantagruelData
     data.date = date // Change the only value that is important for the API
 
     this._http.post<Pantagruel>(this.URL_API_DC_OPF_ENTSOE, data).subscribe({
@@ -281,9 +313,7 @@ export class MapService {
         // To handle if edited data cannot be resolved by the API
         this._lastResultData = structuredClone(formattedPantagruelData)
 
-        this.showSnackbar(
-          'SUCCESS with API : EDITED country values'
-        )
+        this.showSnackbar('SUCCESS with API : EDITED country values')
       },
       error: (error) => {
         this._handleError(error)
@@ -296,17 +326,15 @@ export class MapService {
    * Pass the edited data to the API url in parameter
    * and read returned data
    */
-  public askData(url:string): void {
-
+  public askData(url: string): void {
     this.isDataLoading$.next(true)
-    this.showSnackbar('Requesting API '+ url)
+    this.showSnackbar('Requesting API ' + url)
 
     const data = this._pantagruelData.getValue()
 
-    this._http.post<Pantagruel>(this.URL_API_BASE+url, data).subscribe({
-      next: (resultData) => {        this.showSnackbar(
-        'SUCCESS with API : EDITED data.'
-      )
+    this._http.post<Pantagruel>(this.URL_API_BASE + url, data).subscribe({
+      next: (resultData) => {
+        this.showSnackbar('SUCCESS with API : EDITED data.')
 
         const formattedPantagrualData = this._getFormattedPantagruelData(resultData)
         this._pantagruelData.next(formattedPantagrualData)
@@ -348,42 +376,35 @@ export class MapService {
       this.resetData()
       // Reset value in side panel Edits
       this.dataService.editedBus$.next([])
-
     } else if (error.status == 500) {
-        this.showSnackbar(
-          'Error : ' + error.error
-        )
+      this.showSnackbar('Error : ' + error.error)
 
       // Error 0 is when the API cannot be accessed
     } else if (error.status == 0) {
       // if no data at all is stored, read the local default value
+
       if (this._pantagruelData.getValue() == null) {
         this.showSnackbar(
           'Error ' +
             error.status +
             ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
+        this._pantagruelData.next(this._localPantagruelData)
+        this._originalData = structuredClone(this._localPantagruelData)
+        this._lastResultData = structuredClone(this._localPantagruelData)
 
-        this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
-          const formattedPantagruelData = this._getFormattedPantagruelData(data)
-          this._pantagruelData.next(formattedPantagruelData)
-
-          this._originalData = structuredClone(formattedPantagruelData)
-          this._lastResultData = structuredClone(formattedPantagruelData)
-
-          this.drawOnMap()
-          this.isDataLoading$.next(false)
-        })
+        this.drawOnMap()
+        this.isDataLoading$.next(false)
 
         return
       } else {
         //If there is some data stored, reset to the last result data set
-          this.showSnackbar(
-            'Error ' +
+        this.showSnackbar(
+          'Error ' +
             error.status +
             ' :  the API could not be accessed. LAST LOADED data are displayed.',
-          )
-          this._pantagruelData.next(this._lastResultData)
+        )
+        this._pantagruelData.next(this._lastResultData)
       }
     } else {
       //ToDo: simulated this case
@@ -419,6 +440,14 @@ export class MapService {
       pantagruelData.gen[g].maxMW =
         Math.round((pantagruelData.gen[g].pmax * pantagruelData.baseMVA + Number.EPSILON) * 100) /
         100
+
+      // Switzerland case
+      if (pantagruelData.gen[g].category == undefined) {
+        if (pantagruelData.gen[g].type.includes('hydro')) {
+          pantagruelData.gen[g].category = 'H'
+        }
+      }
+
       switch (pantagruelData.gen[g].category) {
         case 'C': {
           pantagruelData.gen[g].categoryText = 'Coal'
@@ -457,6 +486,12 @@ export class MapService {
           break
         }
       }
+
+      if (pantagruelData.gen[g].pg == undefined) {
+        console.warn('Gen without power: ' + pantagruelData.gen[g].index)
+      } else if (pantagruelData.gen[g].gen_status == 0) {
+        console.warn('Inactive gen: ' + pantagruelData.gen[g].index)
+      }
     })
 
     Object.keys(pantagruelData.load).forEach((l) => {
@@ -469,11 +504,18 @@ export class MapService {
         pantagruelData.bus[pantagruelData.load[l].load_bus].population,
       )
       pantagruelData.load[l].consumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
+        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+        100
       pantagruelData.load[l].newConsumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
+        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+        100
       pantagruelData.load[l].originalConsumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
+        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+        100
+
+      if (pantagruelData.load[l].status == 0) {
+        console.warn('Inactive load: ' + pantagruelData.load[l].index)
+      }
     })
 
     Object.keys(pantagruelData.bus).forEach((b) => {
@@ -489,6 +531,10 @@ export class MapService {
           pantagruelData.bus[b].gens.push(pantagruelData.gen[g])
         }
       })
+
+      if (pantagruelData.bus[b].status == 0) {
+        console.warn('Inactive bus: ' + pantagruelData.bus[b].index)
+      }
     })
 
     Object.keys(pantagruelData.branch).forEach((br) => {
@@ -526,15 +572,47 @@ export class MapService {
         ) / 100
 
       // Define the direction of the branch depends on the value of pf (negative go other way)
-      if (pantagruelData.branch[br].pf>=0){
+      if (pantagruelData.branch[br].pf >= 0) {
         pantagruelData.branch[br].fromBus = pantagruelData.bus[pantagruelData.branch[br].f_bus]
         pantagruelData.branch[br].toBus = pantagruelData.bus[pantagruelData.branch[br].t_bus]
       } else {
         pantagruelData.branch[br].fromBus = pantagruelData.bus[pantagruelData.branch[br].t_bus]
         pantagruelData.branch[br].toBus = pantagruelData.bus[pantagruelData.branch[br].f_bus]
       }
+
+      if (pantagruelData.branch[br].transformer) {
+        if (pantagruelData.branch[br].br_status == 0)
+          console.warn('Inactive transformer: ' + pantagruelData.branch[br].index)
+        if (pantagruelData.branch[br].pf == undefined)
+          console.warn('Transformer without power: ' + pantagruelData.branch[br].index)
+        if (
+          pantagruelData.branch[br].fromBus.coord[0] != pantagruelData.branch[br].toBus.coord[0] ||
+          pantagruelData.branch[br].fromBus.coord[1] != pantagruelData.branch[br].toBus.coord[1]
+        )
+          console.warn(
+            'Transformer' + pantagruelData.branch[br].index + ' has 2 coordinates different',
+          )
+      } else {
+        if (pantagruelData.branch[br].br_status == 0)
+          console.warn('Inactive line: ' + pantagruelData.branch[br].index)
+        if (pantagruelData.branch[br].pf == undefined)
+          console.warn('Line without power: ' + pantagruelData.branch[br].index)
+        if (
+          pantagruelData.branch[br].fromBus.coord[0] == pantagruelData.branch[br].toBus.coord[0] &&
+          pantagruelData.branch[br].fromBus.coord[1] == pantagruelData.branch[br].toBus.coord[1]
+        )
+          console.warn(
+            'The branch ' +
+              pantagruelData.branch[br].index +
+              ' cannot be display. The FROM coordinates are the same as the TO coordinates',
+          )
+      }
     })
+
     this.dataService.setConstOfDataSet(pantagruelData)
+    if (pantagruelData.date) {
+      this.dataService.setDateOfDataSet(pantagruelData)
+    }
 
     return pantagruelData
   }

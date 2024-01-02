@@ -3,7 +3,7 @@ import { NgElement, WithProperties } from '@angular/elements'
 import * as L from 'leaflet'
 import 'leaflet-polylinedecorator'
 import { MapPopupBranch } from '../../component/3-map-popup-branch/map-popup-branch'
-import { DEFAULT_COLOR_BRANCH, DEFAULT_WIDTH_BRANCH, INACTIVE_COLOR } from '../core.const'
+import { DEFAULT_COLOR, DEFAULT_WIDTH_BRANCH, INACTIVE_COLOR } from '../core.const'
 import { Branch } from '../models/branch.model'
 import { Pantagruel } from '../models/pantagruel'
 import {LatLng, Polyline} from "leaflet";
@@ -45,7 +45,7 @@ export class BranchService {
 
       // Style of line
       const weight = showWidth ? this._getWidth(data.branch[b].rate_a) : DEFAULT_WIDTH_BRANCH
-      const color = showColor ? this._getColorOfBranch(data.branch[b]) : DEFAULT_COLOR_BRANCH
+      const color = showColor ? this._getColorOfBranch(data.branch[b]) : DEFAULT_COLOR
 
       // Define line
       const branch = new L.Polyline(pointList, {
@@ -182,22 +182,9 @@ export class BranchService {
 
     Object.keys(data.branch).forEach((b) => {
       if (data.branch[b].transformer) {
-        if (
-          data.branch[b].fromBus.coord[0] != data.branch[b].toBus.coord[0] ||
-          data.branch[b].fromBus.coord[1] != data.branch[b].toBus.coord[1]
-        ) {
-          console.warn(
-            'The transformer on branch ' + data.branch[b].index + ' has 2 coordinates different',
-          )
-        }
-
-        //Uncomment to display one transformer > 150%
-        /*if (data.branch[b].index == 8279) {
-          data.branch[b].loadInjected = 150
-        }*/
 
         // Color
-        const color = showColor ? this._getColorOfBranch(data.branch[b]): DEFAULT_COLOR_BRANCH
+        const color = showColor ? this._getColorOfBranch(data.branch[b]): DEFAULT_COLOR
         const strokeColor  = showColor
           ? data.branch[b].loadInjected > 100
             ? '#ff0000'
@@ -230,17 +217,6 @@ export class BranchService {
         // Add icon to the map
         map.addLayer(branchIcon)
 
-      } else {
-        if (
-          data.branch[b].fromBus.coord[0] == data.branch[b].toBus.coord[0] &&
-          data.branch[b].fromBus.coord[1] == data.branch[b].toBus.coord[1]
-        ) {
-          console.warn(
-            'The branch ' +
-            data.branch[b].index +
-            ' cannot be display. The FROM coordinates are the same as the TO coordinates',
-          )
-        }
       }
     })
   }
@@ -282,9 +258,12 @@ export class BranchService {
    * @private
    */
   private _getColorOfBranch(branch: Branch): string {
+    // Without power
+    if (isNaN(branch.loadInjected))
+      return DEFAULT_COLOR
+
     // Inactive branches
     if (branch.br_status == 0) {
-      console.warn('Inactive branch: ' + branch.index)
       return INACTIVE_COLOR
     }
 

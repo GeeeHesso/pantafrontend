@@ -1,13 +1,13 @@
-import {Inject, Injectable} from '@angular/core'
+import { Inject, Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
+import { ALPHA_COUNTRY } from '../../../data/ISO_3166-1_alpha-2'
+import { PANTAGRUEL_DATA } from '../core.const'
 import { Branch } from '../models/branch.model'
 import { Bus } from '../models/bus.model'
+import { Country } from '../models/country.model'
 import { Gen } from '../models/gen.model'
+import { Load } from '../models/load.model'
 import { Pantagruel } from '../models/pantagruel'
-import {PANTAGRUEL_DATA} from "../core.const";
-import {Load} from "../models/load.model";
-import {Country} from "../models/country.model";
-import {ALPHA_COUNTRY} from "../../../assets/data/ISO_3166-1_alpha-2";
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
@@ -41,17 +41,13 @@ export class DataService {
   public currentDateTime$: BehaviorSubject<Date> = new BehaviorSubject(new Date())
   public editedBus$: BehaviorSubject<Bus[]> = new BehaviorSubject<Bus[]>([])
 
-  constructor(
-    @Inject(PANTAGRUEL_DATA) protected _pantagruelData: BehaviorSubject<Pantagruel>
-  ) {}
+  constructor(@Inject(PANTAGRUEL_DATA) protected _pantagruelData: BehaviorSubject<Pantagruel>) {}
 
   /**
    * Calculate the constant of a Pantagruel data set
    * @param data Pantagruel received file
    */
   public setConstOfDataSet(data: Pantagruel): void {
-    let dateTime = new Date(data.date.year, data.date.month - 1, data.date.day, data.date.hour)
-    this.currentDateTime$.next(dateTime)
     this.BUS_MAX_POP = this._setBusMaxPopulation(data.bus)
     this.BUS_MIN_POP = this._setBusMinPopulation(data.bus)
     this.GEN_MAX_MAX_PROD = this._setGenMaxOfMaxProduction(data.gen)
@@ -63,6 +59,14 @@ export class DataService {
     this.setTotalProdCons(data)
   }
 
+  /**
+   * Change date time base on data set receive
+   * @param data Pantagruel received file
+   */
+  public setDateOfDataSet(data: Pantagruel): void {
+    let dateTime = new Date(data.date.year, data.date.month - 1, data.date.day, data.date.hour)
+    this.currentDateTime$.next(dateTime)
+  }
 
   /**
    * Find the max population value of buses
@@ -99,7 +103,7 @@ export class DataService {
    * @param gens
    * @private
    */
-  private _setGenMaxOfMaxProduction(gens: { [key: string]: Gen }): number{
+  private _setGenMaxOfMaxProduction(gens: { [key: string]: Gen }): number {
     let max: number = 0
     Object.keys(gens).forEach((b) => {
       if (max < gens[b].maxMW) {
@@ -168,9 +172,9 @@ export class DataService {
   /**
    * Reset edited total of production and consumption
    */
-  public resetTotalEditedProdCons(){
-    this.editedTotalProd$.next(Math.round((this.TOTAL_PROD+ Number.EPSILON) * 100) / 100)
-    this.editedTotalCons$.next(Math.round((this.TOTAL_CONS+ Number.EPSILON) * 100) / 100)
+  public resetTotalEditedProdCons() {
+    this.editedTotalProd$.next(Math.round((this.TOTAL_PROD + Number.EPSILON) * 100) / 100)
+    this.editedTotalCons$.next(Math.round((this.TOTAL_CONS + Number.EPSILON) * 100) / 100)
   }
 
   /**
@@ -203,7 +207,7 @@ export class DataService {
    * Return false if one element attached to the given bus has been edited
    * @param indexBus
    */
-  public isSameAsOriginal(indexBus: number): boolean{
+  public isSameAsOriginal(indexBus: number): boolean {
     const editedBus = this.editedBus$.getValue()
     let isSameAsOriginal = true
 
@@ -216,20 +220,20 @@ export class DataService {
       }
     })
 
-    editedBus.forEach((b)=>{
-      if (b.index == indexBus){
-        b.gens.forEach((g)=>{
-          if (g.originalProduceMW != g.newProduceMW){
+    editedBus.forEach((b) => {
+      if (b.index == indexBus) {
+        b.gens.forEach((g) => {
+          if (g.originalProduceMW != g.newProduceMW) {
             isSameAsOriginal = false
           }
         })
-        b.loads.forEach((l)=>{
-          if (l.originalConsumeMW != l.newConsumeMW){
+        b.loads.forEach((l) => {
+          if (l.originalConsumeMW != l.newConsumeMW) {
             isSameAsOriginal = false
           }
         })
-        branchs.forEach((br)=>{
-          if (br.originalStatus != br.br_status){
+        branchs.forEach((br) => {
+          if (br.originalStatus != br.br_status) {
             isSameAsOriginal = false
           }
         })
@@ -246,13 +250,19 @@ export class DataService {
   private _setCountries(data: Pantagruel) {
     this.COUNTRIES = []
     Object.keys(data.load).forEach((l) => {
-      Object.keys(data.bus).forEach((b)=>{
-        if (data.bus[b].index == data.load[l].load_bus){
-          let index = this.COUNTRIES.findIndex(x => x.alpha == data.bus[b].country)
-          if (index === -1){
+      Object.keys(data.bus).forEach((b) => {
+        if (data.bus[b].index == data.load[l].load_bus) {
+          let index = this.COUNTRIES.findIndex((x) => x.alpha == data.bus[b].country)
+          if (index === -1) {
             // @ts-ignore
             const countryName: string = ALPHA_COUNTRY[data.bus[b].country]
-            index = this.COUNTRIES.push({alpha: data.bus[b].country, countryName: countryName, pd: 0, qd: 0 }) -1
+            index =
+              this.COUNTRIES.push({
+                alpha: data.bus[b].country,
+                countryName: countryName,
+                pd: 0,
+                qd: 0,
+              }) - 1
           }
           this.COUNTRIES[index].pd = this.COUNTRIES[index].pd + data.load[l].pd
           //this.COUNTRIES[index].qd = this.COUNTRIES[index].qd + data.load[l].qd

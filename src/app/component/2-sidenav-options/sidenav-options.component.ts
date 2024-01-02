@@ -4,10 +4,9 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatToolbarModule } from '@angular/material/toolbar'
+import { DEFAULT_OPTIONS } from '../../core/core.const'
 import { MapOptions } from '../../core/models/options.model'
 import { MapService } from '../../core/services/map.service'
-import {DEFAULT_OPTIONS} from "../../core/core.const";
-
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
@@ -62,10 +61,7 @@ export class SidenavOptionsComponent {
   resetOptions(): void {
     this.mapService.selectedOptions = Object.assign({}, DEFAULT_OPTIONS)
     this.applyOptions(this.mapService.selectedOptions)
-    this.mapService.map.flyTo(
-      DEFAULT_OPTIONS.center,
-      DEFAULT_OPTIONS.zoom,
-    )
+    this.mapService.map.flyTo(DEFAULT_OPTIONS.center, DEFAULT_OPTIONS.zoom)
   }
 
   /**
@@ -79,8 +75,12 @@ export class SidenavOptionsComponent {
     this.mapService.updateUrl()
   }
 
+  changeLocalhostMode(checked: boolean): void {
+    this.mapService.selectedOptions.localhostMode = checked
+    this.mapService.updateUrl()
+  }
+
   changeDevMode(checked: boolean): void {
     this.mapService.selectedOptions.devMode = checked
-    this.mapService.updateUrl()
   }
 }

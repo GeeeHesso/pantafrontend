@@ -1,6 +1,9 @@
 <h1 mat-dialog-title>Provide consumption by country</h1>
-<mat-dialog-content>
-  <table matSort (matSortChange)="sortCountry($event)" matSortActive="alpha" matSortDirection="asc">
+<mat-dialog-content >
+  <p *ngIf="countryList.length<2">
+    No country detected
+  </p>
+  <table *ngIf="countryList.length>1" matSort (matSortChange)="sortCountry($event)" matSortActive="alpha" matSortDirection="asc">
     <tr>
       <th mat-sort-header="alpha">Alpha-2</th>
       <th mat-sort-header="name">Country</th>
@@ -20,9 +23,9 @@
 
 <div mat-dialog-actions align="center">
   <button mat-raised-button mat-dialog-close="true">Cancel</button>
-  <button mat-raised-button  color="primary" aria-label="Send"
+  <button mat-raised-button  color="primary" aria-label="Send" *ngIf="countryList.length>1"
           (click)="sendCountry('AC')">Ask AC dispatch</button>
-  <button mat-raised-button  color="primary" aria-label="Send"
+  <button mat-raised-button  color="primary" aria-label="Send" *ngIf="countryList.length>1"
           (click)="sendCountry('DC')">Ask DC dispatch</button>
 </div>
 

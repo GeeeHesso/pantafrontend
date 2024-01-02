@@ -1,11 +1,12 @@
 {
   "name": "pan-ta-gru-el-frontend",
-  "version": "0.0.0",
+  "version": "1.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "build-prod": "ng build --configuration production --base-href=\"https://etranselec.ch/pantafrontend/",
+    "prebuild": "npm --no-git-tag-version version patch",
+    "build": "ng build --configuration production --base-href=\"https://etranselec.ch/pantafrontend/",
+    "build-dev": "ng build --base-href=\"http://127.0.0.1:5500/dist/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -25,6 +26,7 @@
     "firebase": "^10.0.0",
     "leaflet": "^1.7.1",
     "leaflet-polylinedecorator": "^1.6.0",
+    "luxon": "^3.4.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"

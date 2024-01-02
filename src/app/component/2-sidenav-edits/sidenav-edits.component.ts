@@ -46,7 +46,7 @@ export class SidenavEditsComponent implements OnInit{
   ) {}
   @Inject(MAT_DIALOG_DATA) public current: string='dc'
   @Inject(MAT_DIALOG_DATA) public flow: string='pf'
-
+  protected readonly isNaN = isNaN
 
   ngOnInit() {
     // Each time the edited total production change, the difference is recalculated
@@ -152,4 +152,5 @@ export class SidenavEditsComponent implements OnInit{
   public handleButtonCancelEditBranch(branch: Branch): void{
     this.editsService.toggleBranch(branch, branch.originalStatus == 1)
   }
+
 }

@@ -57,7 +57,7 @@
               class="tabInput"
               [contentEditable]="this.editsService.editMode"
             >
-              {{ gen.produceMW }}
+              {{ isNaN(gen.produceMW) ? "-" : gen.produceMW}}
             </div>
             / {{ gen.maxMW }} MW
           </td>
@@ -101,11 +101,11 @@
             <br />
             {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
             <br />
-            Load injected: {{ trans.loadInjected }} %
+            Load injected: {{ isNaN(trans.loadInjected) ? "-" : trans.loadInjected}} %
             <br />
-            Total power: {{ trans.totalPowerMW }} / {{ trans.thermalRatingMW }} MW
+            Total power: {{ isNaN(trans.totalPowerMW) ? "-" : trans.totalPowerMW}} / {{ trans.thermalRatingMW }} MW
             <br />
-            Losses: {{ trans.losses }} MW
+            Losses: {{ isNaN(trans.losses) ? "-" : trans.losses}} MW
           </td>
         </tr>
       </table>
@@ -175,7 +175,7 @@
                   class="tabInput"
                   [contentEditable]="this.editsService.editMode"
                 >
-                  {{ gen.produceMW }}
+                  {{ isNaN(gen.produceMW) ? "-" : gen.produceMW}}
                 </div>
                 / {{ gen.maxMW }} MW
               </td>
@@ -219,11 +219,11 @@
                 <br />
                 {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
                 <br />
-                Load injected: {{ trans.loadInjected }} %
+                Load injected: {{ isNaN(trans.loadInjected) ? "-" : trans.loadInjected}} %
                 <br />
-                Total power: {{ trans.totalPowerMW }} / {{ trans.thermalRatingMW }} MW
+                Total power: {{ isNaN(trans.totalPowerMW) ? "-" : trans.totalPowerMW}} / {{ trans.thermalRatingMW }} MW
                 <br />
-                Losses: {{ trans.losses }} MW
+                Losses: {{ isNaN(trans.losses) ? "-" : trans.losses}} MW
               </td>
             </tr>
           </table>

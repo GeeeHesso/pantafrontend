@@ -67,9 +67,9 @@
     </mat-card-header>
     <mat-card-content>
       Consumption: {{this.editsService.mapService.dataService.TOTAL_CONS}} <br>
-      Production: {{this.editsService.mapService.dataService.TOTAL_PROD}} <br>
+      Production: {{ isNaN(this.editsService.mapService.dataService.TOTAL_PROD) ? "-" : this.editsService.mapService.dataService.TOTAL_PROD}}<br>
       Edited consumption: {{this.editsService.mapService.dataService.editedTotalCons$.getValue()}} <br>
-      Edited production: {{this.editsService.mapService.dataService.editedTotalProd$.getValue()}} <br>
+      Edited production: {{ isNaN(this.editsService.mapService.dataService.editedTotalProd$.getValue()) ? "-" : this.editsService.mapService.dataService.editedTotalProd$.getValue()}}<br>
     </mat-card-content>
   </mat-card>
 
