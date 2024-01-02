@@ -12,7 +12,9 @@ PanTaGruEl is a dynamical grid model designed to investigate the propagation of 
 
 The application displays data from the [API NetworkServer.jl](https://github.com/julianfritzsch/NetworkServer.jl) written in Julia by Julian Fritzsch (member of the GEEE), which itself uses the Pantagruel Julia project [PanTaGruEl.jl](https://github.com/laurentpagnier/pantagruel.jl).
 
+
 **The running application can be tested here https://etranselec.ch/pantafrontend/.**
+The version under development is linked to https://pantagruel-frontend-dev.netlify.app/
 
 You can find example of a generate scenario at https://etranselec.ch/pantafrontend/?scenario=2023-07-13-11-19-32Change-Kriegers-Flak.json
 
@@ -24,6 +26,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 
 ### Build
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
 
 ### Deploy
 Run `ng build --configuration production --base-href=\"https://etranselec.ch/pantafrontend/"` to build the project. The build artifacts will be stored in the `docs/` directory. Push the new version to dev branch and create a pull request.
