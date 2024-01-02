@@ -5,8 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "prebuild": "npm --no-git-tag-version version patch",
-    "build": "ng build --configuration production --base-href=\"https://etranselec.ch/pantafrontend/",
-    "build-dev": "ng build --base-href=\"http://127.0.0.1:5500/dist/",
+    "build": "ng build --configuration production --output-path docs --base-href=\"https://etranselec.ch/pantafrontend/",
+    "build-dev": "ng build --output-path dist --base-href=\"http://127.0.0.1:5500/dist/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
