@@ -34,10 +34,21 @@ The code on the dev branch is automatically deployed on https://pantagruel-front
 After pull request acceptance, 
 
 ## Release note
+### 1.0.3 (01.2024)
+**New features:**
+- Number version displayed
+  
+**Bug fix**
+- Local default data is now available again
+
 ### 1.0.2 (12.2023)
 **New features:**
 - A JSON file can be uploaded to replace default grid
 - JSON file with grid data can be downloaded
+- Dev mode replaced by Localhost mode (local api) and Advanced mode (raw data)
+- 
+**Bug fix**
+- Hide NaN value
 
 ### 1.0.1 (08-11.2023)
 **New features:**

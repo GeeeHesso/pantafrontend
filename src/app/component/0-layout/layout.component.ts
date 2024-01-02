@@ -92,17 +92,6 @@ export class LayoutComponent implements OnInit {
       if (routerData instanceof ResolveEnd) {
         this.mapService.initOptionsFromLS()
 
-        /*if (this.mapService.selectedOptions.devMode){
-          this.mapService.URL_API_BASE = 'http://127.0.0.1:8080/'
-        } else {
-          this.mapService.URL_API_BASE = 'https://pantagruelapi.p645.hevs.ch/'
-        }
-
-      if (this._window.location.origin.includes("dev")
-          || this._window.location.origin.includes("localhost")) {
-          this.mapService.devMode = true
-        }*/
-
         // In case of normal app (not scenario url)
         if (!routerData.url.includes('?scenario=')) {
           this.mapService.initMap()
@@ -434,7 +423,7 @@ export class DialogUpload {
 
   public onUploadClick(): void {
     const jsonData = JSON.parse(this.fileString)
-    this.mapService.getDatafromFile(jsonData)
+    this.mapService.getDataFromFile(jsonData)
     this.dialogRef.close()
   }
 }
