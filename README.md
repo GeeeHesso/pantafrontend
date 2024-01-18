@@ -19,7 +19,7 @@ PanTaGruEl is a dynamical grid model designed to investigate the propagation of 
 The application displays data from the [API NetworkServer.jl](https://github.com/julianfritzsch/NetworkServer.jl) written in Julia by Julian Fritzsch (member of the GEEE), which itself uses the Pantagruel Julia project [PanTaGruEl.jl](https://github.com/laurentpagnier/pantagruel.jl).
 
 
-- **The running application can be tested here https://etranselec.ch/pantafrontend/**
+- **The running application can be tested at https://etranselec.ch/pantafrontend/**
 - The running API is accessible at https://pantagruelapi.iigweb.hevs.ch/docs
 - The version under development is linked to https://pantagruel-frontend-dev.netlify.app/
 - You can find example of a generate scenario at https://etranselec.ch/pantafrontend/?scenario=2023-07-13-11-19-32Change-Kriegers-Flak.json
@@ -30,16 +30,17 @@ The application displays data from the [API NetworkServer.jl](https://github.com
 - Number version displayed
 - Button to access to this README
   
-**Bug fix**
+**Bug fix:**
 - Local default data is now available again
+- If local data loaded, can reask EU map with datetime
 
 ### 1.0.2 (12.2023)
 **New features:**
 - A JSON file can be uploaded to replace default grid
 - JSON file with grid data can be downloaded
 - Dev mode replaced by Localhost mode (local api) and Advanced mode (raw data)
-- 
-**Bug fix**
+  
+**Bug fix:**
 - Hide NaN value
 
 ### 1.0.1 (08-11.2023)
@@ -59,7 +60,7 @@ The application displays data from the [API NetworkServer.jl](https://github.com
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Build and deploy
+### Build and deploy
 1. Run this command to test build locally: `ng build --output-path dist --base-href=\"http://127.0.0.1:5500/dist/`.
 2. If successful, run this command to build artifacts in `docs/` directory (necessary for auto deploy with gh-pages): `ng build --configuration production --output-path docs --base-href=\"https://etranselec.ch/pantafrontend/"`. 
 3. Push the new version to dev branch.

@@ -21,6 +21,7 @@ import { DataService } from './data.service'
  * * 08/08/2023		Gwenaëlle Gustin		Limit date fixed dynamically
  * * 03/09/2023		Gwenaëlle Gustin		New feature: can call local API
  * * 05/12/2023		Gwenaëlle Gustin		New feature: can upload json file
+ * * 18/01/2024		Gwenaëlle Gustin		Bug fix: ask data with date load EU map (not loaded map)
  ******************************************************************/
 
 @Injectable({
@@ -258,7 +259,8 @@ export class MapService {
   public askDataDateTime(date: any): void {
     this.showSnackbar('Requesting API (with date)...')
 
-    const data = this._originalData
+    this.loadLocalData()
+    const data = this._localPantagruelData
     data.date = date // Change the only value that is important for the API
 
     this._http.post<Pantagruel>(this.URL_API_DC_OPF_ENTSOE, data).subscribe({
@@ -359,6 +361,19 @@ export class MapService {
     this.isDataLoading$.next(false)
   }
 
+  public loadLocalData(): void {
+    this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
+      const formattedPantagruelData = this._getFormattedPantagruelData(data)
+      this._pantagruelData.next(formattedPantagruelData)
+
+      this._originalData = structuredClone(formattedPantagruelData)
+      this._lastResultData = structuredClone(formattedPantagruelData)
+
+      this.drawOnMap()
+      this.isDataLoading$.next(false)
+    })
+  }
+
   /**
    * Handle error when loading data from the API
    * @param error
@@ -384,16 +399,7 @@ export class MapService {
             error.status +
             ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
-        this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
-          const formattedPantagruelData = this._getFormattedPantagruelData(data)
-          this._pantagruelData.next(formattedPantagruelData)
-
-          this._originalData = structuredClone(formattedPantagruelData)
-          this._lastResultData = structuredClone(formattedPantagruelData)
-
-          this.drawOnMap()
-          this.isDataLoading$.next(false)
-        })
+        this.loadLocalData()
 
         return
       } else {
