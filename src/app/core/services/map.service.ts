@@ -93,6 +93,7 @@ export class MapService {
     tiles.addTo(this.map)
 
     this._getAvailableDate()
+    this._loadLocalData()
   }
 
   public updateUrl(): void {
@@ -259,8 +260,7 @@ export class MapService {
   public askDataDateTime(date: any): void {
     this.showSnackbar('Requesting API (with date)...')
 
-    this.loadLocalData()
-    const data = this._localPantagruelData
+    const data: Pantagruel = structuredClone(this._localPantagruelData)
     data.date = date // Change the only value that is important for the API
 
     this._http.post<Pantagruel>(this.URL_API_DC_OPF_ENTSOE, data).subscribe({
@@ -361,16 +361,9 @@ export class MapService {
     this.isDataLoading$.next(false)
   }
 
-  public loadLocalData(): void {
+  private _loadLocalData(): any {
     this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
-      const formattedPantagruelData = this._getFormattedPantagruelData(data)
-      this._pantagruelData.next(formattedPantagruelData)
-
-      this._originalData = structuredClone(formattedPantagruelData)
-      this._lastResultData = structuredClone(formattedPantagruelData)
-
-      this.drawOnMap()
-      this.isDataLoading$.next(false)
+      this._localPantagruelData = this._getFormattedPantagruelData(data)
     })
   }
 
@@ -399,7 +392,14 @@ export class MapService {
             error.status +
             ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
-        this.loadLocalData()
+        const formattedPantagruelData = this._getFormattedPantagruelData(this._localPantagruelData)
+        this._pantagruelData.next(formattedPantagruelData)
+
+        this._originalData = structuredClone(formattedPantagruelData)
+        this._lastResultData = structuredClone(formattedPantagruelData)
+
+        this.drawOnMap()
+        this.isDataLoading$.next(false)
 
         return
       } else {
