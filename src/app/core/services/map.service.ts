@@ -32,6 +32,7 @@ export class MapService {
   public devMode: boolean = false
   public scenarioMode: boolean = false
   public uploadMode: boolean = false
+  public fileName: string = 'Uploaded file'
 
   public URL_API_BASE!: string
   public URL_API_DEFAULT_GRID!: string

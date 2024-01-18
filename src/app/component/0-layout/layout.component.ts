@@ -422,10 +422,10 @@ export class DialogUpload {
   }
 
   public onUploadClick(): void {
-    // @todo create an upload mod to show edit button and hide date
     const jsonData = JSON.parse(this.fileString)
     this.mapService.getDataFromFile(jsonData)
     this.mapService.uploadMode = true
+    this.mapService.fileName = this.file.name
     this.dialogRef.close()
   }
 }

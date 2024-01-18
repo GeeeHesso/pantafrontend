@@ -7,7 +7,7 @@
   <span class="spacer"></span>
 
   <!-- In upload mode -->
-  <span [hidden]="!this.mapService.uploadMode">Uploaded file</span>
+  <span [hidden]="!this.mapService.uploadMode">{{ this.mapService.fileName }} </span>
   <button
     mat-icon-button
     [hidden]="!this.mapService.uploadMode"
