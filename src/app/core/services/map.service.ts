@@ -31,6 +31,7 @@ export class MapService {
   public map!: L.Map
   public devMode: boolean = false
   public scenarioMode: boolean = false
+  public uploadMode: boolean = false
 
   public URL_API_BASE!: string
   public URL_API_DEFAULT_GRID!: string

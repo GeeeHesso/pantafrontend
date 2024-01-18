@@ -243,9 +243,9 @@ export class LayoutComponent implements OnInit {
   }
 
   /**
-   * Handle button that leave the scenario mode by reload the main page
+   * Handle button that leave the scenario mode / uploaded file mode by reload the main page
    */
-  public handleButtonCancelScenarioMode(): void {
+  public handleButtonCancel(): void {
     this._router.navigate(['']).then(() => window.location.reload())
   }
 
@@ -422,8 +422,10 @@ export class DialogUpload {
   }
 
   public onUploadClick(): void {
+    // @todo create an upload mod to show edit button and hide date
     const jsonData = JSON.parse(this.fileString)
     this.mapService.getDataFromFile(jsonData)
+    this.mapService.uploadMode = true
     this.dialogRef.close()
   }
 }

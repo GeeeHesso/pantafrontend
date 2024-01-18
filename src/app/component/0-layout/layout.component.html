@@ -6,6 +6,19 @@
 
   <span class="spacer"></span>
 
+  <!-- In upload mode -->
+  <span [hidden]="!this.mapService.uploadMode">Uploaded file</span>
+  <button
+    mat-icon-button
+    [hidden]="!this.mapService.uploadMode"
+    class="icon"
+    aria-label="Cancel"
+    title="Close this file"
+    (click)="this.handleButtonCancel()"
+  >
+    <mat-icon>cancel</mat-icon>
+  </button>
+
   <!-- In scenario mode -->
   <span [hidden]="!this.mapService.scenarioMode"> Scenario {{ this.title }} </span>
   <button
@@ -14,13 +27,17 @@
     class="icon"
     aria-label="Cancel"
     title="Close this scenario"
-    (click)="this.handleButtonCancelScenarioMode()"
+    (click)="this.handleButtonCancel()"
   >
     <mat-icon>cancel</mat-icon>
   </button>
 
   <!-- In normal mode -->
-  <div [hidden]="this.mapService.scenarioMode || this.editsService.editMode">
+  <div
+    [hidden]="
+      this.mapService.scenarioMode || this.editsService.editMode || this.mapService.uploadMode
+    "
+  >
     <mat-form-field subscriptSizing="dynamic">
       <input
         id="date"
@@ -67,6 +84,7 @@
   </div>
   <div [hidden]="this.editsService.editMode || this.mapService.scenarioMode">
     <button
+      [hidden]="this.mapService.uploadMode"
       mat-icon-button
       class="icon"
       aria-label="Send"
@@ -102,14 +120,13 @@
     class="icon"
     aria-label="Cancel"
     title="Back to default"
-    (click)="this.handleButtonCancelScenarioMode()"
+    (click)="this.handleButtonCancel()"
   >
     <mat-icon>cancel</mat-icon>
   </button>
   <span [hidden]="!this.editsService.editMode"> Cancel edit </span>
   <span class="spacer"></span>
   <button
-    [hidden]="!this.editsService.editMode"
     id="btnEditsSidenav"
     mat-icon-button
     class="icon"
