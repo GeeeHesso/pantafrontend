@@ -61,8 +61,8 @@ The application displays data from the [API NetworkServer.jl](https://github.com
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
 ### Build and deploy
-1. Run this command to test build locally: `ng build --output-path dist --base-href=\"http://127.0.0.1:5500/dist/`.
-2. If successful, run this command to build artifacts in `docs/` directory (necessary for auto deploy with gh-pages): `ng build --configuration production --output-path docs --base-href=\"https://etranselec.ch/pantafrontend/"`. 
+1. Run this command to test build locally: `ng build --output-path dist --base-href=\"http://127.0.0.1:5500/dist/"`. And open the file docs/index.html in your browser.
+2. If successful, run this command to build artifacts in `docs/` directory (necessary for auto deploy with gh-pages): `ng build --configuration production --output-path docs --base-href=\"https://etranselec.ch/pantafrontend/"`. The version number is automatically incremented.
 3. Push the new version to dev branch.
 4. Check your version with the automatic deployment on https://pantagruel-frontend-dev.netlify.app/.
 5. If everything is ok, create a pull request.
