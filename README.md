@@ -27,7 +27,7 @@ The application displays data from the [API NetworkServer.jl](https://github.com
 ## Release notes
 ### 1.0.4 (02.2024)
 **New features:**
-- Show file name
+- Show name of file uploaded
   
 **Bug fix:**
 - Losses show

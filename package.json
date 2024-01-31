@@ -1,6 +1,6 @@
 {
   "name": "pan-ta-gru-el-frontend",
-  "version": "1.0.5",
+  "version": "1.0.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
