@@ -25,6 +25,13 @@ The application displays data from the [API NetworkServer.jl](https://github.com
 - You can find example of a generate scenario at https://etranselec.ch/pantafrontend/?scenario=2023-07-13-11-19-32Change-Kriegers-Flak.json
 
 ## Release notes
+### 1.0.4 (02.2024)
+**New features:**
+- Show file name
+  
+**Bug fix:**
+- Losses show
+
 ### 1.0.3 (01.2024)
 **New features:**
 - Number version displayed
@@ -32,7 +39,7 @@ The application displays data from the [API NetworkServer.jl](https://github.com
   
 **Bug fix:**
 - Local default data is now available again
-- If local data loaded, can reask EU map with datetime
+- If local data loaded, can re-ask EU map with datetime
 
 ### 1.0.2 (12.2023)
 **New features:**
