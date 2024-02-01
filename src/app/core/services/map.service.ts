@@ -95,7 +95,7 @@ export class MapService {
     tiles.addTo(this.map)
 
     this._getAvailableDate()
-    this._loadLocalData()
+    this._loadLocalData() // @todo: useless for now, failed displayed before end of reading
   }
 
   public updateUrl(): void {
@@ -186,7 +186,7 @@ export class MapService {
    * and display on the map
    * @param file
    */
-  public getDataFromFile(file: any): void {
+  public async getDataFromFile(file: any) {
     const formattedPantagruelData = this._getFormattedPantagruelData(file)
     this._pantagruelData.next(formattedPantagruelData)
 
@@ -366,6 +366,7 @@ export class MapService {
   private _loadLocalData(): any {
     this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
       this._localPantagruelData = this._getFormattedPantagruelData(data)
+      console.log(this._localPantagruelData)
     })
   }
 
@@ -373,7 +374,7 @@ export class MapService {
    * Handle error when loading data from the API
    * @param error
    */
-  private _handleError(error: any): void {
+  private _handleError(error: any) {
     console.warn('There was an ERROR with HTTP request', error)
 
     if (error.status == 422) {
@@ -394,14 +395,12 @@ export class MapService {
             error.status +
             ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
-        const formattedPantagruelData = this._getFormattedPantagruelData(this._localPantagruelData)
-        this._pantagruelData.next(formattedPantagruelData)
 
-        this._originalData = structuredClone(formattedPantagruelData)
-        this._lastResultData = structuredClone(formattedPantagruelData)
-
-        this.drawOnMap()
-        this.isDataLoading$.next(false)
+        //@todo: is same code as _loadLocalData()
+        this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
+          this._localPantagruelData = this._getFormattedPantagruelData(data)
+          this.getDataFromFile(this._localPantagruelData)
+        })
 
         return
       } else {
