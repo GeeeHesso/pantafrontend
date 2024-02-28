@@ -95,7 +95,7 @@ export class MapService {
     tiles.addTo(this.map)
 
     this._getAvailableDate()
-    this._loadLocalData()
+    this._loadLocalData() // @todo: useless for now, failed displayed before end of reading
   }
 
   public updateUrl(): void {
@@ -152,7 +152,7 @@ export class MapService {
       attribution:
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
         '| Bachelor\'s thesis 2023 by <a href="https://www.linkedin.com/in/gwena%C3%ABlle-gustin-09a228194/">Gwenaëlle Gustin</a> with <a href="https://www.hevs.ch/en/applied-research/research-institute-informatics/easilab-13431">Professor David Wannier</a> for <a href="https://etranselec.ch/">Professor Philippe Jacquod</a> ' +
-        '| Load data from  <a href="https://transparency.entsoe.eu/">entose Transparency Platform</a>',
+        '| Load data from  <a href="https://transparency.entsoe.eu/">entsoe Transparency Platform</a>',
     })
     TILES.addTo(this.map)
   }
@@ -186,7 +186,7 @@ export class MapService {
    * and display on the map
    * @param file
    */
-  public getDataFromFile(file: any): void {
+  public async getDataFromFile(file: any) {
     const formattedPantagruelData = this._getFormattedPantagruelData(file)
     this._pantagruelData.next(formattedPantagruelData)
 
@@ -366,6 +366,7 @@ export class MapService {
   private _loadLocalData(): any {
     this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
       this._localPantagruelData = this._getFormattedPantagruelData(data)
+      console.log(this._localPantagruelData)
     })
   }
 
@@ -373,7 +374,7 @@ export class MapService {
    * Handle error when loading data from the API
    * @param error
    */
-  private _handleError(error: any): void {
+  private _handleError(error: any) {
     console.warn('There was an ERROR with HTTP request', error)
 
     if (error.status == 422) {
@@ -385,7 +386,7 @@ export class MapService {
       this.showSnackbar('Error : ' + error.error)
 
       // Error 0 is when the API cannot be accessed
-    } else if (error.status == 0) {
+    } else if (error.status == 0 || error.status == 404) {
       // if no data at all is stored, read the local default value
 
       if (this._pantagruelData.getValue() == null) {
@@ -394,14 +395,12 @@ export class MapService {
             error.status +
             ' :  the API could not be accessed. The LOCAL data are displayed.',
         )
-        const formattedPantagruelData = this._getFormattedPantagruelData(this._localPantagruelData)
-        this._pantagruelData.next(formattedPantagruelData)
 
-        this._originalData = structuredClone(formattedPantagruelData)
-        this._lastResultData = structuredClone(formattedPantagruelData)
-
-        this.drawOnMap()
-        this.isDataLoading$.next(false)
+        //@todo: is same code as _loadLocalData()
+        this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
+          this._localPantagruelData = this._getFormattedPantagruelData(data)
+          this.getDataFromFile(this._localPantagruelData)
+        })
 
         return
       } else {
