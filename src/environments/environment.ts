@@ -1,8 +1,7 @@
 export const environment = {
   production: false,
 
-  apiUrl: 'https://pantagruelapi.p645.hevs.ch/',
-  //apiUrl: 'https://pantagruelapi.iigweb.hevs.ch/',
+  apiUrl: 'https://pantagruelapi.hevs.ch/',
   version: require('../../package.json').version,
 
   FIREBASE_API_KEY: 'AIzaSyCYwVC7cB92X0IcMWVM7TPM05A2734v9Qc',

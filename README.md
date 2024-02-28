@@ -20,17 +20,21 @@ The application displays data from the [API NetworkServer.jl](https://github.com
 
 
 - **The running application can be tested at https://etranselec.ch/pantafrontend/**
-- The running API is accessible at https://pantagruelapi.iigweb.hevs.ch/docs
+- The running API is accessible at https://pantagruelapi.hevs.ch/docs
 - The version under development is linked to https://pantagruel-frontend-dev.netlify.app/
 - You can find example of a generate scenario at https://etranselec.ch/pantafrontend/?scenario=2023-07-13-11-19-32Change-Kriegers-Flak.json
 
 ## Release notes
+### 1.0.5 (28.02.2024)
+**New features:**
+- New URL for api : https://pantagruelapi.hevs.ch/
+
 ### 1.0.4 (02.2024)
 **New features:**
 - Show name of file uploaded
   
 **Bug fix:**
-- Losses show
+- Losses shown
 
 ### 1.0.3 (01.2024)
 **New features:**

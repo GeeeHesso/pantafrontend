@@ -152,7 +152,7 @@ export class MapService {
       attribution:
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
         '| Bachelor\'s thesis 2023 by <a href="https://www.linkedin.com/in/gwena%C3%ABlle-gustin-09a228194/">Gwenaëlle Gustin</a> with <a href="https://www.hevs.ch/en/applied-research/research-institute-informatics/easilab-13431">Professor David Wannier</a> for <a href="https://etranselec.ch/">Professor Philippe Jacquod</a> ' +
-        '| Load data from  <a href="https://transparency.entsoe.eu/">entose Transparency Platform</a>',
+        '| Load data from  <a href="https://transparency.entsoe.eu/">entsoe Transparency Platform</a>',
     })
     TILES.addTo(this.map)
   }
@@ -386,7 +386,7 @@ export class MapService {
       this.showSnackbar('Error : ' + error.error)
 
       // Error 0 is when the API cannot be accessed
-    } else if (error.status == 0) {
+    } else if (error.status == 0 || error.status == 404) {
       // if no data at all is stored, read the local default value
 
       if (this._pantagruelData.getValue() == null) {
