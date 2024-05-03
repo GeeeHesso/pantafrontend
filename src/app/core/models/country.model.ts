@@ -7,10 +7,10 @@
  * * 27/07/2023		Gwenaëlle Gustin		Last edition for TB release.
  * *
  ******************************************************************/
-export interface  Country {
-    pd: number,
-    qd: number,
+export interface Country {
+  pd: number
+  qd: number
   // Added properties
-    alpha: string,
-    countryName: string
+  alpha: string
+  countryName: string
 }

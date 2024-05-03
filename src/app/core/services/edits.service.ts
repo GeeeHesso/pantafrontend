@@ -1,12 +1,12 @@
-import {Inject, Injectable} from '@angular/core'
+import { Inject, Injectable } from '@angular/core'
+import { BehaviorSubject } from 'rxjs'
+import { PANTAGRUEL_DATA } from '../core.const'
 import { Branch } from '../models/branch.model'
+import { Bus } from '../models/bus.model'
+import { Gen } from '../models/gen.model'
+import { Load } from '../models/load.model'
+import { Pantagruel } from '../models/pantagruel'
 import { MapService } from './map.service'
-import {Load} from "../models/load.model";
-import {PANTAGRUEL_DATA} from "../core.const";
-import {BehaviorSubject} from "rxjs";
-import {Pantagruel} from "../models/pantagruel";
-import {Bus} from "../models/bus.model";
-import {Gen} from "../models/gen.model";
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
@@ -22,15 +22,16 @@ export class EditsService {
   public editionMade: boolean = false
   public sidenavOpened: String = 'none'
 
-  constructor(public mapService: MapService,
-              @Inject(PANTAGRUEL_DATA) protected _pantagruelData: BehaviorSubject<Pantagruel>,
+  constructor(
+    public mapService: MapService,
+    @Inject(PANTAGRUEL_DATA) protected _pantagruelData: BehaviorSubject<Pantagruel>,
   ) {}
 
   /**
    * Cancel edition:
    * boolean value change, map is reset and panel close
    */
-  public cancelEdit(): void  {
+  public cancelEdit(): void {
     this.editMode = false
     this.editionMade = false
 
@@ -42,12 +43,12 @@ export class EditsService {
     editsSidenav.click()
   }
 
-  public handleEditMode(): void  {
+  public handleEditMode(): void {
     this.editMode = true
     this.handleSidenavInEditMode()
   }
 
-  public handleSidenavInEditMode(): void  {
+  public handleSidenavInEditMode(): void {
     this.sidenavOpened = 'editsmade'
     const editsSidenav: HTMLElement = document.getElementById('btnEditsSidenav') as HTMLElement
     editsSidenav.click()
@@ -74,7 +75,7 @@ export class EditsService {
 
     // Edit side panel with all modification
     if (branchStatus !== branch.originalStatus) {
-      const editedBus = this.mapService.dataService.editedBus$.getValue();
+      const editedBus = this.mapService.dataService.editedBus$.getValue()
       let fromAlreadyEdited = false
       let toAlreadyEdited = false
       editedBus.forEach((b) => {
@@ -93,28 +94,26 @@ export class EditsService {
         editedBus.push(branch.toBus)
         this.mapService.dataService.editedBus$.next(editedBus)
       }
-
     } else {
-      if (this.mapService.dataService.isSameAsOriginal(branch.toBus.index)){
+      if (this.mapService.dataService.isSameAsOriginal(branch.toBus.index)) {
         const editedBus = this.mapService.dataService.editedBus$.getValue()
-        editedBus.forEach((b,i)=>{
-          if (b.index == branch.toBus.index){
-            editedBus.splice(i,1)
+        editedBus.forEach((b, i) => {
+          if (b.index == branch.toBus.index) {
+            editedBus.splice(i, 1)
           }
         })
         this.mapService.dataService.editedBus$.next(editedBus)
       }
-      if (this.mapService.dataService.isSameAsOriginal(branch.fromBus.index)){
+      if (this.mapService.dataService.isSameAsOriginal(branch.fromBus.index)) {
         const editedBus = this.mapService.dataService.editedBus$.getValue()
-        editedBus.forEach((b,i)=>{
-          if (b.index == branch.fromBus.index){
-            editedBus.splice(i,1)
+        editedBus.forEach((b, i) => {
+          if (b.index == branch.fromBus.index) {
+            editedBus.splice(i, 1)
           }
         })
         this.mapService.dataService.editedBus$.next(editedBus)
       }
     }
-
   }
 
   public saveGen(gen: Gen, bus: Bus): void {
@@ -126,8 +125,9 @@ export class EditsService {
 
       // Balance between production and consumption
       const difference = gen.produceMW - gen.newProduceMW
-      const newTotal = this.mapService.dataService.editedTotalProd$.getValue() - Math.round(difference*100)/100
-      this.mapService.dataService.editedTotalProd$.next(Math.round(newTotal*100)/100)
+      const newTotal =
+        this.mapService.dataService.editedTotalProd$.getValue() - Math.round(difference * 100) / 100
+      this.mapService.dataService.editedTotalProd$.next(Math.round(newTotal * 100) / 100)
 
       // Edit the displayed value
       const data = this._pantagruelData.getValue()
@@ -145,22 +145,22 @@ export class EditsService {
       if (gen.newProduceMW !== gen.originalProduceMW) {
         const editedBus = this.mapService.dataService.editedBus$.getValue()
         let alreadyEdited = false
-        editedBus.forEach((b)=>{
-          if (b.index == gen.gen_bus){
+        editedBus.forEach((b) => {
+          if (b.index == gen.gen_bus) {
             alreadyEdited = true
             this.mapService.dataService.editedBus$.next(editedBus)
           }
         })
-        if (!alreadyEdited){
+        if (!alreadyEdited) {
           editedBus.push(bus)
           this.mapService.dataService.editedBus$.next(editedBus)
         }
       } else {
-        if (this.mapService.dataService.isSameAsOriginal(gen.gen_bus)){
+        if (this.mapService.dataService.isSameAsOriginal(gen.gen_bus)) {
           const editedBus = this.mapService.dataService.editedBus$.getValue()
-          editedBus.forEach((b,i)=>{
-            if (b.index == gen.gen_bus){
-              editedBus.splice(i,1)
+          editedBus.forEach((b, i) => {
+            if (b.index == gen.gen_bus) {
+              editedBus.splice(i, 1)
             }
           })
           this.mapService.dataService.editedBus$.next(editedBus)
@@ -180,9 +180,10 @@ export class EditsService {
       this.editionMade = true
 
       // Balance between production and consumption
-      const difference = (load.consumeMW - load.newConsumeMW)
-      const newTotal = this.mapService.dataService.editedTotalCons$.getValue() - Math.round(difference*100)/100
-      this.mapService.dataService.editedTotalCons$.next(Math.round(newTotal*100)/100)
+      const difference = load.consumeMW - load.newConsumeMW
+      const newTotal =
+        this.mapService.dataService.editedTotalCons$.getValue() - Math.round(difference * 100) / 100
+      this.mapService.dataService.editedTotalCons$.next(Math.round(newTotal * 100) / 100)
 
       // Edit the displayed value
       const data = this._pantagruelData.getValue()
@@ -198,23 +199,23 @@ export class EditsService {
 
       // Edit side panel with all modification
       if (load.newConsumeMW !== load.originalConsumeMW) {
-        const editedBus = this.mapService.dataService.editedBus$.getValue();
+        const editedBus = this.mapService.dataService.editedBus$.getValue()
         let alreadyEdited = false
-        editedBus.forEach((b)=>{
-          if (b.index == load.load_bus){
+        editedBus.forEach((b) => {
+          if (b.index == load.load_bus) {
             alreadyEdited = true
           }
         })
-        if (!alreadyEdited){
+        if (!alreadyEdited) {
           editedBus.push(bus)
           this.mapService.dataService.editedBus$.next(editedBus)
         }
-      }else {
-        if (this.mapService.dataService.isSameAsOriginal(load.load_bus)){
+      } else {
+        if (this.mapService.dataService.isSameAsOriginal(load.load_bus)) {
           const editedBus = this.mapService.dataService.editedBus$.getValue()
-          editedBus.forEach((b,i)=>{
-            if (b.index == load.load_bus){
-              editedBus.splice(i,1)
+          editedBus.forEach((b, i) => {
+            if (b.index == load.load_bus) {
+              editedBus.splice(i, 1)
             }
           })
           this.mapService.dataService.editedBus$.next(editedBus)

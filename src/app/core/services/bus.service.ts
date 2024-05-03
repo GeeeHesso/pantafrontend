@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core'
 import { NgElement, WithProperties } from '@angular/elements'
 import * as L from 'leaflet'
-import {CircleMarker, LatLng, LatLngExpression} from 'leaflet'
+import { CircleMarker, LatLng, LatLngExpression } from 'leaflet'
 import { MapPopupBusComponent } from '../../component/3-map-popup-bus/map-popup-bus.component'
 import {
-  DEFAULT_COLOR, DEFAULT_COLOR_BLACK,
+  DEFAULT_COLOR,
+  DEFAULT_COLOR_BLACK,
   DEFAULT_SIZE_GEN,
   DEFAULT_SIZE_LOAD,
   INACTIVE_COLOR,
@@ -30,7 +31,7 @@ export class BusService {
   private _sizeGen = DEFAULT_SIZE_GEN
   private _colorGen = DEFAULT_COLOR
   private _zoomFactor = 0.6 // Factor multiplying zoom value for relative size of gen and load
-  public busMarkers : CircleMarker[] = []
+  public busMarkers: CircleMarker[] = []
 
   constructor(private _dataService: DataService) {}
 
@@ -88,8 +89,9 @@ export class BusService {
       const latlon: LatLngExpression = [data.load[l].coord[0], data.load[l].coord[1]]
       const loadIcon = L.circleMarker(latlon, {
         radius: showSize
-          ? this._getSizeProportionalMax(data.load[l].pop, this._dataService.BUS_MAX_POP)/2 + zoom*this._zoomFactor
-          : DEFAULT_SIZE_LOAD + zoom*this._zoomFactor,
+          ? this._getSizeProportionalMax(data.load[l].pop, this._dataService.BUS_MAX_POP) / 2 +
+            zoom * this._zoomFactor
+          : DEFAULT_SIZE_LOAD + zoom * this._zoomFactor,
         pane: 'shadowPane',
       })
 
@@ -123,14 +125,21 @@ export class BusService {
    * @param showSize boolean to construct proportional size (max production)
    * @param showColor boolean to construct icon with different color (category)
    */
-  public drawGen(map: L.Map, data: any, showIcon: boolean, showSize: boolean, showColor: boolean): void {
+  public drawGen(
+    map: L.Map,
+    data: any,
+    showIcon: boolean,
+    showSize: boolean,
+    showColor: boolean,
+  ): void {
     const zoom = map.getZoom()
     Object.keys(data.gen).forEach((g) => {
       if (showSize) {
         this._sizeGen =
-          this._getSizeProportionalMax(data.gen[g].maxMW, this._dataService.GEN_MAX_MAX_PROD) + zoom*this._zoomFactor
+          this._getSizeProportionalMax(data.gen[g].maxMW, this._dataService.GEN_MAX_MAX_PROD) +
+          zoom * this._zoomFactor
       } else {
-        this._sizeGen = DEFAULT_SIZE_GEN + zoom*this._zoomFactor
+        this._sizeGen = DEFAULT_SIZE_GEN + zoom * this._zoomFactor
       }
 
       // Color and type of icon (with cross inactive, full >94, half 6<X<94, empty <6)
@@ -142,7 +151,6 @@ export class BusService {
 
       let svgHtml: string = this._constructFullSquareSVG(data.gen[g])
       if (showIcon) {
-
         if (data.gen[g].pg == undefined) {
           svgHtml = this._constructFullSquareSVG(data.gen[g])
         } else if (data.gen[g].gen_status == 0) {
@@ -189,7 +197,10 @@ export class BusService {
     popupBusEl.transformers = []
     Object.keys(data.branch).forEach((br) => {
       if (data.branch[br].transformer) {
-        if (bus.index == data.branch[br].fromBus.index || bus.index == data.branch[br].toBus.index) {
+        if (
+          bus.index == data.branch[br].fromBus.index ||
+          bus.index == data.branch[br].toBus.index
+        ) {
           popupBusEl.transformers.push(data.branch[br])
         }
       }
@@ -206,9 +217,12 @@ export class BusService {
           // if it's a transformer
           if (data.branch[tr].transformer) {
             // if it is not already in list of transfomer
-            if(!popupBusEl.transformers.some(t => t.index == data.branch[tr].index)){
+            if (!popupBusEl.transformers.some((t) => t.index == data.branch[tr].index)) {
               // if the bus index equal to from or to index bus of the transformer
-              if ((data.bus[b].index == data.branch[tr].fromBus.index || data.bus[b].index == data.branch[tr].toBus.index)) {
+              if (
+                data.bus[b].index == data.branch[tr].fromBus.index ||
+                data.bus[b].index == data.branch[tr].toBus.index
+              ) {
                 popupBusEl.transformers.push(data.branch[tr])
               }
             }
@@ -216,7 +230,6 @@ export class BusService {
         })
       }
     })
-
 
     document.body.appendChild(popupBusEl)
     return popupBusEl

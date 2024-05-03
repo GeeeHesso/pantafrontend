@@ -57,7 +57,7 @@
               class="tabInput"
               [contentEditable]="this.editsService.editMode"
             >
-              {{ isNaN(gen.produceMW) ? "-" : gen.produceMW}}
+              {{ isNaN(gen.produceMW) ? '-' : gen.produceMW }}
             </div>
             / {{ gen.maxMW }} MW
           </td>
@@ -99,13 +99,16 @@
             >
             </mat-slide-toggle>
             <br />
-            {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
+            {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{
+              trans.toBus.base_kv
+            }}kV)
             <br />
-            Load injected: {{ isNaN(trans.loadInjected) ? "-" : trans.loadInjected}} %
+            Load injected: {{ isNaN(trans.loadInjected) ? '-' : trans.loadInjected }} %
             <br />
-            Total power: {{ isNaN(trans.totalPowerMW) ? "-" : trans.totalPowerMW}} / {{ trans.thermalRatingMW }} MW
+            Total power: {{ isNaN(trans.totalPowerMW) ? '-' : trans.totalPowerMW }} /
+            {{ trans.thermalRatingMW }} MW
             <br />
-            Losses: {{ isNaN(trans.losses) ? "-" : trans.losses}} MW
+            Losses: {{ isNaN(trans.losses) ? '-' : trans.losses }} MW
           </td>
         </tr>
       </table>
@@ -113,9 +116,12 @@
   </mat-card-content>
 </mat-card>
 
-<mat-tab-group class="popupContainer"
-               mat-stretch-tabs="false" headerPosition="below"
-               *ngIf="this.editsService.mapService.selectedOptions.devMode">
+<mat-tab-group
+  class="popupContainer"
+  mat-stretch-tabs="false"
+  headerPosition="below"
+  *ngIf="this.editsService.mapService.selectedOptions.devMode"
+>
   <mat-tab label="Summary">
     <mat-card>
       <mat-card-header>
@@ -175,7 +181,7 @@
                   class="tabInput"
                   [contentEditable]="this.editsService.editMode"
                 >
-                  {{ isNaN(gen.produceMW) ? "-" : gen.produceMW}}
+                  {{ isNaN(gen.produceMW) ? '-' : gen.produceMW }}
                 </div>
                 / {{ gen.maxMW }} MW
               </td>
@@ -217,13 +223,15 @@
                 >
                 </mat-slide-toggle>
                 <br />
-                {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
+                {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) →
+                {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
                 <br />
-                Load injected: {{ isNaN(trans.loadInjected) ? "-" : trans.loadInjected}} %
+                Load injected: {{ isNaN(trans.loadInjected) ? '-' : trans.loadInjected }} %
                 <br />
-                Total power: {{ isNaN(trans.totalPowerMW) ? "-" : trans.totalPowerMW}} / {{ trans.thermalRatingMW }} MW
+                Total power: {{ isNaN(trans.totalPowerMW) ? '-' : trans.totalPowerMW }} /
+                {{ trans.thermalRatingMW }} MW
                 <br />
-                Losses: {{ isNaN(trans.losses) ? "-" : trans.losses}} MW
+                Losses: {{ isNaN(trans.losses) ? '-' : trans.losses }} MW
               </td>
             </tr>
           </table>
@@ -231,7 +239,7 @@
       </mat-card-content>
     </mat-card>
   </mat-tab>
-    <span *ngFor="let bus of buses">
+  <span *ngFor="let bus of buses">
     <mat-tab label="B-{{ bus.index }}">
       <b>BUS {{ bus.index }}</b
       ><br />
@@ -274,28 +282,27 @@
     </mat-tab>
   </span>
   <span *ngFor="let trans of transformers">
-      <mat-tab label="T-{{trans.index}}" >
+    <mat-tab label="T-{{ trans.index }}">
       <b>TRANSFORMER {{ trans.index }}</b
       ><br />
-        br_r: {{ trans.br_r }}<br>
-        rate_a: {{ trans.rate_a }}<br>
-        pt: {{ trans.pt }}<br>
-        br_x: {{ trans.br_x }}<br>
-        g_to: {{ trans.g_to }}<br>
-        g_fr: {{ trans.g_fr }}<br>
-        b_fr: {{ trans.b_fr }}<br>
-        f_bus: {{ trans.f_bus }}<br>
-        br_status: {{ trans.br_status }}<br>
-        t_bus: {{ trans.t_bus }}<br>
-        b_to: {{ trans.b_to }}<br>
-        qf: {{ trans.qf }}<br>
-        angmin: {{ trans.angmin }}<br>
-        angmax: {{ trans.angmax }}<br>
-        transformer: {{ trans.transformer }}<br>
-        qt: {{ trans.qt }}<br>
-        tap: {{ trans.tap }}<br>
-        pf: {{ trans.pf }}
-  </mat-tab>
+      br_r: {{ trans.br_r }}<br />
+      rate_a: {{ trans.rate_a }}<br />
+      pt: {{ trans.pt }}<br />
+      br_x: {{ trans.br_x }}<br />
+      g_to: {{ trans.g_to }}<br />
+      g_fr: {{ trans.g_fr }}<br />
+      b_fr: {{ trans.b_fr }}<br />
+      f_bus: {{ trans.f_bus }}<br />
+      br_status: {{ trans.br_status }}<br />
+      t_bus: {{ trans.t_bus }}<br />
+      b_to: {{ trans.b_to }}<br />
+      qf: {{ trans.qf }}<br />
+      angmin: {{ trans.angmin }}<br />
+      angmax: {{ trans.angmax }}<br />
+      transformer: {{ trans.transformer }}<br />
+      qt: {{ trans.qt }}<br />
+      tap: {{ trans.tap }}<br />
+      pf: {{ trans.pf }}
+    </mat-tab>
   </span>
 </mat-tab-group>
-

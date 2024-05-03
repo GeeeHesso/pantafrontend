@@ -1,4 +1,4 @@
-import {Component} from '@angular/core'
+import { Component } from '@angular/core'
 import { MatIconModule } from '@angular/material/icon'
 
 /*******************************************************************
@@ -18,6 +18,4 @@ import { MatIconModule } from '@angular/material/icon'
   standalone: true,
   imports: [MatIconModule],
 })
-export class MapComponent{
-
-}
+export class MapComponent {}

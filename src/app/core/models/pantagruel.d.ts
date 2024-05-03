@@ -1,7 +1,7 @@
-import {Bus} from "./bus.model";
-import {Gen} from "./gen.model";
-import {Branch} from "./branch.model";
-import {Load} from "./load.model";
+import { Branch } from './branch.model'
+import { Bus } from './bus.model'
+import { Gen } from './gen.model'
+import { Load } from './load.model'
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
@@ -13,11 +13,11 @@ import {Load} from "./load.model";
  * *
  ******************************************************************/
 export interface Pantagruel {
-  bus: {[key: string]: Bus }
+  bus: { [key: string]: Bus }
   name: string
   dcline: {}
-  gen: {[key: string]: Gen }
-  branch: {[key: string]: Branch }
+  gen: { [key: string]: Gen }
+  branch: { [key: string]: Branch }
   storage: {}
   switch: {}
   multinetwork: boolean
@@ -25,9 +25,7 @@ export interface Pantagruel {
   per_unit: boolean
   shunt: {}
   multiinfrastructure: boolean
-  load: {[key: string]: Load }
-  date: {day: number, month: number, year: number, hour: number}
-  country: {[key:string]: {pd: number, qd: number}}
+  load: { [key: string]: Load }
+  date: { day: number; month: number; year: number; hour: number }
+  country: { [key: string]: { pd: number; qd: number } }
 }
-
-

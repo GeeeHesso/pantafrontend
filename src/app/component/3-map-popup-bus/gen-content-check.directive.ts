@@ -1,7 +1,7 @@
 import { Directive, Input } from '@angular/core'
+import { Bus } from '../../core/models/bus.model'
 import { Gen } from '../../core/models/gen.model'
 import { ContentCheckBase } from './content-check.base.directive'
-import {Bus} from "../../core/models/bus.model";
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
@@ -34,5 +34,4 @@ export class GenContentCheckDirective extends ContentCheckBase {
       this._editsService.saveGen(this._gen, this.bus)
     }
   }
-
 }

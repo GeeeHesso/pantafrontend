@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatTabsModule } from '@angular/material/tabs'
 import { Branch } from '../../core/models/branch.model'
-import {EditsService} from "../../core/services/edits.service";
+import { EditsService } from '../../core/services/edits.service'
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin

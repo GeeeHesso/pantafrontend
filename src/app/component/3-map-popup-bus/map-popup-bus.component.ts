@@ -6,9 +6,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatTabsModule } from '@angular/material/tabs'
 import { Branch } from '../../core/models/branch.model'
 import { Bus } from '../../core/models/bus.model'
+import { EditsService } from '../../core/services/edits.service'
 import { GenContentCheckDirective } from './gen-content-check.directive'
 import { LoadContentCheckDirective } from './load-content-check.directive'
-import { EditsService } from "../../core/services/edits.service";
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin

@@ -1,5 +1,5 @@
-import {Branch} from "./branch.model";
-import {Bus} from "./bus.model";
+import { Branch } from './branch.model'
+import { Bus } from './bus.model'
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
@@ -11,10 +11,5 @@ import {Bus} from "./bus.model";
  * *
  ******************************************************************/
 export class BusPoint {
-
-  constructor(public bus: Bus,
-              public lines: Branch[],
-              public transfo: Branch[]) {
-
-  }
+  constructor(public bus: Bus, public lines: Branch[], public transfo: Branch[]) {}
 }

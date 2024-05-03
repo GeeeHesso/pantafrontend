@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin

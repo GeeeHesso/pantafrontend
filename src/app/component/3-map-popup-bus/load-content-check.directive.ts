@@ -32,5 +32,4 @@ export class LoadContentCheckDirective extends ContentCheckBase {
       this._editsService.saveLoad(this.load, this.bus)
     }
   }
-
 }

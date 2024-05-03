@@ -2,8 +2,7 @@ import { Directive, ElementRef, HostListener, Inject } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
 import { PANTAGRUEL_DATA } from '../../core/core.const'
 import { Pantagruel } from '../../core/models/pantagruel'
-import { EditsService } from "../../core/services/edits.service";
-
+import { EditsService } from '../../core/services/edits.service'
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
