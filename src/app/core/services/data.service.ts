@@ -184,8 +184,8 @@ export class DataService {
    */
   private _getTotalProduction(gens: { [key: string]: Gen }): number {
     let total: number = 0
-    Object.keys(gens).forEach((b) => {
-      total = total + gens[b].pg
+    Object.keys(gens).forEach((g) => {
+      total = total + gens[g].pg
     })
     return total * this.BASE_MVA
   }
