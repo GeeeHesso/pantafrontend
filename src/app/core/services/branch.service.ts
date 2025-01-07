@@ -1,27 +1,34 @@
 import { Injectable } from '@angular/core'
 import { NgElement, WithProperties } from '@angular/elements'
 import * as L from 'leaflet'
+import { LatLng, Polyline } from 'leaflet'
 import 'leaflet-polylinedecorator'
-import { MapPopupBranch } from '../../component/3-map-popup-branch/map-popup-branch'
-import { DEFAULT_COLOR, DEFAULT_WIDTH_BRANCH, INACTIVE_COLOR } from '../core.const'
+import { MapPopupBranch } from '../../component/3-map-popup-branch/map-popup-branch.component'
+import {
+  DEFAULT_COLOR,
+  DEFAULT_COLOR_BLACK,
+  DEFAULT_WIDTH_BRANCH,
+  INACTIVE_COLOR,
+} from '../../core/core.const'
 import { Branch } from '../models/branch.model'
 import { Pantagruel } from '../models/pantagruel'
-import {LatLng, Polyline} from "leaflet";
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
  * * Description       : Draw branches and transformers
  * * Revision History  :
- * * Date				  Author    		      Comments
+ * * Date				  Author    		            Comments
  * * ---------------------------------------------------------------------------
- * * 27/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * * 27/07/2023		Gwenaëlle Gustin		      Last edition for TB release.
+ * * 21/02/2024		Marie-Esther Mabillard		Voltage color of branch/transformer (integrated 08/01/2025)
+ * * 08/01/2025	Gwenaëlle Gustin       	  6 level of voltage
  * *
  ******************************************************************/
 @Injectable({
   providedIn: 'root',
 })
 export class BranchService {
-  public branchMarker : Polyline[] = []
+  public branchMarker: Polyline[] = []
 
   constructor() {}
 
@@ -33,7 +40,13 @@ export class BranchService {
    * @param showWidth boolean to show proportional width (thermal rate)
    * @param showArrow boolean to show arrow when zoom is fairly high
    */
-  public drawBranch(map: L.Map, data: Pantagruel, showColor: boolean, showWidth: boolean, showArrow: boolean): void {
+  public drawBranch(
+    map: L.Map,
+    data: Pantagruel,
+    showColor: boolean,
+    showWidth: boolean,
+    showArrow: boolean,
+  ): void {
     const zoom = map.getZoom()
 
     // Draw all the branches
@@ -45,21 +58,37 @@ export class BranchService {
 
       // Style of line
       const weight = showWidth ? this._getWidth(data.branch[b].rate_a) : DEFAULT_WIDTH_BRANCH
-      const color = showColor ? this._getColorOfBranch(data.branch[b]) : DEFAULT_COLOR
+      var color = 'black'
+
+      if (data.branch[b].br_status == 0) {
+        color = INACTIVE_COLOR
+      } else {
+        color = showColor
+          ? this._getColorOfBranch(data.branch[b])
+          : this._getColorOfBranchFromVolt(data.branch[b].fromBus.base_kv)
+      }
 
       // Define line
       const branch = new L.Polyline(pointList, {
-        weight: weight + zoom/3,
+        weight: weight + zoom / 3,
         color: color,
       })
 
       // Draw arrow if necessary
-      if (zoom > 7 && showArrow){
-       const arrowHead = L.polylineDecorator(branch, {
+      if (zoom > 7 && showArrow) {
+        const arrowHead = L.polylineDecorator(branch, {
           patterns: [
-            {offset: '50%', repeat: 0, symbol: L.Symbol.arrowHead({pixelSize: (weight+zoom), polygon: true, pathOptions:
-                  {stroke: true, color: color}})}
-          ]})
+            {
+              offset: '50%',
+              repeat: 0,
+              symbol: L.Symbol.arrowHead({
+                pixelSize: weight + zoom,
+                polygon: true,
+                pathOptions: { stroke: true, color: color },
+              }),
+            },
+          ],
+        })
         arrowHead.bindPopup(() => this._createPopupWithTab(data, data.branch[b]))
         arrowHead.addTo(map)
       }
@@ -83,12 +112,15 @@ export class BranchService {
     })
 
     // Draw a dashed branches over the other if  load injected > 150
-    if (showColor){
+    if (showColor) {
       // WARNING lat long reverse, so [1][0]
       Object.keys(data.branch).forEach((b) => {
         if (data.branch[b].loadInjected > 100) {
           //Position: WARNING lat long reverse, so [1][0]
-          const pointA = new L.LatLng(data.branch[b].fromBus.coord[1],data.branch[b].fromBus.coord[0])
+          const pointA = new L.LatLng(
+            data.branch[b].fromBus.coord[1],
+            data.branch[b].fromBus.coord[0],
+          )
           const pointB = new L.LatLng(data.branch[b].toBus.coord[1], data.branch[b].toBus.coord[0])
           const pointList = [pointA, pointB]
 
@@ -97,7 +129,7 @@ export class BranchService {
 
           // Define line
           const dashedBranch = new L.Polyline(pointList, {
-            weight: weight + zoom/3,
+            weight: weight + zoom / 3,
             color: 'black',
             dashArray: '5, 10',
           })
@@ -158,10 +190,12 @@ export class BranchService {
 
     // Add branch with same coords and opposite direction (to from)
     Object.keys(data.branch).forEach((br) => {
-      if (data.branch[br].fromBus.coord[0] == branch.toBus.coord[0] &&
+      if (
+        data.branch[br].fromBus.coord[0] == branch.toBus.coord[0] &&
         data.branch[br].fromBus.coord[1] == branch.toBus.coord[1] &&
         data.branch[br].toBus.coord[0] == branch.fromBus.coord[0] &&
-        data.branch[br].toBus.coord[1] == branch.fromBus.coord[1]) {
+        data.branch[br].toBus.coord[1] == branch.fromBus.coord[1]
+      ) {
         //console.log(data.branch[br].index + ' is opposite of ' + branch.index)
         PopupBranchEl.branchesTF.push(data.branch[br])
       }
@@ -182,23 +216,34 @@ export class BranchService {
 
     Object.keys(data.branch).forEach((b) => {
       if (data.branch[b].transformer) {
-
         // Color
-        const color = showColor ? this._getColorOfBranch(data.branch[b]): DEFAULT_COLOR
-        const strokeColor  = showColor
-          ? data.branch[b].loadInjected > 100
-            ? '#ff0000'
-            : '#000000'
-          : '#000000'
+        var colorTop = DEFAULT_COLOR
+        var colorBot = DEFAULT_COLOR
+        if (showColor) {
+          colorTop = this._getColorOfBranch(data.branch[b])
+          colorBot = this._getColorOfBranch(data.branch[b])
+        } else {
+          colorTop = this._getColorOfBranchFromVolt(data.branch[b].fromBus.base_kv)
+          colorBot = this._getColorOfBranchFromVolt(data.branch[b].toBus.base_kv)
+        }
+
+        const strokeColor =
+          data.branch[b].br_status == 1
+            ? showColor
+              ? data.branch[b].loadInjected > 100
+                ? '#ff0000' // red
+                : DEFAULT_COLOR_BLACK
+              : DEFAULT_COLOR_BLACK
+            : INACTIVE_COLOR
 
         // Construct SVG icon
-        const svgHtml = this._constructTransformerSVG(color, strokeColor)
-        const width = zoom/8*11
-        const height = zoom/8*25
+        const svgHtml = this._constructTransformerSVG(colorTop, colorBot, strokeColor)
+        const width = (zoom / 8) * 11
+        const height = (zoom / 8) * 25
         const svgIcon = L.divIcon({
           html: svgHtml,
           className: 'svg-icon',
-          iconAnchor: [width/2, height/2],
+          iconAnchor: [width / 2, height / 2],
           popupAnchor: [0, 0],
           iconSize: [width, height],
         })
@@ -210,13 +255,12 @@ export class BranchService {
           {
             icon: svgIcon,
             //icon are ordered by the load injected, -1000 is for being under bus icon (linked popup)
-            zIndexOffset : data.branch[b].loadInjected - 1000
+            zIndexOffset: data.branch[b].loadInjected - 1000,
           },
         )
 
         // Add icon to the map
         map.addLayer(branchIcon)
-
       }
     })
   }
@@ -227,7 +271,11 @@ export class BranchService {
    * @param colorStroke of the line and circle
    * @private
    */
-  private _constructTransformerSVG(color: string, colorStroke: string): string {
+  private _constructTransformerSVG(
+    colorTop: string,
+    colorBot: string,
+    colorStroke: string,
+  ): string {
     return (
       `<svg viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
         <rect x="10" y="0" width="2" height="10" style="fill:` +
@@ -238,18 +286,34 @@ export class BranchService {
         <ellipse cx="11" cy="20" rx="10" ry="10" style="stroke:` +
       colorStroke +
       `; stroke-width: 2px; fill:` +
-      color +
+      colorTop +
       `; fill-opacity: 0.5" ></ellipse>
         <ellipse cx="11" cy="30" rx="10" ry="10" style="stroke:` +
       colorStroke +
       `; stroke-width: 2px; fill:` +
-      color +
+      colorBot +
       `; fill-opacity: 0.5" ></ellipse>
         <rect x="10" y="40" width="2" height="10" style="fill:` +
       colorStroke +
       `;" ></rect>
     </svg>`
     )
+  }
+
+  private _getColorOfBranchFromVolt(volt: number): string {
+    if (volt >= 380) {
+      return '#e4032f'
+    } else if (volt >= 220) {
+      return '#04b494'
+    } else if (volt >= 132) {
+      return '#2a9cf4'
+    } else if (volt >= 36) {
+      return '#ffa17a'
+    } else if (volt >= 1) {
+      return '#9facbd'
+    } else {
+      return '#000000'
+    }
   }
 
   /**
@@ -259,13 +323,7 @@ export class BranchService {
    */
   private _getColorOfBranch(branch: Branch): string {
     // Without power
-    if (isNaN(branch.loadInjected))
-      return DEFAULT_COLOR
-
-    // Inactive branches
-    if (branch.br_status == 0) {
-      return INACTIVE_COLOR
-    }
+    if (isNaN(branch.loadInjected)) return DEFAULT_COLOR
 
     const percentage = branch.loadInjected
     let r = 255
@@ -322,7 +380,7 @@ export class BranchService {
    * @param c : color value on 255
    * @private
    */
-  private _componentToHex(c: number): string  {
+  private _componentToHex(c: number): string {
     const hex = c.toString(16)
     return hex.length == 1 ? '0' + hex : hex
   }
@@ -335,15 +393,9 @@ export class BranchService {
   private _getWidth(rate_a: number): number {
     let width = rate_a / 6 // increase difference
     if (width < 0.5) {
-      // set a min
-      //console.log("<0.5: "+width)
       width = 0.5
-    }else if (width > 2.5) {
-      // set a max
-      //console.log(">2.5: "+width)
+    } else if (width > 2.5) {
       width = 2.5
-    } else {
-      //console.log(width)
     }
     return width
   }

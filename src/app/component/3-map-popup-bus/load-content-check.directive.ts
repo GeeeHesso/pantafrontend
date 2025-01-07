@@ -1,4 +1,5 @@
 import { Directive, Input } from '@angular/core'
+import { MAX_CONS } from 'src/app/core/core.const'
 import { Bus } from '../../core/models/bus.model'
 import { Load } from '../../core/models/load.model'
 import { ContentCheckBase } from './content-check.base.directive'
@@ -21,16 +22,16 @@ export class LoadContentCheckDirective extends ContentCheckBase {
   @Input('bus') bus!: Bus
   @Input('load') load!: Load
 
-  protected override _maxValue = 1000
+  protected override _maxValue = MAX_CONS
 
   protected override _checkValue(value: number): void {
     if (this.load != undefined) {
-      this.load.newConsumeMW = value
-      if (this.load.newConsumeMW > this._maxValue) {
+      this.load.consumeMW = value
+      if (this.load.consumeMW > this._maxValue) {
         this._elRef.nativeElement.innerText = this._maxValue
       }
-      this._editsService.saveLoad(this.load, this.bus)
+      this._editsService.updateSidePanelAfterLoadEdit(this.load, this.bus)
+      this._editsService.updateMapAfterLoadEdit(this.load)
     }
   }
-
 }

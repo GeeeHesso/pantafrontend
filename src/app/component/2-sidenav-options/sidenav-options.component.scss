@@ -1,31 +1,31 @@
-#options{
+#options {
   font-family: Roboto, Helvetica, sans-serif;
 }
 
-mat-toolbar{
+mat-toolbar {
   z-index: 2;
   position: sticky;
 }
 
-#toolbartop{
+#toolbartop {
   display: flex;
   justify-content: space-between;
   top: 0;
 }
-#toolbarbottom{
+#toolbarbottom {
   justify-content: center;
-  bottom:0;
+  bottom: 0;
 }
 
-legend{
+legend {
   font-weight: bold;
 }
-#optionsBlock{
+#optionsBlock {
   padding: 10px;
   width: 350px;
 }
 
-mat-slide-toggle{
+mat-slide-toggle {
   display: block;
 }
 
@@ -36,4 +36,8 @@ mat-slide-toggle{
 
 .spacer {
   flex: 1 1 auto;
+}
+
+.voltage-legend {
+  padding-bottom: 10px;
 }

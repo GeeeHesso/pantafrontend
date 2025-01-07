@@ -3,12 +3,14 @@ import { Component, Input } from '@angular/core'
 import { MatCardModule } from '@angular/material/card'
 import { MatIconModule } from '@angular/material/icon'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatSliderModule } from '@angular/material/slider'
 import { MatTabsModule } from '@angular/material/tabs'
+import { MAX_CONS, UNIT_WATT } from 'src/app/core/core.const'
 import { Branch } from '../../core/models/branch.model'
 import { Bus } from '../../core/models/bus.model'
+import { EditsService } from '../../core/services/edits.service'
 import { GenContentCheckDirective } from './gen-content-check.directive'
 import { LoadContentCheckDirective } from './load-content-check.directive'
-import { EditsService } from "../../core/services/edits.service";
 
 /*******************************************************************
  * * Copyright         : 2023 Gwenaëlle Gustin
@@ -19,6 +21,7 @@ import { EditsService } from "../../core/services/edits.service";
  * * Date				  Author    		      Comments
  * * ---------------------------------------------------------------------------
  * * 08/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * * 08/01/2025		Gwenaëlle Gustin		Load and gen can be edited with percentage with slider
  * *
  ******************************************************************/
 @Component({
@@ -39,6 +42,7 @@ import { EditsService } from "../../core/services/edits.service";
     MatCardModule,
     MatIconModule,
     MatSlideToggleModule,
+    MatSliderModule,
   ],
 })
 export class MapPopupBusComponent {
@@ -47,4 +51,14 @@ export class MapPopupBusComponent {
   @Input() buses!: Bus[]
   @Input() transformers!: Branch[]
   protected readonly isNaN = isNaN
+  public UNIT_WATT = UNIT_WATT
+  public MAX_CONS = MAX_CONS
+
+  ngOnDestroy() {
+    this.editsService.mapService.drawOnMap()
+  }
+
+  formatLabel(value: number): string {
+    return `${value + '%'}`
+  }
 }

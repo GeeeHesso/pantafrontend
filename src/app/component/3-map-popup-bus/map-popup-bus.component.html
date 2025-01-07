@@ -36,9 +36,23 @@
               >
                 {{ load.consumeMW }}
               </div>
-              MW ({{ load.index }})
-              <br />
-              Population: {{ load.pop }}
+              {{ UNIT_WATT }} ({{ load.index }})
+              <mat-slider
+                [hidden]="!this.editsService.editMode"
+                min="0"
+                max="100"
+                step="10"
+                discrete
+                [displayWith]="formatLabel"
+              >
+                <input
+                  matSliderThumb
+                  value="{{ (load.consumeMW / MAX_CONS) * 100 }}"
+                  (input)="editsService.onChangeSliderLoad(load, bus, $event)"
+                />
+              </mat-slider>
+              <!--<br />
+              Population: {{ load.pop }}-->
             </div>
           </td>
         </tr>
@@ -57,9 +71,23 @@
               class="tabInput"
               [contentEditable]="this.editsService.editMode"
             >
-              {{ isNaN(gen.produceMW) ? "-" : gen.produceMW}}
+              {{ isNaN(gen.produceMW) ? '-' : gen.produceMW }}
             </div>
-            / {{ gen.maxMW }} MW
+            / {{ gen.maxMW }} {{ UNIT_WATT }}
+            <mat-slider
+              [hidden]="!this.editsService.editMode"
+              min="0"
+              max="100"
+              step="10"
+              discrete
+              [displayWith]="formatLabel"
+            >
+              <input
+                matSliderThumb
+                value="{{ (gen.produceMW / gen.maxMW) * 100 }}"
+                (input)="editsService.onChangeSliderGen(gen, bus, $event)"
+              />
+            </mat-slider>
           </td>
         </tr>
       </table>
@@ -89,7 +117,7 @@
             </svg>
           </th>
           <td>
-            <b>{{ trans.index }}</b>
+            <b>Transformer {{ trans.index }}</b>
             <mat-slide-toggle
               class="toggle-title"
               [hidden]="!this.editsService.editMode"
@@ -99,13 +127,16 @@
             >
             </mat-slide-toggle>
             <br />
-            {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
+            {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{
+              trans.toBus.base_kv
+            }}kV)
             <br />
-            Load injected: {{ isNaN(trans.loadInjected) ? "-" : trans.loadInjected}} %
+            Load injected: {{ isNaN(trans.loadInjected) ? '-' : trans.loadInjected }} %
             <br />
-            Total power: {{ isNaN(trans.totalPowerMW) ? "-" : trans.totalPowerMW}} / {{ trans.thermalRatingMW }} MW
+            Total power: {{ isNaN(trans.totalPowerMW) ? '-' : trans.totalPowerMW }} /
+            {{ trans.thermalRatingMW }} {{ UNIT_WATT }}
             <br />
-            Losses: {{ isNaN(trans.losses) ? "-" : trans.losses}} MW
+            Losses: {{ isNaN(trans.losses) ? '-' : trans.losses }} {{ UNIT_WATT }}
           </td>
         </tr>
       </table>
@@ -113,13 +144,17 @@
   </mat-card-content>
 </mat-card>
 
-<mat-tab-group class="popupContainer"
-               mat-stretch-tabs="false" headerPosition="below"
-               *ngIf="this.editsService.mapService.selectedOptions.devMode">
+<mat-tab-group
+  class="popupContainer"
+  mat-stretch-tabs="false"
+  headerPosition="below"
+  *ngIf="this.editsService.mapService.selectedOptions.devMode"
+>
   <mat-tab label="Summary">
     <mat-card>
       <mat-card-header>
         <mat-card-title>
+          hello
           {{ buses[0].name }} ({{ buses[0].country }})
           <button
             class="mat-icon-button"
@@ -154,9 +189,23 @@
                   >
                     {{ load.consumeMW }}
                   </div>
-                  MW ({{ load.index }})
-                  <br />
-                  Population: {{ load.pop }}
+                  {{ UNIT_WATT }} ({{ load.index }})
+                  <mat-slider
+                    [hidden]="!this.editsService.editMode"
+                    min="0"
+                    max="100"
+                    step="10"
+                    discrete
+                    [displayWith]="formatLabel"
+                  >
+                    <input
+                      matSliderThumb
+                      value="{{ (load.consumeMW / MAX_CONS) * 100 }}"
+                      (input)="editsService.onChangeSliderLoad(load, bus, $event)"
+                    />
+                  </mat-slider>
+                  <!--<br />
+                  Population: {{ load.pop }}-->
                 </div>
               </td>
             </tr>
@@ -175,9 +224,23 @@
                   class="tabInput"
                   [contentEditable]="this.editsService.editMode"
                 >
-                  {{ isNaN(gen.produceMW) ? "-" : gen.produceMW}}
+                  {{ isNaN(gen.produceMW) ? '-' : gen.produceMW }}
                 </div>
-                / {{ gen.maxMW }} MW
+                / {{ gen.maxMW }} {{ UNIT_WATT }}
+                <mat-slider
+                  [hidden]="!this.editsService.editMode"
+                  min="0"
+                  max="100"
+                  step="10"
+                  discrete
+                  [displayWith]="formatLabel"
+                >
+                  <input
+                    matSliderThumb
+                    value="{{ (gen.produceMW / gen.maxMW) * 100 }}"
+                    (input)="editsService.onChangeSliderGen(gen, bus, $event)"
+                  />
+                </mat-slider>
               </td>
             </tr>
           </table>
@@ -206,24 +269,26 @@
                   <rect x="5.5" y="20" width="1" height="5" style="fill: #000000"></rect>
                 </svg>
               </th>
+              <mat-slide-toggle
+                class="toggle-title"
+                [hidden]="!this.editsService.editMode"
+                [checked]="trans.br_status == 1"
+                color="primary"
+                (change)="this.editsService.toggleBranch(trans, $event.source.checked)"
+              >
+              </mat-slide-toggle>
               <td>
                 <b>{{ trans.index }}</b>
-                <mat-slide-toggle
-                  class="toggle-title"
-                  [hidden]="!this.editsService.editMode"
-                  [checked]="trans.br_status == 1"
-                  color="primary"
-                  (change)="this.editsService.toggleBranch(trans, $event.source.checked)"
-                >
-                </mat-slide-toggle>
                 <br />
-                {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) → {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
+                {{ trans.fromBus.index }} ({{ trans.fromBus.base_kv }}kV) →
+                {{ trans.toBus.index }} ({{ trans.toBus.base_kv }}kV)
                 <br />
-                Load injected: {{ isNaN(trans.loadInjected) ? "-" : trans.loadInjected}} %
+                Load injected: {{ isNaN(trans.loadInjected) ? '-' : trans.loadInjected }} %
                 <br />
-                Total power: {{ isNaN(trans.totalPowerMW) ? "-" : trans.totalPowerMW}} / {{ trans.thermalRatingMW }} MW
+                Total power: {{ isNaN(trans.totalPowerMW) ? '-' : trans.totalPowerMW }} /
+                {{ trans.thermalRatingMW }} {{ UNIT_WATT }}
                 <br />
-                Losses: {{ isNaN(trans.losses) ? "-" : trans.losses}} MW
+                Losses: {{ isNaN(trans.losses) ? '-' : trans.losses }} {{ UNIT_WATT }}
               </td>
             </tr>
           </table>
@@ -231,11 +296,12 @@
       </mat-card-content>
     </mat-card>
   </mat-tab>
-    <span *ngFor="let bus of buses">
+  <span *ngFor="let bus of buses">
     <mat-tab label="B-{{ bus.index }}">
       <b>BUS {{ bus.index }}</b
       ><br />
       name: {{ bus.name }}<br />
+      coord: {{ bus.coord[1] }} {{ bus.coord[0] }}<br />
       bus_type: {{ bus.bus_type }}<br />
       status: {{ bus.status }}<br />
       vmax: {{ bus.vmax }}<br />
@@ -274,28 +340,27 @@
     </mat-tab>
   </span>
   <span *ngFor="let trans of transformers">
-      <mat-tab label="T-{{trans.index}}" >
+    <mat-tab label="T-{{ trans.index }}">
       <b>TRANSFORMER {{ trans.index }}</b
       ><br />
-        br_r: {{ trans.br_r }}<br>
-        rate_a: {{ trans.rate_a }}<br>
-        pt: {{ trans.pt }}<br>
-        br_x: {{ trans.br_x }}<br>
-        g_to: {{ trans.g_to }}<br>
-        g_fr: {{ trans.g_fr }}<br>
-        b_fr: {{ trans.b_fr }}<br>
-        f_bus: {{ trans.f_bus }}<br>
-        br_status: {{ trans.br_status }}<br>
-        t_bus: {{ trans.t_bus }}<br>
-        b_to: {{ trans.b_to }}<br>
-        qf: {{ trans.qf }}<br>
-        angmin: {{ trans.angmin }}<br>
-        angmax: {{ trans.angmax }}<br>
-        transformer: {{ trans.transformer }}<br>
-        qt: {{ trans.qt }}<br>
-        tap: {{ trans.tap }}<br>
-        pf: {{ trans.pf }}
-  </mat-tab>
+      br_r: {{ trans.br_r }}<br />
+      rate_a: {{ trans.rate_a }}<br />
+      pt: {{ trans.pt }}<br />
+      br_x: {{ trans.br_x }}<br />
+      g_to: {{ trans.g_to }}<br />
+      g_fr: {{ trans.g_fr }}<br />
+      b_fr: {{ trans.b_fr }}<br />
+      f_bus: {{ trans.f_bus }}<br />
+      br_status: {{ trans.br_status }}<br />
+      t_bus: {{ trans.t_bus }}<br />
+      b_to: {{ trans.b_to }}<br />
+      qf: {{ trans.qf }}<br />
+      angmin: {{ trans.angmin }}<br />
+      angmax: {{ trans.angmax }}<br />
+      transformer: {{ trans.transformer }}<br />
+      qt: {{ trans.qt }}<br />
+      tap: {{ trans.tap }}<br />
+      pf: {{ trans.pf }}
+    </mat-tab>
   </span>
 </mat-tab-group>
-

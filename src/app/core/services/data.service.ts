@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
 import { ALPHA_COUNTRY } from '../../../data/ISO_3166-1_alpha-2'
-import { PANTAGRUEL_DATA } from '../core.const'
+import { PANTAGRUEL_DATA } from '../../core/core.const'
 import { Branch } from '../models/branch.model'
 import { Bus } from '../models/bus.model'
 import { Country } from '../models/country.model'
@@ -27,6 +27,8 @@ import { Pantagruel } from '../models/pantagruel'
 export class DataService {
   public BUS_MAX_POP!: number
   public BUS_MIN_POP!: number
+  public LOAD_MAX_CONS!: number
+  public LOAD_MIN_CONS!: number
   public GEN_MAX_MAX_PROD!: number // the higher value of field max prod of gen
   public GEN_MIN_MAX_PROD!: number // the lowest value of field max prod of gen
   public BRANCH_MIN_P_MW!: number
@@ -50,6 +52,8 @@ export class DataService {
   public setConstOfDataSet(data: Pantagruel): void {
     this.BUS_MAX_POP = this._setBusMaxPopulation(data.bus)
     this.BUS_MIN_POP = this._setBusMinPopulation(data.bus)
+    this.LOAD_MAX_CONS = this._setLoadMaxCons(data.load)
+    this.LOAD_MIN_CONS = this._setLoadMinCons(data.load)
     this.GEN_MAX_MAX_PROD = this._setGenMaxOfMaxProduction(data.gen)
     this.GEN_MIN_MAX_PROD = this._setGenMinOfMaxProduction(data.gen)
     this.BRANCH_MAX_P_MW = this._setBranchMaxPf(data.branch)
@@ -98,6 +102,26 @@ export class DataService {
     return Math.round(min)
   }
 
+  private _setLoadMaxCons(loads: { [key: string]: Load }): number {
+    let max: number = 0
+    Object.keys(loads).forEach((l) => {
+      if (max < loads[l].consumeMW) {
+        max = loads[l].consumeMW
+      }
+    })
+    return Math.round(max)
+  }
+
+  private _setLoadMinCons(loads: { [key: string]: Load }): number {
+    let min: number = this.LOAD_MAX_CONS
+    Object.keys(loads).forEach((l) => {
+      if (min > loads[l].consumeMW) {
+        min = loads[l].consumeMW
+      }
+    })
+    return Math.round(min)
+  }
+
   /**
    * Find the highest value among the maximum production of the generators
    * @param gens
@@ -136,7 +160,7 @@ export class DataService {
   private _setBranchMaxPf(branches: { [key: string]: Branch }): number {
     let max: number = 0
     Object.keys(branches).forEach((b) => {
-      if (max < branches[b].thermalRatingMW) {
+      if (max < branches[b].thermalRatingMW && !branches[b].transformer) {
         max = branches[b].thermalRatingMW
       }
     })
@@ -151,7 +175,7 @@ export class DataService {
   private _setBranchMinPf(branches: { [key: string]: Branch }): number {
     let min: number = this.BRANCH_MAX_P_MW
     Object.keys(branches).forEach((b) => {
-      if (min > branches[b].thermalRatingMW) {
+      if (min > branches[b].thermalRatingMW && !branches[b].transformer) {
         min = branches[b].thermalRatingMW
       }
     })
@@ -184,8 +208,10 @@ export class DataService {
    */
   private _getTotalProduction(gens: { [key: string]: Gen }): number {
     let total: number = 0
-    Object.keys(gens).forEach((b) => {
-      total = total + gens[b].pg
+    Object.keys(gens).forEach((g) => {
+      if (gens[g].gen_status == 1) {
+        total = total + gens[g].pg
+      }
     })
     return total * this.BASE_MVA
   }
@@ -198,7 +224,9 @@ export class DataService {
   private _getTotalConsumption(loads: { [key: string]: Load }): number {
     let total: number = 0
     Object.keys(loads).forEach((l) => {
-      total = total + loads[l].pd
+      if (loads[l].status == 1) {
+        total = total + loads[l].pd
+      }
     })
     return total * this.BASE_MVA
   }
@@ -209,7 +237,7 @@ export class DataService {
    */
   public isSameAsOriginal(indexBus: number): boolean {
     const editedBus = this.editedBus$.getValue()
-    let isSameAsOriginal = true
+    let sameAsOriginal = true
 
     // Get all branch (line, transformer) connect to the bus
     const branchs: Branch[] = []
@@ -223,23 +251,23 @@ export class DataService {
     editedBus.forEach((b) => {
       if (b.index == indexBus) {
         b.gens.forEach((g) => {
-          if (g.originalProduceMW != g.newProduceMW) {
-            isSameAsOriginal = false
+          if (g.originalProduceMW != g.produceMW) {
+            sameAsOriginal = false
           }
         })
         b.loads.forEach((l) => {
-          if (l.originalConsumeMW != l.newConsumeMW) {
-            isSameAsOriginal = false
+          if (l.originalConsumeMW != l.consumeMW) {
+            sameAsOriginal = false
           }
         })
         branchs.forEach((br) => {
           if (br.originalStatus != br.br_status) {
-            isSameAsOriginal = false
+            sameAsOriginal = false
           }
         })
       }
     })
-    return isSameAsOriginal
+    return sameAsOriginal
   }
 
   /**

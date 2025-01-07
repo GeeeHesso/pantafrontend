@@ -22,6 +22,10 @@ export const DEFAULT_SIZE_GEN = 5
 export const DEFAULT_SIZE_LOAD = 2.5
 export const DEFAULT_WIDTH_BRANCH = 1
 
+export const MAX_CONS = 1000
+
+export const UNIT_WATT = 'MW'
+
 export const PANTAGRUEL_DATA = new InjectionToken<BehaviorSubject<Pantagruel>>(
   'pantagruel.data.token',
 )

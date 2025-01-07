@@ -1,10 +1,12 @@
 import { NgIf } from '@angular/common'
 import { Component } from '@angular/core'
+import { FormsModule } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
+import { MatRadioModule } from '@angular/material/radio'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatToolbarModule } from '@angular/material/toolbar'
-import { DEFAULT_OPTIONS } from '../../core/core.const'
+import { DEFAULT_OPTIONS, UNIT_WATT } from '../../core/core.const'
 import { MapOptions } from '../../core/models/options.model'
 import { MapService } from '../../core/services/map.service'
 
@@ -13,10 +15,12 @@ import { MapService } from '../../core/services/map.service'
  * * Description       : Side panel contents legend and display options
  * *
  * * Revision History  :
- * * Date				  Author    		      Comments
+ * * Date				  Author    		            Comments
  * * ---------------------------------------------------------------------------
- * * 15/07/2023		Gwenaëlle Gustin		Last edition for TB release.
- * * 03/09/2023		Gwenaëlle Gustin		New feature: can call local API
+ * * 15/07/2023		Gwenaëlle Gustin		      Last edition for TB release.
+ * * 03/09/2023		Gwenaëlle Gustin		      New feature: can call local API
+ * * 21/02/2024		Marie-Esther Mabillard		Voltage color of branch/transformer (integrated 08/01/2025)
+ * * 08/01/2025		Gwenaëlle Gustin       		6 level of voltage
  * *
  ******************************************************************/
 @Component({
@@ -24,10 +28,19 @@ import { MapService } from '../../core/services/map.service'
   templateUrl: './sidenav-options.component.html',
   styleUrls: ['./sidenav-options.component.scss'],
   standalone: true,
-  imports: [MatSlideToggleModule, NgIf, MatIconModule, MatButtonModule, MatToolbarModule],
+  imports: [
+    MatSlideToggleModule,
+    NgIf,
+    MatIconModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatRadioModule,
+    FormsModule,
+  ],
 })
 export class SidenavOptionsComponent {
   constructor(public mapService: MapService) {}
+  public UNIT_WATT = UNIT_WATT
 
   /**
    * Apply display options

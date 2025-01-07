@@ -1,6 +1,6 @@
 :host {
   th {
-    width: 30px
+    width: 30px;
   }
 
   .popupContainer {
@@ -14,8 +14,9 @@
     box-shadow: none !important;
   }
 
-  mat-card-content, mat-card-header {
-  padding: 0;
+  mat-card-content,
+  mat-card-header {
+    padding: 0;
   }
 
   mat-card-title {
@@ -27,11 +28,12 @@
     height: 30px !important;
   }
   // Arrow left right in bottom zone
-  ::ng-deep .mat-mdc-tab-header-pagination{
+  ::ng-deep .mat-mdc-tab-header-pagination {
     min-width: 20px !important;
     padding-top: 4px !important;
   }
-  ::ng-deep .mat-mdc-tab-header-pagination-before, .mat-mdc-tab-header-rtl .mat-mdc-tab-header-pagination-after{
+  ::ng-deep .mat-mdc-tab-header-pagination-before,
+  .mat-mdc-tab-header-rtl .mat-mdc-tab-header-pagination-after {
     padding-left: 0 !important;
   }
   // Each button tab
@@ -43,34 +45,49 @@
   }
 
   // div to edit load and gen
-  .tabInput{
+  .tabInput {
     display: inline-block;
     font-size: 12px;
   }
-  .tabInput[contenteditable='true']{
+  .tabInput[contenteditable='true'] {
     border: solid 1px;
     padding: 0 5px;
     background: WhiteSmoke;
   }
 
   //Icon for edition
-  .mat-icon-button > .material-icons{
+  .mat-icon-button > .material-icons {
     font-size: 15px;
   }
-  .mat-icon-button{
+  .mat-icon-button {
     border-radius: 50%;
-    border:none;
+    border: none;
     padding: 5px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     background: white;
   }
-  .mat-icon-button:hover{
+  .mat-icon-button:hover {
     background: lightgrey;
   }
-  [hidden]{
-    display:none;
+  [hidden] {
+    display: none;
+  }
+
+  ::ng-deep .mat-mdc-slider {
+    width: 80% !important;
+  }
+
+  ::ng-deep .mdc-slider {
+    height: 28px !important;
+  }
+
+  ::ng-deep .mdc-slider__thumb {
+    height: 28px !important;
+  }
+
+  .mat-mdc-slider.mat-primary {
+    --mat-mdc-slider-focus-ripple-color: none;
   }
 }
-
