@@ -3,6 +3,7 @@
 }
 
 mat-toolbar {
+  z-index: 2;
   position: sticky;
   z-index: 2;
 }
@@ -21,7 +22,6 @@ legend {
   font-weight: bold;
 }
 #optionsBlock {
-  width: 350px;
   padding: 10px;
 }
 
@@ -36,4 +36,8 @@ mat-slide-toggle {
 
 .spacer {
   flex: 1 1 auto;
+}
+
+.voltage-legend {
+  padding-bottom: 10px;
 }

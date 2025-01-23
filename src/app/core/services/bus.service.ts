@@ -53,7 +53,8 @@ export class BusService {
         radius: 2,
         pane: 'markerPane', // explicit position,
         fillColor: color,
-        fillOpacity: 0.5,
+        fillOpacity: 1,
+
         // invisible stroke to easily click on it
         color: INACTIVE_COLOR,
         opacity: 0,
@@ -89,18 +90,18 @@ export class BusService {
       const latlon: LatLngExpression = [data.load[l].coord[0], data.load[l].coord[1]]
       const loadIcon = L.circleMarker(latlon, {
         radius: showSize
-          ? this._getSizeProportionalMax(data.load[l].pop, this._dataService.BUS_MAX_POP) / 2 +
+          ? this._getSizeProportionalMax(data.load[l].pd, this._dataService.LOAD_MAX_CONS) / 2 +
             zoom * this._zoomFactor
           : DEFAULT_SIZE_LOAD + zoom * this._zoomFactor,
         pane: 'shadowPane',
       })
 
       // Style
-      if (data.load[l].status == 0) {
+      if (data.load[l].pd == 0 || data.load[l].status == 0) {
         loadIcon.setStyle({
           fillColor: INACTIVE_COLOR,
           color: INACTIVE_COLOR,
-          fillOpacity: 0.3,
+          fillOpacity: 0.5,
           opacity: 1,
           weight: 0.5,
         })
@@ -108,9 +109,9 @@ export class BusService {
         loadIcon.setStyle({
           fillColor: 'grey',
           color: 'black',
-          fillOpacity: 0.1,
+          fillOpacity: 0.5,
           opacity: 1,
-          weight: 0.5,
+          weight: 1,
         })
 
       loadIcon.addTo(map)
@@ -150,10 +151,9 @@ export class BusService {
       }
 
       let svgHtml: string = this._constructFullSquareSVG(data.gen[g])
+
       if (showIcon) {
-        if (data.gen[g].pg == undefined) {
-          svgHtml = this._constructFullSquareSVG(data.gen[g])
-        } else if (data.gen[g].gen_status == 0) {
+        if (data.gen[g].gen_status == 0 || data.gen[g].pg == undefined || data.gen[g].pg == 0) {
           svgHtml = this._constructCrossSquareSVG(data.gen[g])
         } else if ((data.gen[g].pg / data.gen[g].pmax) * 100 > 94) {
           svgHtml = this._constructFullSquareSVG(data.gen[g])
@@ -293,7 +293,7 @@ export class BusService {
       this._sizeGen +
       `" fill="` +
       this._colorGen +
-      `"></rect>
+      `" opacity="0.8" stroke="black" stroke-width="2"></rect>
         </svg>`
     )
   }

@@ -9,11 +9,11 @@ import { MatRadioModule } from '@angular/material/radio'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { BehaviorSubject } from 'rxjs'
-import { PANTAGRUEL_DATA } from '../../core/core.const'
+import { Gen } from 'src/app/core/models/gen.model'
+import { PANTAGRUEL_DATA, UNIT_WATT } from '../../core/core.const'
 import { Branch } from '../../core/models/branch.model'
 import { Bus } from '../../core/models/bus.model'
 import { BusPoint } from '../../core/models/busPoint.model'
-import { Gen } from '../../core/models/gen.model'
 import { Load } from '../../core/models/load.model'
 import { Pantagruel } from '../../core/models/pantagruel'
 import { EditsService } from '../../core/services/edits.service'
@@ -51,6 +51,7 @@ export class SidenavEditsComponent implements OnInit {
   public editedTotalProd: number = 0
   public editedTotalCons: number = 0
   public editedBusPoint: BusPoint[] = []
+  public UNIT_WATT = UNIT_WATT
   constructor(
     public editsService: EditsService,
     @Inject(PANTAGRUEL_DATA) public _pantagruelData: BehaviorSubject<Pantagruel>,
@@ -154,8 +155,14 @@ export class SidenavEditsComponent implements OnInit {
    * @param bus
    */
   public handleButtonCancelEditLoad(load: Load, bus: Bus): void {
-    load.newConsumeMW = load.originalConsumeMW
-    this.editsService.saveLoad(load, bus)
+    load.consumeMW = load.originalConsumeMW
+    this.editsService.updateSidePanelAfterLoadEdit(load, bus)
+  }
+
+  public handleCancel() {
+    this.editsService.mapService.dataService.editedBus$.next([])
+    this.editsService.mapService.dataService.resetTotalEditedProdCons()
+    this.editsService.editionMade = false
   }
 
   /**
@@ -164,8 +171,8 @@ export class SidenavEditsComponent implements OnInit {
    * @param bus
    */
   public handleButtonCancelEditGen(gen: Gen, bus: Bus): void {
-    gen.newProduceMW = gen.originalProduceMW
-    this.editsService.saveGen(gen, bus)
+    gen.produceMW = gen.originalProduceMW
+    this.editsService.updateSidePanelAfterGenEdit(gen, bus)
   }
 
   /**
@@ -173,6 +180,9 @@ export class SidenavEditsComponent implements OnInit {
    * @param branch
    */
   public handleButtonCancelEditBranch(branch: Branch): void {
-    this.editsService.toggleBranch(branch, branch.originalStatus == 1)
+    branch.br_status = branch.originalStatus
+    branch.loadInjected = branch.originalLoadInjected
+    branch.totalPowerMW = branch.originalTotalPowerMW
+    this.editsService.updateSidePanelAfterBranchEdit(branch, branch.originalStatus)
   }
 }

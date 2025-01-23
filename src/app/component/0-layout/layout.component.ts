@@ -1,5 +1,5 @@
 import { Clipboard } from '@angular/cdk/clipboard'
-import { AsyncPipe, DatePipe, NgForOf, NgIf, NgStyle } from '@angular/common'
+import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common'
 import { Component, Inject, OnInit, ViewChild } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -20,7 +20,7 @@ import { ResolveEnd, Router } from '@angular/router'
 import { child, get, ref as refDb, set } from 'firebase/database'
 import { getDownloadURL, ref as refStorage, uploadString } from 'firebase/storage'
 import { BehaviorSubject } from 'rxjs'
-import { PANTAGRUEL_DATA } from '../../core/core.const'
+import { PANTAGRUEL_DATA, UNIT_WATT } from '../../core/core.const'
 import { Country } from '../../core/models/country.model'
 import { Pantagruel } from '../../core/models/pantagruel'
 import { EditsService } from '../../core/services/edits.service'
@@ -67,7 +67,6 @@ import { environment } from 'src/environments/environment'
     SidenavEditsComponent,
     SidenavOptionsComponent,
     MatSelectModule,
-    NgStyle,
   ],
 })
 export class LayoutComponent implements OnInit {
@@ -78,6 +77,7 @@ export class LayoutComponent implements OnInit {
   private _dateInput!: Date
   private _jsonFileName!: string
   public currentApplicationVersion = environment.version
+  public UNIT_WATT = UNIT_WATT
 
   constructor(
     public mapService: MapService,
@@ -260,6 +260,7 @@ export class LayoutComponent implements OnInit {
       // If side panel closed or open with options --> open the edits panel
     } else {
       this.editsService.sidenavOpened = 'edits'
+      this.editsService.editMode = true
       this.sidenav.open()
     }
   }
@@ -399,7 +400,6 @@ export class DialogDownload {
     MatInputModule,
     FormsModule,
     MatButtonModule,
-    NgIf,
     ReactiveFormsModule,
   ],
 })
@@ -543,6 +543,7 @@ export class DialogLink {
 })
 export class DialogCountry {
   public countryList: Country[] = []
+  public UNIT_WATT = UNIT_WATT
 
   constructor(
     public dialogRef: MatDialogRef<DialogCountry>,

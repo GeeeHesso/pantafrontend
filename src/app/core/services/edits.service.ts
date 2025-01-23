@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
-import { PANTAGRUEL_DATA } from '../core.const'
+import { MAX_CONS, PANTAGRUEL_DATA } from '../../core/core.const'
 import { Branch } from '../models/branch.model'
 import { Bus } from '../models/bus.model'
 import { Gen } from '../models/gen.model'
@@ -54,27 +54,31 @@ export class EditsService {
     editsSidenav.click()
   }
 
-  public toggleBranch(branch: Branch, e: boolean): void {
-    const branchStatus = e ? 1 : 0
+  public toggleBranch(branch: Branch, isActive: boolean): void {
+    const newBranchStatus = isActive ? 1 : 0
     // Handle edits panel
-    if (branchStatus != branch.br_status) {
+    if (newBranchStatus != branch.br_status) {
       this.handleSidenavInEditMode()
       this.editionMade = true
     }
 
     //Change value
-    if (branchStatus) {
+    if (newBranchStatus) {
       branch.br_status = 1
-      branch.loadInjected = branch.oldLoadInjected
-      branch.totalPowerMW = branch.oldTotalPowerMW
+      branch.loadInjected = branch.originalLoadInjected
+      branch.totalPowerMW = branch.originalTotalPowerMW
     } else {
       branch.br_status = 0
       branch.loadInjected = 0
       branch.totalPowerMW = 0
     }
 
+    this.updateSidePanelAfterBranchEdit(branch, newBranchStatus)
+  }
+
+  public updateSidePanelAfterBranchEdit(branch: Branch, newBranchStatus: number) {
     // Edit side panel with all modification
-    if (branchStatus !== branch.originalStatus) {
+    if (newBranchStatus !== branch.originalStatus) {
       const editedBus = this.mapService.dataService.editedBus$.getValue()
       let fromAlreadyEdited = false
       let toAlreadyEdited = false
@@ -116,113 +120,129 @@ export class EditsService {
     }
   }
 
-  public saveGen(gen: Gen, bus: Bus): void {
-    if (gen.newProduceMW > gen.maxMW) {
-      gen.newProduceMW = gen.maxMW
+  public onChangeSliderGen(gen: Gen, bus: Bus, e: Event) {
+    gen.produceMW = Math.round((parseInt((e.target as HTMLInputElement).value) / 100) * gen.maxMW)
+    if (gen.produceMW > 0) {
+      gen.gen_status = 1
     }
-    if (gen.newProduceMW !== gen.produceMW) {
-      this.editionMade = true
 
-      // Balance between production and consumption
-      const difference = gen.produceMW - gen.newProduceMW
-      const newTotal =
-        this.mapService.dataService.editedTotalProd$.getValue() - Math.round(difference * 100) / 100
-      this.mapService.dataService.editedTotalProd$.next(Math.round(newTotal * 100) / 100)
-
-      // Edit the displayed value
-      const data = this._pantagruelData.getValue()
-      Object.keys(data.gen).forEach((g) => {
-        if (gen.index == data.gen[g].index) {
-          data.gen[g].produceMW = gen.newProduceMW
-          data.gen[g].pg = gen.newProduceMW / data.baseMVA
-          return
-        }
-      })
-      this._pantagruelData.next(data)
-      this.mapService.drawOnMap()
-
-      // Edit side panel with all modification
-      if (gen.newProduceMW !== gen.originalProduceMW) {
-        const editedBus = this.mapService.dataService.editedBus$.getValue()
-        let alreadyEdited = false
-        editedBus.forEach((b) => {
-          if (b.index == gen.gen_bus) {
-            alreadyEdited = true
-            this.mapService.dataService.editedBus$.next(editedBus)
-          }
-        })
-        if (!alreadyEdited) {
-          editedBus.push(bus)
-          this.mapService.dataService.editedBus$.next(editedBus)
-        }
-      } else {
-        if (this.mapService.dataService.isSameAsOriginal(gen.gen_bus)) {
-          const editedBus = this.mapService.dataService.editedBus$.getValue()
-          editedBus.forEach((b, i) => {
-            if (b.index == gen.gen_bus) {
-              editedBus.splice(i, 1)
-            }
-          })
-          this.mapService.dataService.editedBus$.next(editedBus)
-        }
-      }
-
-      this.handleSidenavInEditMode()
-    }
+    this.updateSidePanelAfterGenEdit(gen, bus)
   }
 
-  public saveLoad(load: Load, bus: Bus): void {
-    const _maxValue = 1000
-    if (load.newConsumeMW > _maxValue) {
-      load.newConsumeMW = _maxValue
+  public updateSidePanelAfterGenEdit(gen: Gen, bus: Bus): void {
+    if (gen.produceMW > gen.maxMW) {
+      gen.produceMW = gen.maxMW
     }
-    if (load.newConsumeMW !== load.consumeMW) {
+
+    // Balance between production and consumption
+    const difference = Math.abs(gen.originalProduceMW - gen.produceMW)
+    const newTotal = this.mapService.dataService.TOTAL_PROD + Math.round(difference * 100) / 100
+    this.mapService.dataService.editedTotalProd$.next(Math.round(newTotal * 100) / 100)
+
+    // Edit side panel with all modification
+    if (gen.produceMW !== gen.originalProduceMW) {
       this.editionMade = true
 
-      // Balance between production and consumption
-      const difference = load.consumeMW - load.newConsumeMW
-      const newTotal =
-        this.mapService.dataService.editedTotalCons$.getValue() - Math.round(difference * 100) / 100
-      this.mapService.dataService.editedTotalCons$.next(Math.round(newTotal * 100) / 100)
-
-      // Edit the displayed value
-      const data = this._pantagruelData.getValue()
-      Object.keys(data.load).forEach((l) => {
-        if (load.index == data.load[l].index) {
-          data.load[l].consumeMW = load.newConsumeMW
-          data.load[l].pd = load.newConsumeMW / data.baseMVA
-          return
+      const editedBus = this.mapService.dataService.editedBus$.getValue()
+      let alreadyEdited = false
+      editedBus.forEach((b) => {
+        if (b.index == gen.gen_bus) {
+          alreadyEdited = true
+          this.mapService.dataService.editedBus$.next(editedBus)
         }
       })
-      this._pantagruelData.next(data)
-      this.mapService.drawOnMap()
-
-      // Edit side panel with all modification
-      if (load.newConsumeMW !== load.originalConsumeMW) {
+      if (!alreadyEdited) {
+        editedBus.push(bus)
+        this.mapService.dataService.editedBus$.next(editedBus)
+      }
+    } else {
+      if (this.mapService.dataService.isSameAsOriginal(gen.gen_bus)) {
         const editedBus = this.mapService.dataService.editedBus$.getValue()
-        let alreadyEdited = false
-        editedBus.forEach((b) => {
-          if (b.index == load.load_bus) {
-            alreadyEdited = true
+        editedBus.forEach((b, i) => {
+          if (b.index == gen.gen_bus) {
+            editedBus.splice(i, 1)
           }
         })
-        if (!alreadyEdited) {
-          editedBus.push(bus)
-          this.mapService.dataService.editedBus$.next(editedBus)
-        }
-      } else {
-        if (this.mapService.dataService.isSameAsOriginal(load.load_bus)) {
-          const editedBus = this.mapService.dataService.editedBus$.getValue()
-          editedBus.forEach((b, i) => {
-            if (b.index == load.load_bus) {
-              editedBus.splice(i, 1)
-            }
-          })
-          this.mapService.dataService.editedBus$.next(editedBus)
-        }
+        this.mapService.dataService.editedBus$.next(editedBus)
       }
-
-      this.handleSidenavInEditMode()
     }
+    this.handleSidenavInEditMode()
+  }
+
+  //@todo implement with "(change)="editsService.updateMapAfterGenEdit(gen)" in both input of slider
+  public updateMapAfterGenEdit(gen: Gen) {
+    //Edit the displayed value
+    const data = this._pantagruelData.getValue()
+    Object.keys(data.gen).forEach((g) => {
+      if (gen.index == data.gen[g].index) {
+        data.gen[g].produceMW = gen.produceMW
+        data.gen[g].pg = gen.produceMW / data.baseMVA
+        return
+      }
+    })
+    this._pantagruelData.next(data)
+    this.mapService.drawOnMap()
+  }
+
+  public onChangeSliderLoad(load: Load, bus: Bus, e: Event) {
+    load.consumeMW = Math.round((parseInt((e.target as HTMLInputElement).value) / 100) * 1000)
+    if (load.consumeMW > 0) {
+      load.status = 1
+    }
+    this.updateSidePanelAfterLoadEdit(load, bus)
+  }
+
+  public updateSidePanelAfterLoadEdit(load: Load, bus: Bus): void {
+    if (load.consumeMW > MAX_CONS) {
+      load.consumeMW = MAX_CONS
+    }
+
+    // Balance between production and consumption
+    const difference = Math.abs(load.consumeMW - load.originalConsumeMW)
+    const newTotal = this.mapService.dataService.TOTAL_CONS + Math.round(difference * 100) / 100
+    this.mapService.dataService.editedTotalCons$.next(Math.round(newTotal * 100) / 100)
+
+    // Edit side panel with all modification
+    if (load.consumeMW !== load.originalConsumeMW) {
+      this.editionMade = true
+
+      const editedBus = this.mapService.dataService.editedBus$.getValue()
+      let alreadyEdited = false
+      editedBus.forEach((b) => {
+        if (b.index == load.load_bus) {
+          alreadyEdited = true
+        }
+      })
+      if (!alreadyEdited) {
+        editedBus.push(bus)
+        this.mapService.dataService.editedBus$.next(editedBus)
+      }
+    } else {
+      if (this.mapService.dataService.isSameAsOriginal(load.load_bus)) {
+        const editedBus = this.mapService.dataService.editedBus$.getValue()
+        editedBus.forEach((b, i) => {
+          if (b.index == load.load_bus) {
+            editedBus.splice(i, 1)
+          }
+        })
+        this.mapService.dataService.editedBus$.next(editedBus)
+      }
+    }
+
+    this.handleSidenavInEditMode()
+  }
+
+  //@todo implement with "(change)="editsService.updateMapAfterLoadEdit(gen)" in both input of slider
+  public updateMapAfterLoadEdit(load: Load) {
+    const data = this._pantagruelData.getValue()
+    Object.keys(data.load).forEach((l) => {
+      if (load.index == data.load[l].index) {
+        data.load[l].consumeMW = load.consumeMW
+        data.load[l].pd = load.consumeMW / data.baseMVA
+        return
+      }
+    })
+    this._pantagruelData.next(data)
+    this.mapService.drawOnMap()
   }
 }

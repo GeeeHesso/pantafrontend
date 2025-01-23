@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 import * as L from 'leaflet'
 import { BehaviorSubject } from 'rxjs'
 import { environment } from 'src/environments/environment'
-import { DEFAULT_OPTIONS, PANTAGRUEL_DATA, URL_LOCAL_GRID } from '../core.const'
+import { DEFAULT_OPTIONS, PANTAGRUEL_DATA, URL_LOCAL_GRID } from '../../core/core.const'
 import { MapOptions } from '../models/options.model'
 import { Pantagruel } from '../models/pantagruel'
 import { BranchService } from './branch.service'
@@ -84,7 +84,7 @@ export class MapService {
       center: this.selectedOptions.center,
       zoom: this.selectedOptions.zoom,
       minZoom: 4,
-      maxZoom: 13,
+      maxZoom: 13, //if more than 18, leaflet background become grey
     })
     this.map.on('zoomend', () => {
       this.drawOnMap()
@@ -95,7 +95,7 @@ export class MapService {
     tiles.addTo(this.map)
 
     this._getAvailableDate()
-    this._loadLocalData() // @todo: useless for now, failed displayed before end of reading
+    //this._loadLocalData() // @todo: useless for now, failed displayed before end of reading
   }
 
   public updateUrl(): void {
@@ -116,6 +116,7 @@ export class MapService {
    * Display data on the map according to option
    */
   public drawOnMap(option: MapOptions = this.selectedOptions): void {
+    console.log('drawonmap')
     const PANTAGRUEL_DATA = this._pantagruelData.getValue()
 
     this.clearMap()
@@ -353,7 +354,7 @@ export class MapService {
   }
 
   /**
-   * Reset Pantagruel data with original in case of error
+   * Reset Pantagruel data with original in case of error 422
    * or cancelling edition
    */
   public resetData(): void {
@@ -366,7 +367,7 @@ export class MapService {
   private _loadLocalData(): any {
     this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
       this._localPantagruelData = this._getFormattedPantagruelData(data)
-      console.log(this._localPantagruelData)
+      console.log('Load local data', this._localPantagruelData)
     })
   }
 
@@ -389,18 +390,18 @@ export class MapService {
     } else if (error.status == 0 || error.status == 404) {
       // if no data at all is stored, read the local default value
 
+      //@Todo: test this code
       if (this._pantagruelData.getValue() == null) {
-        this.showSnackbar(
+        /*this.showSnackbar(
           'Error ' +
             error.status +
             ' :  the API could not be accessed. The LOCAL data are displayed.',
-        )
-
+        )*/
         //@todo: is same code as _loadLocalData()
-        this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
+        /*this._http.get<Pantagruel>(URL_LOCAL_GRID).subscribe((data) => {
           this._localPantagruelData = this._getFormattedPantagruelData(data)
           this.getDataFromFile(this._localPantagruelData)
-        })
+        })*/
 
         return
       } else {
@@ -437,12 +438,18 @@ export class MapService {
         pantagruelData.bus[pantagruelData.gen[g].gen_bus].coord[1],
         pantagruelData.bus[pantagruelData.gen[g].gen_bus].coord[0],
       ]
-      pantagruelData.gen[g].produceMW =
-        Math.round((pantagruelData.gen[g].pg * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
-      pantagruelData.gen[g].newProduceMW =
-        Math.round((pantagruelData.gen[g].pg * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
-      pantagruelData.gen[g].originalProduceMW =
-        Math.round((pantagruelData.gen[g].pg * pantagruelData.baseMVA + Number.EPSILON) * 100) / 100
+      if (pantagruelData.gen[g].gen_status == 0) {
+        pantagruelData.gen[g].produceMW = 0
+        pantagruelData.gen[g].originalProduceMW = 0
+      } else {
+        pantagruelData.gen[g].produceMW =
+          Math.round((pantagruelData.gen[g].pg * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+          100
+        pantagruelData.gen[g].originalProduceMW =
+          Math.round((pantagruelData.gen[g].pg * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+          100
+      }
+
       pantagruelData.gen[g].maxMW =
         Math.round((pantagruelData.gen[g].pmax * pantagruelData.baseMVA + Number.EPSILON) * 100) /
         100
@@ -495,8 +502,6 @@ export class MapService {
 
       if (pantagruelData.gen[g].pg == undefined) {
         console.warn('Gen without power: ' + pantagruelData.gen[g].index)
-      } else if (pantagruelData.gen[g].gen_status == 0) {
-        console.warn('Inactive gen: ' + pantagruelData.gen[g].index)
       }
     })
 
@@ -509,18 +514,20 @@ export class MapService {
       pantagruelData.load[l].pop = Math.round(
         pantagruelData.bus[pantagruelData.load[l].load_bus].population,
       )
-      pantagruelData.load[l].consumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
-        100
-      pantagruelData.load[l].newConsumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
-        100
-      pantagruelData.load[l].originalConsumeMW =
-        Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
-        100
-
       if (pantagruelData.load[l].status == 0) {
-        console.warn('Inactive load: ' + pantagruelData.load[l].index)
+        pantagruelData.load[l].consumeMW = 0
+        pantagruelData.load[l].originalConsumeMW = 0
+      } else {
+        pantagruelData.load[l].consumeMW =
+          Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+          100
+        pantagruelData.load[l].originalConsumeMW =
+          Math.round((pantagruelData.load[l].pd * pantagruelData.baseMVA + Number.EPSILON) * 100) /
+          100
+      }
+
+      if (pantagruelData.load[l].pd == undefined) {
+        console.warn('Load without consumption: ' + pantagruelData.load[l].index)
       }
     })
 
@@ -539,27 +546,53 @@ export class MapService {
       })
 
       if (pantagruelData.bus[b].status == 0) {
-        console.warn('Inactive bus: ' + pantagruelData.bus[b].index)
+        //console.warn('Inactive bus: ' + pantagruelData.bus[b].index)
       }
     })
 
     Object.keys(pantagruelData.branch).forEach((br) => {
+      if (
+        pantagruelData.bus[pantagruelData.branch[br].f_bus] == undefined ||
+        pantagruelData.bus[pantagruelData.branch[br].t_bus] == undefined
+      ) {
+        console.log(
+          'Branch ' +
+            br +
+            ' is not show because fromBus ' +
+            pantagruelData.branch[br].f_bus +
+            ' or/and toBus ' +
+            pantagruelData.branch[br].t_bus +
+            ' not found in dataset',
+        )
+        delete pantagruelData.branch[br]
+        return
+      }
+
       pantagruelData.branch[br].originalStatus = pantagruelData.branch[br].br_status
-      pantagruelData.branch[br].loadInjected = Math.round(
+      pantagruelData.branch[br].originalStatus = pantagruelData.branch[br].br_status
+      if (pantagruelData.branch[br].br_status == 0) {
+        pantagruelData.branch[br].loadInjected = 0
+        pantagruelData.branch[br].totalPowerMW = 0
+      } else {
+        pantagruelData.branch[br].loadInjected = Math.round(
+          (Math.abs(pantagruelData.branch[br].pf) / pantagruelData.branch[br].rate_a +
+            Number.EPSILON) *
+            100,
+        )
+        pantagruelData.branch[br].totalPowerMW =
+          Math.round(
+            (Math.abs(pantagruelData.branch[br].pf) * pantagruelData.baseMVA + Number.EPSILON) *
+              100,
+          ) / 100
+      }
+
+      pantagruelData.branch[br].originalLoadInjected = Math.round(
         (Math.abs(pantagruelData.branch[br].pf) / pantagruelData.branch[br].rate_a +
           Number.EPSILON) *
           100,
       )
-      pantagruelData.branch[br].oldLoadInjected = Math.round(
-        (Math.abs(pantagruelData.branch[br].pf) / pantagruelData.branch[br].rate_a +
-          Number.EPSILON) *
-          100,
-      )
-      pantagruelData.branch[br].totalPowerMW =
-        Math.round(
-          (Math.abs(pantagruelData.branch[br].pf) * pantagruelData.baseMVA + Number.EPSILON) * 100,
-        ) / 100
-      pantagruelData.branch[br].oldTotalPowerMW =
+
+      pantagruelData.branch[br].originalTotalPowerMW =
         Math.round(
           (Math.abs(pantagruelData.branch[br].pf) * pantagruelData.baseMVA + Number.EPSILON) * 100,
         ) / 100
@@ -587,8 +620,9 @@ export class MapService {
       }
 
       if (pantagruelData.branch[br].transformer) {
-        if (pantagruelData.branch[br].br_status == 0)
-          console.warn('Inactive transformer: ' + pantagruelData.branch[br].index)
+        if (pantagruelData.branch[br].br_status == 0) {
+          //console.warn('Inactive transformer: ' + pantagruelData.branch[br].index)
+        }
         if (pantagruelData.branch[br].pf == undefined)
           console.warn('Transformer without power: ' + pantagruelData.branch[br].index)
         if (
@@ -600,9 +634,9 @@ export class MapService {
           )
       } else {
         if (pantagruelData.branch[br].br_status == 0)
-          console.warn('Inactive line: ' + pantagruelData.branch[br].index)
-        if (pantagruelData.branch[br].pf == undefined)
-          console.warn('Line without power: ' + pantagruelData.branch[br].index)
+          if (pantagruelData.branch[br].pf == undefined)
+            //console.warn('Inactive line: ' + pantagruelData.branch[br].index)
+            console.warn('Line without power: ' + pantagruelData.branch[br].index)
         if (
           pantagruelData.branch[br].fromBus.coord[0] == pantagruelData.branch[br].toBus.coord[0] &&
           pantagruelData.branch[br].fromBus.coord[1] == pantagruelData.branch[br].toBus.coord[1]

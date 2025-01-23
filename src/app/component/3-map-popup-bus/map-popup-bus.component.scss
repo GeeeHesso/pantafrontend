@@ -50,7 +50,6 @@
     font-size: 12px;
   }
   .tabInput[contenteditable='true'] {
-    padding: 0 5px;
     border: solid 1px;
     background: WhiteSmoke;
   }
@@ -60,6 +59,9 @@
     font-size: 15px;
   }
   .mat-icon-button {
+    border-radius: 50%;
+    border: none;
+    padding: 5px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -73,5 +75,21 @@
   }
   [hidden] {
     display: none;
+  }
+
+  ::ng-deep .mat-mdc-slider {
+    width: 80% !important;
+  }
+
+  ::ng-deep .mdc-slider {
+    height: 28px !important;
+  }
+
+  ::ng-deep .mdc-slider__thumb {
+    height: 28px !important;
+  }
+
+  .mat-mdc-slider.mat-primary {
+    --mat-mdc-slider-focus-ripple-color: none;
   }
 }

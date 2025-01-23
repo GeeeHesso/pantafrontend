@@ -27,11 +27,12 @@ export class GenContentCheckDirective extends ContentCheckBase {
 
   protected override _checkValue(value: number): void {
     if (this._gen != undefined) {
-      this._gen.newProduceMW = value
-      if (this._gen.newProduceMW > this._maxValue) {
+      this._gen.produceMW = value
+      if (this._gen.produceMW > this._maxValue) {
         this._elRef.nativeElement.innerText = this._maxValue
       }
-      this._editsService.saveGen(this._gen, this.bus)
+      this._editsService.updateSidePanelAfterGenEdit(this._gen, this.bus)
+      this._editsService.updateMapAfterGenEdit(this._gen)
     }
   }
 }

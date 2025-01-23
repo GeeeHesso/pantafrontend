@@ -36,9 +36,23 @@
               >
                 {{ load.consumeMW }}
               </div>
-              MW ({{ load.index }})
-              <br />
-              Population: {{ load.pop }}
+              {{ UNIT_WATT }} ({{ load.index }})
+              <mat-slider
+                [hidden]="!this.editsService.editMode"
+                min="0"
+                max="100"
+                step="10"
+                discrete
+                [displayWith]="formatLabel"
+              >
+                <input
+                  matSliderThumb
+                  value="{{ (load.consumeMW / MAX_CONS) * 100 }}"
+                  (input)="editsService.onChangeSliderLoad(load, bus, $event)"
+                />
+              </mat-slider>
+              <!--<br />
+              Population: {{ load.pop }}-->
             </div>
           </td>
         </tr>
@@ -59,7 +73,21 @@
             >
               {{ isNaN(gen.produceMW) ? '-' : gen.produceMW }}
             </div>
-            / {{ gen.maxMW }} MW
+            / {{ gen.maxMW }} {{ UNIT_WATT }}
+            <mat-slider
+              [hidden]="!this.editsService.editMode"
+              min="0"
+              max="100"
+              step="10"
+              discrete
+              [displayWith]="formatLabel"
+            >
+              <input
+                matSliderThumb
+                value="{{ (gen.produceMW / gen.maxMW) * 100 }}"
+                (input)="editsService.onChangeSliderGen(gen, bus, $event)"
+              />
+            </mat-slider>
           </td>
         </tr>
       </table>
@@ -89,7 +117,7 @@
             </svg>
           </th>
           <td>
-            <b>{{ trans.index }}</b>
+            <b>Transformer {{ trans.index }}</b>
             <mat-slide-toggle
               class="toggle-title"
               [hidden]="!this.editsService.editMode"
@@ -106,9 +134,9 @@
             Load injected: {{ isNaN(trans.loadInjected) ? '-' : trans.loadInjected }} %
             <br />
             Total power: {{ isNaN(trans.totalPowerMW) ? '-' : trans.totalPowerMW }} /
-            {{ trans.thermalRatingMW }} MW
+            {{ trans.thermalRatingMW }} {{ UNIT_WATT }}
             <br />
-            Losses: {{ isNaN(trans.losses) ? '-' : trans.losses }} MW
+            Losses: {{ isNaN(trans.losses) ? '-' : trans.losses }} {{ UNIT_WATT }}
           </td>
         </tr>
       </table>
@@ -126,6 +154,7 @@
     <mat-card>
       <mat-card-header>
         <mat-card-title>
+          hello
           {{ buses[0].name }} ({{ buses[0].country }})
           <button
             class="mat-icon-button"
@@ -160,9 +189,23 @@
                   >
                     {{ load.consumeMW }}
                   </div>
-                  MW ({{ load.index }})
-                  <br />
-                  Population: {{ load.pop }}
+                  {{ UNIT_WATT }} ({{ load.index }})
+                  <mat-slider
+                    [hidden]="!this.editsService.editMode"
+                    min="0"
+                    max="100"
+                    step="10"
+                    discrete
+                    [displayWith]="formatLabel"
+                  >
+                    <input
+                      matSliderThumb
+                      value="{{ (load.consumeMW / MAX_CONS) * 100 }}"
+                      (input)="editsService.onChangeSliderLoad(load, bus, $event)"
+                    />
+                  </mat-slider>
+                  <!--<br />
+                  Population: {{ load.pop }}-->
                 </div>
               </td>
             </tr>
@@ -183,7 +226,21 @@
                 >
                   {{ isNaN(gen.produceMW) ? '-' : gen.produceMW }}
                 </div>
-                / {{ gen.maxMW }} MW
+                / {{ gen.maxMW }} {{ UNIT_WATT }}
+                <mat-slider
+                  [hidden]="!this.editsService.editMode"
+                  min="0"
+                  max="100"
+                  step="10"
+                  discrete
+                  [displayWith]="formatLabel"
+                >
+                  <input
+                    matSliderThumb
+                    value="{{ (gen.produceMW / gen.maxMW) * 100 }}"
+                    (input)="editsService.onChangeSliderGen(gen, bus, $event)"
+                  />
+                </mat-slider>
               </td>
             </tr>
           </table>
@@ -213,7 +270,7 @@
                 </svg>
               </th>
               <td>
-                <b>{{ trans.index }}</b>
+                <b>Transformer {{ trans.index }}</b>
                 <mat-slide-toggle
                   class="toggle-title"
                   [hidden]="!this.editsService.editMode"
@@ -229,9 +286,9 @@
                 Load injected: {{ isNaN(trans.loadInjected) ? '-' : trans.loadInjected }} %
                 <br />
                 Total power: {{ isNaN(trans.totalPowerMW) ? '-' : trans.totalPowerMW }} /
-                {{ trans.thermalRatingMW }} MW
+                {{ trans.thermalRatingMW }} {{ UNIT_WATT }}
                 <br />
-                Losses: {{ isNaN(trans.losses) ? '-' : trans.losses }} MW
+                Losses: {{ isNaN(trans.losses) ? '-' : trans.losses }} {{ UNIT_WATT }}
               </td>
             </tr>
           </table>
@@ -244,6 +301,7 @@
       <b>BUS {{ bus.index }}</b
       ><br />
       name: {{ bus.name }}<br />
+      coord: {{ bus.coord[1] }} {{ bus.coord[0] }}<br />
       bus_type: {{ bus.bus_type }}<br />
       status: {{ bus.status }}<br />
       vmax: {{ bus.vmax }}<br />

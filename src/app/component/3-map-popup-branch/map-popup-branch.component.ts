@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card'
 import { MatIconModule } from '@angular/material/icon'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatTabsModule } from '@angular/material/tabs'
+import { UNIT_WATT } from 'src/app/core/core.const'
 import { Branch } from '../../core/models/branch.model'
 import { EditsService } from '../../core/services/edits.service'
 
@@ -19,8 +20,8 @@ import { EditsService } from '../../core/services/edits.service'
  ******************************************************************/
 @Component({
   selector: 'app-map-popup-branch',
-  templateUrl: './map-popup-branch.html',
-  styleUrls: ['./map-popup-branch.scss'],
+  templateUrl: './map-popup-branch.component.html',
+  styleUrls: ['./map-popup-branch.component.scss'],
   standalone: true,
   imports: [MatTabsModule, NgIf, NgForOf, MatCardModule, MatIconModule, MatSlideToggleModule],
 })
@@ -29,4 +30,8 @@ export class MapPopupBranch {
   @Input() branchesFT!: Branch[]
   @Input() branchesTF!: Branch[]
   protected readonly isNaN = isNaN
+  public UNIT_WATT = UNIT_WATT
+  ngOnDestroy() {
+    this.editsService.mapService.drawOnMap()
+  }
 }

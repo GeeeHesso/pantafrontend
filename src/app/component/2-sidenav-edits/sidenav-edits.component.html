@@ -4,6 +4,7 @@
     <mat-card>
       <mat-card-header *ngIf="!this.editsService.editionMade">
         <mat-card-title> No change </mat-card-title>
+        <mat-card-subtitle> Click on a element of the map to edit it.</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-header *ngIf="editedTotalCons !== editedTotalProd">
@@ -99,7 +100,7 @@
       </mat-card-header>
       <mat-card-content>
         <span *ngFor="let load of busPoint.bus.loads" (click)="goToBus(busPoint.bus)">
-          <span *ngIf="load.newConsumeMW !== load.originalConsumeMW">
+          <span *ngIf="load.consumeMW !== load.originalConsumeMW">
             <p>
               <mat-icon>blur_circular</mat-icon>
               <b>{{ busPoint.bus.base_kv }} kV</b>
@@ -112,12 +113,13 @@
                 <i class="material-icons">cancel</i>
               </button>
               <br />
-              Consumption modified from {{ load.originalConsumeMW }} to {{ load.newConsumeMW }} MW
+              Consumption modified from {{ load.originalConsumeMW }} to {{ load.consumeMW }}
+              {{ UNIT_WATT }}
             </p>
           </span>
         </span>
         <span *ngFor="let gen of busPoint.bus.gens" (click)="goToBus(busPoint.bus)">
-          <span *ngIf="gen.newProduceMW !== gen.originalProduceMW">
+          <span *ngIf="gen.produceMW !== gen.originalProduceMW">
             <p>
               <mat-icon>check_box_outline_blank</mat-icon>
               <b>{{ gen.categoryText }} - {{ gen.type }}</b> (gen {{ gen.index }})
@@ -129,8 +131,8 @@
                 <i class="material-icons">cancel</i>
               </button>
               <br />
-              Production modified from {{ gen.originalProduceMW }} to
-              {{ gen.newProduceMW }} MW<br />
+              Production modified from {{ gen.originalProduceMW }} to {{ gen.produceMW }}
+              {{ UNIT_WATT }}<br />
             </p>
           </span>
         </span>

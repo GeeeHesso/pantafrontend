@@ -42,12 +42,12 @@
             <th>Total power</th>
             <td>
               {{ isNaN(branch.totalPowerMW) ? "-" : branch.totalPowerMW}} /
-              {{branch.thermalRatingMW}} MW
+              {{branch.thermalRatingMW}} {{UNIT_WATT}}
             </td>
           </tr>
           <tr>
             <th>Losses</th>
-            <td>{{ isNaN(branch.losses) ? "-" : branch.losses}} MW</td>
+            <td>{{ isNaN(branch.losses) ? "-" : branch.losses}} {{UNIT_WATT}}</td>
           </tr>
           <tr>
             <th>From</th>
@@ -95,12 +95,12 @@
             <th>Total power</th>
             <td>
               {{ isNaN(branch.totalPowerMW) ? "-" : branch.totalPowerMW}} /
-              {{branch.thermalRatingMW}} MW
+              {{branch.thermalRatingMW}} {{UNIT_WATT}}
             </td>
           </tr>
           <tr>
             <th>Losses</th>
-            <td>{{ isNaN(branch.losses) ? "-" : branch.losses}} MW</td>
+            <td>{{ isNaN(branch.losses) ? "-" : branch.losses}} {{UNIT_WATT}}</td>
           </tr>
           <tr>
             <th>From</th>
@@ -165,12 +165,12 @@
               <th>Total power</th>
               <td>
                 {{ isNaN(branch.totalPowerMW) ? "-" : branch.totalPowerMW}} /
-                {{branch.thermalRatingMW}} MW
+                {{branch.thermalRatingMW}} {{UNIT_WATT}}
               </td>
             </tr>
             <tr>
               <th>Losses</th>
-              <td>{{ isNaN(branch.losses) ? "-" : branch.losses}} MW</td>
+              <td>{{ isNaN(branch.losses) ? "-" : branch.losses}} {{UNIT_WATT}}</td>
             </tr>
             <tr>
               <th>From</th>
@@ -218,12 +218,12 @@
               <th>Total power</th>
               <td>
                 {{ isNaN(branch.totalPowerMW) ? "-" : branch.totalPowerMW}} /
-                {{branch.thermalRatingMW}} MW
+                {{branch.thermalRatingMW}} {{UNIT_WATT}}
               </td>
             </tr>
             <tr>
               <th>Losses</th>
-              <td>{{ isNaN(branch.losses) ? "-" : branch.totalPowerMW}} MW</td>
+              <td>{{ isNaN(branch.losses) ? "-" : branch.losses}} {{UNIT_WATT}}</td>
             </tr>
             <tr>
               <th>From</th>
