@@ -31,7 +31,7 @@ export class LoadContentCheckDirective extends ContentCheckBase {
         this._elRef.nativeElement.innerText = this._maxValue
       }
       this._editsService.updateSidePanelAfterLoadEdit(this.load, this.bus)
-      this._editsService.updateMapAfterLoadEdit(this.load)
+      this._editsService.updateMapAfterLoadEdit(this.load, this.bus)
     }
   }
 }

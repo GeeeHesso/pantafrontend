@@ -26,12 +26,10 @@ import { EditsService } from '../../core/services/edits.service'
   imports: [MatTabsModule, NgIf, NgForOf, MatCardModule, MatIconModule, MatSlideToggleModule],
 })
 export class MapPopupBranch {
-  constructor(public editsService: EditsService) {}
   @Input() branchesFT!: Branch[]
   @Input() branchesTF!: Branch[]
   protected readonly isNaN = isNaN
   public UNIT_WATT = UNIT_WATT
-  ngOnDestroy() {
-    this.editsService.mapService.drawOnMap()
-  }
+
+  constructor(public editsService: EditsService) {}
 }

@@ -201,6 +201,13 @@ export class BranchService {
       }
     })
 
+    PopupBranchEl.branchesFT = PopupBranchEl.branchesFT.sort(
+      (a: Branch, b: Branch) => a.index - b.index,
+    )
+    PopupBranchEl.branchesTF = PopupBranchEl.branchesTF.sort(
+      (a: Branch, b: Branch) => a.index - b.index,
+    )
+
     document.body.appendChild(PopupBranchEl)
     return PopupBranchEl
   }

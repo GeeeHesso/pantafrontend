@@ -92,14 +92,14 @@
   <!-- All edited data -->
   <span *ngFor="let busPoint of this.editedBusPoint">
     <mat-card class="editList">
-      <mat-card-header (click)="goToBus(busPoint.bus)">
+      <mat-card-header (click)="editsService.goToBus(busPoint.bus)">
         <mat-card-title>
           {{ busPoint.bus.name }} {{ busPoint.bus.country }} ({{ busPoint.bus.index }})
         </mat-card-title>
         <mat-card-subtitle></mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <span *ngFor="let load of busPoint.bus.loads" (click)="goToBus(busPoint.bus)">
+        <span *ngFor="let load of busPoint.bus.loads" (click)="editsService.goToBus(busPoint.bus)">
           <span *ngIf="load.consumeMW !== load.originalConsumeMW">
             <p>
               <mat-icon>blur_circular</mat-icon>
@@ -118,7 +118,7 @@
             </p>
           </span>
         </span>
-        <span *ngFor="let gen of busPoint.bus.gens" (click)="goToBus(busPoint.bus)">
+        <span *ngFor="let gen of busPoint.bus.gens" (click)="editsService.goToBus(busPoint.bus)">
           <span *ngIf="gen.produceMW !== gen.originalProduceMW">
             <p>
               <mat-icon>check_box_outline_blank</mat-icon>
@@ -136,7 +136,7 @@
             </p>
           </span>
         </span>
-        <span *ngFor="let trans of busPoint.transfo" (click)="goToBus(busPoint.bus)">
+        <span *ngFor="let trans of busPoint.transfo" (click)="editsService.goToBus(busPoint.bus)">
           <span *ngIf="trans.originalStatus !== trans.br_status">
             <p>
               <svg
@@ -180,7 +180,10 @@
           </span>
         </span>
         <span *ngFor="let line of busPoint.lines">
-          <span *ngIf="line.originalStatus !== line.br_status" (click)="goToLine(line)">
+          <span
+            *ngIf="line.originalStatus !== line.br_status"
+            (click)="editsService.goToLine(line)"
+          >
             <p>
               <svg height="24px" width="24px">
                 <line stroke="#000" stroke-width="3px" y1="4" x1="4" y2="20" x2="20" />

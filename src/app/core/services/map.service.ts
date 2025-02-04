@@ -116,7 +116,6 @@ export class MapService {
    * Display data on the map according to option
    */
   public drawOnMap(option: MapOptions = this.selectedOptions): void {
-    console.log('drawonmap')
     const PANTAGRUEL_DATA = this._pantagruelData.getValue()
 
     this.clearMap()

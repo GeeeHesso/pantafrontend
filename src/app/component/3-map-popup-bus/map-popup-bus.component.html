@@ -49,6 +49,7 @@
                   matSliderThumb
                   value="{{ (load.consumeMW / MAX_CONS) * 100 }}"
                   (input)="editsService.onChangeSliderLoad(load, bus, $event)"
+                  (mouseup)="editsService.updateMapAfterLoadEdit(load, bus)"
                 />
               </mat-slider>
               <!--<br />
@@ -86,6 +87,7 @@
                 matSliderThumb
                 value="{{ (gen.produceMW / gen.maxMW) * 100 }}"
                 (input)="editsService.onChangeSliderGen(gen, bus, $event)"
+                (mouseup)="editsService.updateMapAfterGenEdit(gen, bus)"
               />
             </mat-slider>
           </td>
@@ -202,6 +204,7 @@
                       matSliderThumb
                       value="{{ (load.consumeMW / MAX_CONS) * 100 }}"
                       (input)="editsService.onChangeSliderLoad(load, bus, $event)"
+                      (mouseup)="editsService.updateMapAfterLoadEdit(load, bus)"
                     />
                   </mat-slider>
                   <!--<br />
@@ -239,6 +242,7 @@
                     matSliderThumb
                     value="{{ (gen.produceMW / gen.maxMW) * 100 }}"
                     (input)="editsService.onChangeSliderGen(gen, bus, $event)"
+                    (mouseup)="editsService.updateMapAfterGenEdit(gen, bus)"
                   />
                 </mat-slider>
               </td>

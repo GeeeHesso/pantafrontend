@@ -54,10 +54,6 @@ export class MapPopupBusComponent {
   public UNIT_WATT = UNIT_WATT
   public MAX_CONS = MAX_CONS
 
-  ngOnDestroy() {
-    this.editsService.mapService.drawOnMap()
-  }
-
   formatLabel(value: number): string {
     return `${value + '%'}`
   }

@@ -129,27 +129,6 @@ export class SidenavEditsComponent implements OnInit {
   }
 
   /**
-   * Handle click on title of the title (of the card)
-   * or on a bus element in edits list
-   * It's simulated the click on the bus concerned (open popup, center)
-   * @param bus
-   */
-  public goToBus(bus: Bus): void {
-    const marker = this.editsService.mapService.busService.busMarkers[bus.index]
-    marker.fireEvent('click')
-  }
-
-  /**
-   * Handle click on a line in edits list
-   * It's simulated the click on the line concerned (open popup, center)
-   * @param line
-   */
-  public goToLine(line: Branch): void {
-    const marker = this.editsService.mapService.branchService.branchMarker[line.index]
-    marker.fireEvent('click')
-  }
-
-  /**
    * Handle the cancellation of a load modification
    * @param load
    * @param bus

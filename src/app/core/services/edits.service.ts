@@ -74,6 +74,8 @@ export class EditsService {
     }
 
     this.updateSidePanelAfterBranchEdit(branch, newBranchStatus)
+    this.mapService.drawOnMap()
+    this.goToLine(branch)
   }
 
   public updateSidePanelAfterBranchEdit(branch: Branch, newBranchStatus: number) {
@@ -169,8 +171,7 @@ export class EditsService {
     this.handleSidenavInEditMode()
   }
 
-  //@todo implement with "(change)="editsService.updateMapAfterGenEdit(gen)" in both input of slider
-  public updateMapAfterGenEdit(gen: Gen) {
+  public updateMapAfterGenEdit(gen: Gen, bus: Bus) {
     //Edit the displayed value
     const data = this._pantagruelData.getValue()
     Object.keys(data.gen).forEach((g) => {
@@ -182,6 +183,7 @@ export class EditsService {
     })
     this._pantagruelData.next(data)
     this.mapService.drawOnMap()
+    this.goToBus(bus)
   }
 
   public onChangeSliderLoad(load: Load, bus: Bus, e: Event) {
@@ -232,8 +234,7 @@ export class EditsService {
     this.handleSidenavInEditMode()
   }
 
-  //@todo implement with "(change)="editsService.updateMapAfterLoadEdit(gen)" in both input of slider
-  public updateMapAfterLoadEdit(load: Load) {
+  public updateMapAfterLoadEdit(load: Load, bus: Bus) {
     const data = this._pantagruelData.getValue()
     Object.keys(data.load).forEach((l) => {
       if (load.index == data.load[l].index) {
@@ -244,5 +245,28 @@ export class EditsService {
     })
     this._pantagruelData.next(data)
     this.mapService.drawOnMap()
+    this.goToBus(bus)
+  }
+
+  /**
+   * Handle click on title of the title (of the card)
+   * or on a bus element in edits list
+   * It's simulated the click on the bus concerned (open popup, center)
+   * @param bus
+   */
+  public goToBus(bus: Bus): void {
+    console.log('goto bus')
+    const marker = this.mapService.busService.busMarkers[bus.index]
+    marker.fireEvent('click')
+  }
+
+  /**
+   * Handle click on a line in edits list
+   * It's simulated the click on the line concerned (open popup, center)
+   * @param line
+   */
+  public goToLine(line: Branch): void {
+    const marker = this.mapService.branchService.branchMarker[line.index]
+    marker.fireEvent('click')
   }
 }

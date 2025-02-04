@@ -32,7 +32,7 @@ export class GenContentCheckDirective extends ContentCheckBase {
         this._elRef.nativeElement.innerText = this._maxValue
       }
       this._editsService.updateSidePanelAfterGenEdit(this._gen, this.bus)
-      this._editsService.updateMapAfterGenEdit(this._gen)
+      this._editsService.updateMapAfterGenEdit(this._gen, this.bus)
     }
   }
 }
