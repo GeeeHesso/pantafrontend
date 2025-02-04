@@ -11,6 +11,7 @@ import {
   INACTIVE_COLOR,
 } from '../../core/core.const'
 import { Branch } from '../models/branch.model'
+import { BranchColorValue } from '../models/options.model'
 import { Pantagruel } from '../models/pantagruel'
 
 /*******************************************************************
@@ -21,7 +22,8 @@ import { Pantagruel } from '../models/pantagruel'
  * * ---------------------------------------------------------------------------
  * * 27/07/2023		Gwenaëlle Gustin		      Last edition for TB release.
  * * 21/02/2024		Marie-Esther Mabillard		Voltage color of branch/transformer (integrated 08/01/2025)
- * * 08/01/2025	Gwenaëlle Gustin       	  6 level of voltage
+ * * 08/01/2025	  Gwenaëlle Gustin       	  6 level of voltage
+ * * 04/02/2025		Gwenaëlle Gustin       		change color of voltage +  New feature: can disable color of line
  * *
  ******************************************************************/
 @Injectable({
@@ -36,14 +38,14 @@ export class BranchService {
    * Draw each branches/lines on the map
    * @param map
    * @param data Pantagruel reprocessed data
-   * @param showColor boolean to show color of branch (actual load)
+   * @param branchColorValue value to show color of branch (actual load)
    * @param showWidth boolean to show proportional width (thermal rate)
    * @param showArrow boolean to show arrow when zoom is fairly high
    */
   public drawBranch(
     map: L.Map,
     data: Pantagruel,
-    showColor: boolean,
+    branchColorValue: BranchColorValue,
     showWidth: boolean,
     showArrow: boolean,
   ): void {
@@ -63,9 +65,13 @@ export class BranchService {
       if (data.branch[b].br_status == 0) {
         color = INACTIVE_COLOR
       } else {
-        color = showColor
-          ? this._getColorOfBranch(data.branch[b])
-          : this._getColorOfBranchFromVolt(data.branch[b].fromBus.base_kv)
+        if (branchColorValue == BranchColorValue.Load) {
+          color = this._getColorOfBranch(data.branch[b])
+        } else if (branchColorValue == BranchColorValue.Voltage) {
+          color = this._getColorOfBranchFromVolt(data.branch[b].fromBus.base_kv)
+        } else {
+          color = '#000000'
+        }
       }
 
       // Define line
@@ -112,7 +118,7 @@ export class BranchService {
     })
 
     // Draw a dashed branches over the other if  load injected > 150
-    if (showColor) {
+    if (branchColorValue !== BranchColorValue.None) {
       // WARNING lat long reverse, so [1][0]
       Object.keys(data.branch).forEach((b) => {
         if (data.branch[b].loadInjected > 100) {
@@ -218,7 +224,7 @@ export class BranchService {
    * @param data Pantagruel reprocessed data
    * @param showColor boolean to construct with color (actual load)
    */
-  public drawTransformer(map: L.Map, data: Pantagruel, showColor: boolean): void {
+  public drawTransformer(map: L.Map, data: Pantagruel, branchColorValue: BranchColorValue): void {
     const zoom = map.getZoom()
 
     Object.keys(data.branch).forEach((b) => {
@@ -226,17 +232,20 @@ export class BranchService {
         // Color
         var colorTop = DEFAULT_COLOR
         var colorBot = DEFAULT_COLOR
-        if (showColor) {
+        if (branchColorValue == BranchColorValue.Load) {
           colorTop = this._getColorOfBranch(data.branch[b])
           colorBot = this._getColorOfBranch(data.branch[b])
-        } else {
+        } else if (branchColorValue == BranchColorValue.Voltage) {
           colorTop = this._getColorOfBranchFromVolt(data.branch[b].fromBus.base_kv)
           colorBot = this._getColorOfBranchFromVolt(data.branch[b].toBus.base_kv)
+        } else {
+          console.log('TODO handle no color value', branchColorValue)
+          //@TODO: add possibility to hide color transfomrer
         }
 
         const strokeColor =
           data.branch[b].br_status == 1
-            ? showColor
+            ? BranchColorValue.Load
               ? data.branch[b].loadInjected > 100
                 ? '#ff0000' // red
                 : DEFAULT_COLOR_BLACK

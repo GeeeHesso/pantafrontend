@@ -197,12 +197,14 @@
       <fieldset>
         <legend>
           <mat-radio-group [(ngModel)]="mapService.selectedOptions.showBranchColor">
-            <!-- TODO: disable color <mat-radio-button [value]="false"><b>No color</b></mat-radio-button> -->
-            <mat-radio-button [value]="false"><b>Voltage</b></mat-radio-button>
-            <mat-radio-button [value]="true"><b>Load</b> (power/limit)</mat-radio-button>
+            <mat-radio-button [value]="branchColorValue.Voltage"><b>Voltage</b></mat-radio-button>
+            <mat-radio-button [value]="branchColorValue.Load"
+              ><b>Load</b> (power/limit)</mat-radio-button
+            >
+            <mat-radio-button [value]="branchColorValue.None">No color</mat-radio-button>
           </mat-radio-group>
         </legend>
-        <span *ngIf="!mapService.selectedOptions.showBranchColor">
+        <span *ngIf="mapService.selectedOptions.showBranchColor === branchColorValue.Voltage">
           <svg width="20px" height="10px">
             <rect width="20px" height="10px" fill="#ffa500"></rect>
           </svg>
@@ -232,7 +234,7 @@
           </svg>
           : Low-voltage (<1000V)
         </span>
-        <span *ngIf="mapService.selectedOptions.showBranchColor">
+        <span *ngIf="mapService.selectedOptions.showBranchColor === branchColorValue.Load">
           Inactive :
           <svg width="10px" height="10px">
             <rect width="10px" height="10px" fill="#ffffff" stroke="#000000"></rect>
@@ -343,11 +345,13 @@
         <legend>
           <mat-radio-group [(ngModel)]="mapService.selectedOptions.showTransColor">
             <!-- TODO: disable color <mat-radio-button [value]="false"><b>No color</b></mat-radio-button> -->
-            <mat-radio-button [value]="false"><b>Voltage</b></mat-radio-button>
-            <mat-radio-button [value]="true"><b>Load</b> (power/limit)</mat-radio-button>
+            <mat-radio-button [value]="branchColorValue.Voltage"><b>Voltage</b></mat-radio-button>
+            <mat-radio-button [value]="branchColorValue.Load"
+              ><b>Load</b> (power/limit)</mat-radio-button
+            >
           </mat-radio-group>
         </legend>
-        <span *ngIf="mapService.selectedOptions.showTransColor">
+        <span *ngIf="mapService.selectedOptions.showTransColor === branchColorValue.Load">
           Inactive :
           <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">
             <rect x="10" y="0" width="2" height="10" style="fill: #000000"></rect>
@@ -491,7 +495,7 @@
           </svg>
         </span>
 
-        <span *ngIf="!mapService.selectedOptions.showTransColor">
+        <span *ngIf="mapService.selectedOptions.showTransColor === branchColorValue.Voltage">
           <td class="voltage-legend">
             <b>Input</b>
             <svg class="transformer" viewBox="0 0 22 50" xmlns="http://www.w3.org/2000/svg">

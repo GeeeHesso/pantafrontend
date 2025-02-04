@@ -1,7 +1,7 @@
 import { InjectionToken } from '@angular/core'
 import { LatLng } from 'leaflet'
 import { BehaviorSubject } from 'rxjs'
-import { MapOptions } from './models/options.model'
+import { BranchColorValue, MapOptions } from './models/options.model'
 import { Pantagruel } from './models/pantagruel'
 
 /*******************************************************************
@@ -11,6 +11,7 @@ import { Pantagruel } from './models/pantagruel'
  * * Date				  Author    		      Comments
  * * ---------------------------------------------------------------------------
  * * 13/07/2023		Gwenaëlle Gustin		Last edition for TB release.
+ * * 04/02/2025		Gwenaëlle Gustin    Can disable color of line
  * *
  ******************************************************************/
 export const URL_LOCAL_GRID = './assets/pantagruelLocal.json'
@@ -36,11 +37,11 @@ export const DEFAULT_OPTIONS: MapOptions = new MapOptions(
   true,
   true,
   true,
-  true,
+  BranchColorValue.Voltage,
   false,
   false,
   false,
-  true,
+  BranchColorValue.Voltage,
   false,
   false,
   6,

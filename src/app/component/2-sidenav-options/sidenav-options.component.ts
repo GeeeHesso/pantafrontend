@@ -7,7 +7,7 @@ import { MatRadioModule } from '@angular/material/radio'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { DEFAULT_OPTIONS, UNIT_WATT } from '../../core/core.const'
-import { MapOptions } from '../../core/models/options.model'
+import { BranchColorValue, MapOptions } from '../../core/models/options.model'
 import { MapService } from '../../core/services/map.service'
 
 /*******************************************************************
@@ -21,6 +21,7 @@ import { MapService } from '../../core/services/map.service'
  * * 03/09/2023		Gwenaëlle Gustin		      New feature: can call local API
  * * 21/02/2024		Marie-Esther Mabillard		Voltage color of branch/transformer (integrated 08/01/2025)
  * * 08/01/2025		Gwenaëlle Gustin       		6 level of voltage
+ * * 04/02/2025		Gwenaëlle Gustin       		change color of voltage +  New feature: can disable color of line
  * *
  ******************************************************************/
 @Component({
@@ -39,8 +40,10 @@ import { MapService } from '../../core/services/map.service'
   ],
 })
 export class SidenavOptionsComponent {
-  constructor(public mapService: MapService) {}
   public UNIT_WATT = UNIT_WATT
+  public branchColorValue = BranchColorValue
+
+  constructor(public mapService: MapService) {}
 
   /**
    * Apply display options

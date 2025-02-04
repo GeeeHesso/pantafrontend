@@ -22,7 +22,7 @@ import { DataService } from './data.service'
  * * Date				  Author    		      Comments
  * * ---------------------------------------------------------------------------
  * * 27/07/2023		Gwenaëlle Gustin		Last edition for TB release.
- * *
+ * * 04/02/2025		Gwenaëlle Gustin    Fix size of load (based on consumption and not population)
  ******************************************************************/
 @Injectable({
   providedIn: 'root',
@@ -90,7 +90,8 @@ export class BusService {
       const latlon: LatLngExpression = [data.load[l].coord[0], data.load[l].coord[1]]
       const loadIcon = L.circleMarker(latlon, {
         radius: showSize
-          ? this._getSizeProportionalMax(data.load[l].pd, this._dataService.LOAD_MAX_CONS) / 2 +
+          ? this._getSizeProportionalMax(data.load[l].consumeMW, this._dataService.LOAD_MAX_CONS) /
+              2 +
             zoom * this._zoomFactor
           : DEFAULT_SIZE_LOAD + zoom * this._zoomFactor,
         pane: 'shadowPane',
@@ -107,11 +108,11 @@ export class BusService {
         })
       } else
         loadIcon.setStyle({
-          fillColor: 'grey',
-          color: 'black',
-          fillOpacity: 0.5,
+          fillColor: DEFAULT_COLOR,
+          color: DEFAULT_COLOR_BLACK,
+          fillOpacity: 0.1,
           opacity: 1,
-          weight: 1,
+          weight: 0.5,
         })
 
       loadIcon.addTo(map)
