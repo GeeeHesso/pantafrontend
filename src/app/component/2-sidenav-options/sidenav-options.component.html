@@ -197,23 +197,28 @@
       <fieldset>
         <legend>
           <mat-radio-group [(ngModel)]="mapService.selectedOptions.showBranchColor">
+            <!-- TODO: disable color <mat-radio-button [value]="false"><b>No color</b></mat-radio-button> -->
             <mat-radio-button [value]="false"><b>Voltage</b></mat-radio-button>
             <mat-radio-button [value]="true"><b>Load</b> (power/limit)</mat-radio-button>
           </mat-radio-group>
         </legend>
         <span *ngIf="!mapService.selectedOptions.showBranchColor">
           <svg width="20px" height="10px">
+            <rect width="20px" height="10px" fill="#ffa500"></rect>
+          </svg>
+          : Very high-voltage (>= 750 kV) <br />
+          <svg width="20px" height="10px">
             <rect width="20px" height="10px" fill="#e4032f"></rect>
           </svg>
-          : Very high-voltage (> 380 kV) <br />
+          : Very high-voltage (>= 380 kV) <br />
           <svg width="20px" height="10px">
             <rect width="20px" height="10px" fill="#04b494"></rect>
           </svg>
-          : Very high-voltage (> 220 kV) <br />
+          : Very high-voltage (>= 220 kV) <br />
           <svg width="20px" height="10px">
             <rect width="20px" height="10px" fill="#2a9cf4"></rect>
           </svg>
-          : Very high-voltage (> 132kV) <br />
+          : Very high-voltage (>= 132kV) <br />
           <svg width="20px" height="10px">
             <rect width="20px" height="10px" fill="#ffa17a"></rect>
           </svg>
@@ -337,6 +342,7 @@
       <fieldset>
         <legend>
           <mat-radio-group [(ngModel)]="mapService.selectedOptions.showTransColor">
+            <!-- TODO: disable color <mat-radio-button [value]="false"><b>No color</b></mat-radio-button> -->
             <mat-radio-button [value]="false"><b>Voltage</b></mat-radio-button>
             <mat-radio-button [value]="true"><b>Load</b> (power/limit)</mat-radio-button>
           </mat-radio-group>

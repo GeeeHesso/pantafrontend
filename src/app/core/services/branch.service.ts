@@ -301,7 +301,9 @@ export class BranchService {
   }
 
   private _getColorOfBranchFromVolt(volt: number): string {
-    if (volt >= 380) {
+    if (volt >= 720) {
+      return '#ffa500'
+    } else if (volt >= 380) {
       return '#e4032f'
     } else if (volt >= 220) {
       return '#04b494'
